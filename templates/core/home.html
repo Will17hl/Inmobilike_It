@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Inicio - Inmobilike It{% endblock %}
+
+{% block content %}
+
+<section class="space-y-20">
+
+  <!-- HERO -->
+  <div class="grid md:grid-cols-2 gap-10 items-center">
+
+    <!-- Texto -->
+    <div class="space-y-6">
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
+        Encuentra tu próximo hogar
+        <span class="text-slate-600 block">
+          fácil, rápido y seguro
+        </span>
+      </h1>
+
+      <p class="text-slate-600 text-lg">
+        Inmobilike It es una plataforma digital que conecta
+        compradores y arrendatarios con asesores inmobiliarios
+        de manera sencilla y profesional.
+      </p>
+
+      <div class="flex gap-4 flex-wrap">
+
+        <!-- BOTÓN PRINCIPAL -->
+        <a href="{% url 'properties:catalog' %}"
+           class="px-6 py-3 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition">
+          Mira nuestro catálogo
+        </a>
+
+        <!-- BOTÓN SECUNDARIO -->
+        {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:register' %}"
+           class="px-6 py-3 rounded-2xl border border-slate-300 hover:bg-slate-100 transition">
+          Crear cuenta
+        </a>
+        {% endif %}
+
+      </div>
+    </div>
+
+    <!-- Imagen placeholder -->
+    <div class="h-80 rounded-3xl bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner"></div>
+
+  </div>
+
+
+  <!-- SECCIÓN BENEFICIOS -->
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <h3 class="font-bold text-lg mb-2">🔍 Búsqueda inteligente</h3>
+      <p class="text-slate-600 text-sm">
+        Filtra por ciudad, barrio, precio y tipo de operación
+        para encontrar exactamente lo que necesitas.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <h3 class="font-bold text-lg mb-2">🤝 Conexión directa</h3>
+      <p class="text-slate-600 text-sm">
+        Contacta asesores inmobiliarios directamente
+        desde cada propiedad.
+      </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <h3 class="font-bold text-lg mb-2">❤️ Guarda tus favoritos</h3>
+      <p class="text-slate-600 text-sm">
+        Marca propiedades como favoritas y revísalas
+        cuando quieras.
+      </p>
+    </div>
+
+  </div>
+
+</section>
+
+{% endblock %}

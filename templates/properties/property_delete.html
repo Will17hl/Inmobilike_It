@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Eliminar propiedad{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white border border-slate-200 rounded-3xl shadow-sm p-8">
+    <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mb-5">
+      🗑️
+    </div>
+
+    <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
+      Eliminar propiedad
+    </h1>
+
+    <p class="text-slate-600 mt-3 leading-7">
+      ¿Seguro que deseas eliminar la propiedad
+      <span class="font-semibold text-slate-900">“{{ prop.title }}”</span>?
+      Esta acción no se puede deshacer.
+    </p>
+
+    <div class="mt-8 flex items-center justify-between gap-4">
+      <a href="{% url 'properties:mine' %}"
+         class="px-5 py-3 rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition font-medium">
+        Cancelar
+      </a>
+
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit"
+                class="px-5 py-3 rounded-2xl bg-rose-600 text-white font-semibold hover:bg-rose-700 transition shadow-sm">
+          Sí, eliminar
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Inmobilike It{% endblock %}</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+
+    .nav-link {
+      @apply text-sm font-medium text-slate-600 hover:text-slate-900 transition;
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+  {% with mode=request.session.mode|default:"guest" %}
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl supports-[backdrop-filter]:bg-white/75">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="h-20 flex items-center justify-between gap-4">
+
+        <!-- LEFT: Logo -->
+        <div class="flex items-center gap-10 min-w-0">
+          <a href="{% url 'home' %}" class="flex items-center gap-3 shrink-0 group">
+            <div class="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center shadow-sm group-hover:scale-[1.02] transition">
+              <span class="text-lg font-extrabold tracking-tight">I</span>
+            </div>
+            <div class="leading-tight">
+              <div class="text-xl font-extrabold tracking-tight text-slate-950">
+                Inmobilike It
+              </div>
+              <div class="text-xs text-slate-500 -mt-0.5">
+                Encuentra tu próximo hogar
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- CENTER: Desktop nav -->
+        <nav class="hidden lg:flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-2xl px-2 py-2">
+          <a href="{% url 'home' %}"
+             class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+            Inicio
+          </a>
+
+          <a href="{% url 'properties:catalog' %}"
+             class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+            Catálogo
+          </a>
+
+          {% if user.is_authenticated and mode == "host" %}
+            <a href="{% url 'properties:create' %}"
+               class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+              Publicar
+            </a>
+
+            <a href="{% url 'properties:mine' %}"
+               class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+              Mis propiedades
+            </a>
+          {% endif %}
+        </nav>
+
+        <!-- RIGHT -->
+        <div class="hidden lg:flex items-center gap-3 shrink-0">
+
+          {% if user.is_authenticated %}
+            <!-- Switch mode -->
+            <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
+              <span class="text-sm font-medium text-slate-700">
+                {% if mode == "host" %}
+                  Modo usuario
+                {% else %}
+                  Modo anfitrión
+                {% endif %}
+              </span>
+            </a>
+
+            <!-- User block -->
+            <div class="flex items-center gap-3 pl-1">
+              {% if mode == "host" %}
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold shadow-sm">
+                  Host
+                </span>
+              {% endif %}
+
+              <div class="hidden xl:flex flex-col leading-tight">
+                <span class="text-xs text-slate-400">Bienvenido</span>
+                <span class="text-sm font-semibold text-slate-700 max-w-[150px] truncate">
+                  {{ user.username }}
+                </span>
+              </div>
+
+              <a href="{% url 'accounts:profile' %}"
+                 class="inline-flex items-center px-4 py-2.5 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
+                Perfil
+              </a>
+
+              <a href="{% url 'accounts:logout' %}"
+                 class="inline-flex items-center px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                Salir
+              </a>
+            </div>
+          {% else %}
+            <a href="{% url 'accounts:login' %}"
+               class="inline-flex items-center px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+              Iniciar sesión
+            </a>
+
+            <a href="{% url 'accounts:register' %}"
+               class="inline-flex items-center px-4 py-2.5 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
+              Crear cuenta
+            </a>
+          {% endif %}
+        </div>
+
+        <!-- Mobile button -->
+        <button id="mobileMenuBtn"
+                class="lg:hidden inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
+                type="button"
+                aria-label="Abrir menú">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- MOBILE MENU -->
+    <div id="mobileMenu" class="lg:hidden hidden border-t border-slate-200 bg-white/95 backdrop-blur">
+      <div class="px-4 py-4 space-y-3">
+
+        <a href="{% url 'home' %}"
+           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+          Inicio
+        </a>
+
+        <a href="{% url 'properties:catalog' %}"
+           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+          Catálogo
+        </a>
+
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
+             class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+            {% if mode == "host" %}Modo usuario{% else %}Modo anfitrión{% endif %}
+          </a>
+
+          {% if mode == "host" %}
+            <a href="{% url 'properties:create' %}"
+               class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+              Publicar
+            </a>
+
+            <a href="{% url 'properties:mine' %}"
+               class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+              Mis propiedades
+            </a>
+
+            <div class="px-4">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold">
+                Host activado
+              </span>
+            </div>
+          {% endif %}
+
+          <div class="px-4 pt-2">
+            <div class="text-xs text-slate-400">Bienvenido</div>
+            <div class="text-sm font-semibold text-slate-700">{{ user.username }}</div>
+          </div>
+
+          <a href="{% url 'accounts:profile' %}"
+             class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
+            Perfil
+          </a>
+
+          <a href="{% url 'accounts:logout' %}"
+             class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+            Salir
+          </a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}"
+             class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+            Iniciar sesión
+          </a>
+
+          <a href="{% url 'accounts:register' %}"
+             class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
+            Crear cuenta
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- MESSAGES -->
+  {% if messages %}
+    <div class="max-w-6xl mx-auto px-4 pt-4 space-y-2">
+      {% for message in messages %}
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm flex items-start justify-between gap-4 shadow-sm">
+          <div class="text-slate-700">
+            {{ message }}
+          </div>
+          <button type="button"
+                  class="text-slate-400 hover:text-slate-600"
+                  onclick="this.parentElement.remove()">
+            ✕
+          </button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- CONTENT -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-white mt-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-500">
+      © {{ now|date:"Y" }} Inmobilike It · Proyecto académico
+    </div>
+  </footer>
+
+  {% endwith %}
+
+  <script>
+    (function () {
+      const btn = document.getElementById("mobileMenuBtn");
+      const menu = document.getElementById("mobileMenu");
+      if (!btn || !menu) return;
+
+      btn.addEventListener("click", () => {
+        menu.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!menu.classList.contains("hidden")) {
+          const clickedInside = menu.contains(e.target) || btn.contains(e.target);
+          if (!clickedInside) menu.classList.add("hidden");
+        }
+      });
+    })();
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
