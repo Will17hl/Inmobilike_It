@@ -159,11 +159,12 @@
         </a>
       {% endif %}
 
-      <a href="{% url 'interactions:inquiry_create' prop.id %}"
-         class="px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition">
-        Contactar asesor
-      </a>
-    </div>
+      <form action="{% url 'properties:contact_advisor' prop.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="px-6 py-3 rounded-2xl bg-[#0B132B] text-white font-medium">
+          Contactar asesor
+        </button>
+      </form>
 
     <div class="pt-2">
       <a href="{% url 'properties:catalog' %}"

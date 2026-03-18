@@ -10,4 +10,5 @@ urlpatterns = [
     path("<int:pk>/", views.property_detail, name="detail"),
     path("<int:pk>/edit/", views.property_edit, name="edit"),
     path("<int:pk>/delete/", views.property_delete, name="delete"),
+    path("contact/<int:pk>/", views.contact_advisor, name="contact_advisor"),
 ]

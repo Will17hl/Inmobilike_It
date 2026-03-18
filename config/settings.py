@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     "apps.accounts",
     "apps.properties",
     "apps.interactions",
+    "channels",
+    "daphne",
 ]
 
 MIDDLEWARE = [
@@ -75,7 +77,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+ASGI_APPLICATION = "config.asgi.application"
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

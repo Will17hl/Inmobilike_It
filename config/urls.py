@@ -17,4 +17,6 @@ urlpatterns = [
 
     # Interactions
     path("interactions/", include(("apps.interactions.urls", "interactions"), namespace="interactions")),
+    
+    path("chats/", include("apps.interactions.urls")),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

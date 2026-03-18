@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import render, redirect
-
+from django.shortcuts import get_object_or_404
+from apps.interactions.models import Conversation, Message
 from apps.accounts.models import AgentProfile
 from apps.interactions.models import Favorite
 from .forms import PropertyForm, LocationForm
@@ -219,3 +220,24 @@ def property_delete(request, pk: int):
             "prop": prop,
         },
     )
+
+@login_required
+def contact_advisor(request, pk):
+    property_obj = get_object_or_404(Property.objects.select_related("agent__user"), pk=pk)
+
+    advisor = property_obj.agent.user
+
+    conversation, created = Conversation.objects.get_or_create(
+        property=property_obj,
+        buyer=request.user,
+        advisor=advisor,
+    )
+
+    if created:
+        Message.objects.create(
+            conversation=conversation,
+            sender=request.user,
+            content=f"Hola, estoy interesado en la propiedad #{property_obj.pk}."
+        )
+
+    return redirect("interactions:chat_room", conversation_id=conversation.id)
