@@ -5,21 +5,95 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Inmobilike It{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
+    :root {
+      --theme-bg: #fbf6ef;
+      --theme-surface: rgba(255, 251, 246, 0.9);
+      --theme-surface-strong: #fffdf9;
+      --theme-border: #e7d8c8;
+      --theme-border-soft: rgba(231, 216, 200, 0.58);
+      --theme-ink: #2f2722;
+      --theme-muted: #8f7a69;
+      --theme-accent: #f1892d;
+      --theme-accent-soft: #fff0e2;
+      --theme-dark: #312923;
+      --theme-dark-soft: #4a4038;
+      --theme-shadow: 0 22px 60px rgba(67, 43, 25, 0.08);
+    }
+
     html { scroll-behavior: smooth; }
 
+    body {
+      font-family: "Manrope", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(241, 137, 45, 0.08), transparent 24%),
+        linear-gradient(180deg, #fffaf4 0%, #fbf6ef 100%);
+      color: var(--theme-ink);
+    }
+
+    h1, h2, h3, h4, .brand-serif {
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: -0.02em;
+    }
+
+    header {
+      border-color: var(--theme-border-soft) !important;
+      background: rgba(255, 252, 247, 0.88) !important;
+      backdrop-filter: blur(16px);
+    }
+
+    footer {
+      border-color: var(--theme-border-soft) !important;
+      background: rgba(255, 251, 246, 0.92) !important;
+    }
+
     .nav-link {
-      @apply text-sm font-medium text-slate-600 hover:text-slate-900 transition;
+      color: var(--theme-muted);
+      transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+    }
+
+    .nav-link:hover {
+      color: var(--theme-accent);
+    }
+
+    .theme-panel {
+      background: var(--theme-surface);
+      border: 1px solid var(--theme-border-soft);
+      box-shadow: var(--theme-shadow);
+    }
+
+    .theme-button {
+      background: var(--theme-dark);
+      color: #fffaf4;
+      border: 1px solid transparent;
+    }
+
+    .theme-button:hover {
+      background: var(--theme-dark-soft);
+    }
+
+    .theme-button-soft {
+      background: var(--theme-surface-strong);
+      border: 1px solid var(--theme-border);
+      color: var(--theme-ink);
+    }
+
+    .theme-button-soft:hover {
+      border-color: rgba(241, 137, 45, 0.42);
+      color: var(--theme-accent);
     }
   </style>
 
   {% block extra_head %}{% endblock %}
 </head>
 
-<body class="bg-slate-50 text-slate-900">
+<body class="text-slate-900">
 
   {% with mode=request.session.mode|default:"guest" %}
 
@@ -31,14 +105,14 @@
         <!-- LEFT: Logo -->
         <div class="flex items-center gap-10 min-w-0">
           <a href="{% url 'home' %}" class="flex items-center gap-3 shrink-0 group">
-            <div class="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center shadow-sm group-hover:scale-[1.02] transition">
+            <div class="w-12 h-12 rounded-2xl text-white flex items-center justify-center shadow-sm group-hover:scale-[1.02] transition" style="background: var(--theme-accent);">
               <span class="text-lg font-extrabold tracking-tight">I</span>
             </div>
             <div class="leading-tight">
-              <div class="text-xl font-extrabold tracking-tight text-slate-950">
+              <div class="brand-serif text-2xl font-bold tracking-tight text-slate-950">
                 Inmobilike It
               </div>
-              <div class="text-xs text-slate-500 -mt-0.5">
+              <div class="text-xs -mt-0.5 uppercase tracking-[0.22em]" style="color: var(--theme-accent);">
                 Encuentra tu próximo hogar
               </div>
             </div>
@@ -46,29 +120,30 @@
         </div>
 
         <!-- CENTER: Desktop nav -->
-        <nav class="hidden lg:flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-2xl px-2 py-2">
+        <nav class="hidden lg:flex items-center gap-1 rounded-2xl px-2 py-2" style="background: rgba(255,255,255,0.62); border: 1px solid var(--theme-border-soft);">
           <a href="{% url 'home' %}"
-             class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
             Inicio
           </a>
 
-          <a href="{% url 'interactions:chat_list' %}">
+          <a href="{% url 'interactions:chat_list' %}"
+             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
             Chats
           </a>
 
           <a href="{% url 'properties:catalog' %}"
-             class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
             Catálogo
           </a>
 
           {% if user.is_authenticated and mode == "host" %}
             <a href="{% url 'properties:create' %}"
-               class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+               class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
               Publicar
             </a>
 
             <a href="{% url 'properties:mine' %}"
-               class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:text-slate-950 hover:bg-white transition">
+               class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
               Mis propiedades
             </a>
           {% endif %}
@@ -78,10 +153,61 @@
         <div class="hidden lg:flex items-center gap-3 shrink-0">
 
           {% if user.is_authenticated %}
+
+            <!-- 🔔 Notification Bell — visible in ALL modes -->
+            <div class="relative" id="bell-wrapper">
+              <button id="bell-btn"
+                      class="theme-button-soft relative inline-flex w-11 h-11 items-center justify-center rounded-2xl transition shadow-sm"
+                      aria-label="Notificaciones">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" style="color: var(--theme-muted);" fill="none"
+                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span id="bell-badge"
+                      class="{% if bell_notification_count > 0 %}flex{% else %}hidden{% endif %} absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full text-white text-[10px] font-bold items-center justify-center" style="background: var(--theme-accent);">
+                  {% if bell_notification_count > 99 %}99+{% else %}{{ bell_notification_count }}{% endif %}
+                </span>
+              </button>
+
+              <!-- Dropdown -->
+              <div id="bell-dropdown"
+                   class="hidden absolute right-0 mt-2 w-80 rounded-2xl shadow-xl z-50 overflow-hidden" style="background: var(--theme-surface-strong); border: 1px solid var(--theme-border);">
+                <div class="px-4 py-3 flex items-center justify-between" style="border-bottom: 1px solid var(--theme-border-soft);">
+                  <span class="text-sm font-semibold" style="color: var(--theme-ink);">Notificaciones</span>
+                  <button id="bell-clear" class="text-xs transition" style="color: var(--theme-muted);">
+                    Limpiar
+                  </button>
+                </div>
+                <ul id="bell-list" class="max-h-72 overflow-y-auto divide-y divide-slate-100">
+                  {% if bell_notifications %}
+                    {% for notification in bell_notifications %}
+                      <li class="transition hover:bg-[#fff4e7]">
+                        <a href="{% url 'interactions:chat_room' notification.conversation_id %}" class="block px-4 py-3">
+                          <p class="text-sm font-semibold truncate" style="color: var(--theme-ink);">{{ notification.sender }}</p>
+                          <p class="text-xs truncate mt-0.5" style="color: var(--theme-muted);">{{ notification.preview }}</p>
+                        </a>
+                      </li>
+                    {% endfor %}
+                  {% else %}
+                    <li class="px-4 py-4 text-sm text-center" id="bell-empty" style="color: var(--theme-muted);">
+                      Sin notificaciones nuevas
+                    </li>
+                  {% endif %}
+                </ul>
+                <div class="px-4 py-3" style="border-top: 1px solid var(--theme-border-soft);">
+                  <a href="{% url 'interactions:chat_list' %}"
+                     class="block text-center text-sm font-medium transition" style="color: var(--theme-ink);">
+                    Ver todos los chats →
+                  </a>
+                </div>
+              </div>
+            </div>
+
             <!-- Switch mode -->
             <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
-               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm">
-              <span class="text-sm font-medium text-slate-700">
+               class="theme-button-soft inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl transition shadow-sm">
+              <span class="text-sm font-medium">
                 {% if mode == "host" %}
                   Modo usuario
                 {% else %}
@@ -106,37 +232,94 @@
               </div>
 
               <a href="{% url 'accounts:profile' %}"
-                 class="inline-flex items-center px-4 py-2.5 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
+                 class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
                 Perfil
               </a>
 
               <a href="{% url 'accounts:logout' %}"
-                 class="inline-flex items-center px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+                 class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
                 Salir
               </a>
             </div>
+
           {% else %}
             <a href="{% url 'accounts:login' %}"
-               class="inline-flex items-center px-4 py-2.5 rounded-2xl border border-slate-200 bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+               class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
               Iniciar sesión
             </a>
 
             <a href="{% url 'accounts:register' %}"
-               class="inline-flex items-center px-4 py-2.5 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition shadow-sm">
+               class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
               Crear cuenta
             </a>
           {% endif %}
         </div>
 
         <!-- Mobile button -->
-        <button id="mobileMenuBtn"
-                class="lg:hidden inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
-                type="button"
-                aria-label="Abrir menú">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+        <div class="lg:hidden flex items-center gap-2">
+
+          <!-- 🔔 Bell mobile — visible in ALL modes -->
+          {% if user.is_authenticated %}
+          <div class="relative" id="bell-wrapper-mobile">
+            <button id="bell-btn-mobile"
+                    class="relative inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
+                    aria-label="Notificaciones">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none"
+                   viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span id="bell-badge-mobile"
+                    class="{% if bell_notification_count > 0 %}flex{% else %}hidden{% endif %} absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold items-center justify-center">
+                {% if bell_notification_count > 99 %}99+{% else %}{{ bell_notification_count }}{% endif %}
+              </span>
+            </button>
+
+            <!-- Mobile dropdown -->
+            <div id="bell-dropdown-mobile"
+                 class="hidden absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
+              <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+                <span class="text-sm font-semibold text-slate-900">Notificaciones</span>
+                <button id="bell-clear-mobile" class="text-xs text-slate-400 hover:text-slate-600 transition">
+                  Limpiar
+                </button>
+              </div>
+              <ul id="bell-list-mobile" class="max-h-60 overflow-y-auto divide-y divide-slate-100">
+                {% if bell_notifications %}
+                  {% for notification in bell_notifications %}
+                    <li class="hover:bg-slate-50 transition">
+                      <a href="{% url 'interactions:chat_room' notification.conversation_id %}" class="block px-4 py-3">
+                        <p class="text-sm font-semibold text-slate-900 truncate">{{ notification.sender }}</p>
+                        <p class="text-xs text-slate-500 truncate mt-0.5">{{ notification.preview }}</p>
+                      </a>
+                    </li>
+                  {% endfor %}
+                {% else %}
+                  <li class="px-4 py-4 text-sm text-slate-400 text-center" id="bell-empty-mobile">
+                    Sin notificaciones nuevas
+                  </li>
+                {% endif %}
+              </ul>
+              <div class="px-4 py-3 border-t border-slate-100">
+                <a href="{% url 'interactions:chat_list' %}"
+                   class="block text-center text-sm font-medium text-slate-700 hover:text-slate-900 transition">
+                  Ver todos los chats →
+                </a>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+
+          <button id="mobileMenuBtn"
+                  class="inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
+                  type="button"
+                  aria-label="Abrir menú">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+
       </div>
     </div>
 
@@ -147,6 +330,11 @@
         <a href="{% url 'home' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
           Inicio
+        </a>
+
+        <a href="{% url 'interactions:chat_list' %}"
+           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+          Chats
         </a>
 
         <a href="{% url 'properties:catalog' %}"
@@ -207,26 +395,9 @@
     </div>
   </header>
 
-  <!-- MESSAGES -->
-  {% if messages %}
-    <div class="max-w-6xl mx-auto px-4 pt-4 space-y-2">
-      {% for message in messages %}
-        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm flex items-start justify-between gap-4 shadow-sm">
-          <div class="text-slate-700">
-            {{ message }}
-          </div>
-          <button type="button"
-                  class="text-slate-400 hover:text-slate-600"
-                  onclick="this.parentElement.remove()">
-            ✕
-          </button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-
   <!-- CONTENT -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- main_class permite que cada pagina controle el padding/layout del main -->
+  <main class="{% block main_class %}max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8{% endblock %}">
     {% block content %}{% endblock %}
   </main>
 
@@ -240,6 +411,7 @@
   {% endwith %}
 
   <script>
+    // ── Mobile menu toggle ────────────────────────────────────
     (function () {
       const btn = document.getElementById("mobileMenuBtn");
       const menu = document.getElementById("mobileMenu");
@@ -257,6 +429,176 @@
       });
     })();
   </script>
+
+  <!-- 🔔 Notification Bell Logic -->
+  {% if user.is_authenticated %}
+  <script>
+  (function () {
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) {
+        return parts.pop().split(";").shift();
+      }
+      return "";
+    }
+
+    function setupBell({ btnId, dropdownId, badgeId, listId, emptyId, clearId }) {
+      const btn      = document.getElementById(btnId);
+      const dropdown = document.getElementById(dropdownId);
+      const badge    = document.getElementById(badgeId);
+      const list     = document.getElementById(listId);
+      const clearBtn = document.getElementById(clearId);
+
+      if (!btn || !dropdown) return null;
+
+      let count = Number({{ bell_notification_count|default:0 }});
+
+      function updateBadge() {
+        if (count > 0) {
+          badge.textContent = count > 99 ? "99+" : count;
+          badge.classList.remove("hidden");
+          badge.classList.add("flex");
+        } else {
+          badge.classList.add("hidden");
+          badge.classList.remove("flex");
+        }
+      }
+
+      function addNotification(sender, preview, conversationId) {
+        count++;
+        updateBadge();
+
+        const empty = document.getElementById(emptyId);
+        if (empty) empty.remove();
+
+        const li = document.createElement("li");
+        li.className = "hover:bg-slate-50 transition";
+        li.innerHTML = `
+          <a href="/interactions/${conversationId}/" class="block px-4 py-3">
+            <p class="text-sm font-semibold text-slate-900 truncate">${sender}</p>
+            <p class="text-xs text-slate-500 truncate mt-0.5">${preview}</p>
+          </a>`;
+        list.prepend(li);
+      }
+
+      function clearRenderedNotifications() {
+        list.innerHTML = `<li class="px-4 py-4 text-sm text-slate-400 text-center" id="${emptyId}">Sin notificaciones nuevas</li>`;
+        count = 0;
+        updateBadge();
+      }
+
+      updateBadge();
+
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!dropdown.classList.contains("hidden")) {
+          if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+            dropdown.classList.add("hidden");
+          }
+        }
+      });
+
+      if (clearBtn) {
+        clearBtn.addEventListener("click", async () => {
+          try {
+            const response = await fetch("{% url 'interactions:clear_chat_notifications' %}", {
+              method: "POST",
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                "X-Requested-With": "XMLHttpRequest",
+              },
+            });
+
+            if (!response.ok) return;
+
+            if (typeof window.__bellClearAll === "function") {
+              window.__bellClearAll();
+            } else {
+              clearRenderedNotifications();
+            }
+          } catch (error) {
+            console.error("No se pudieron limpiar las notificaciones", error);
+          }
+        });
+      }
+
+      return { addNotification, clearRenderedNotifications };
+    }
+
+    const desktop = setupBell({
+      btnId:      "bell-btn",
+      dropdownId: "bell-dropdown",
+      badgeId:    "bell-badge",
+      listId:     "bell-list",
+      emptyId:    "bell-empty",
+      clearId:    "bell-clear",
+    });
+
+    const mobile = setupBell({
+      btnId:      "bell-btn-mobile",
+      dropdownId: "bell-dropdown-mobile",
+      badgeId:    "bell-badge-mobile",
+      listId:     "bell-list-mobile",
+      emptyId:    "bell-empty-mobile",
+      clearId:    "bell-clear-mobile",
+    });
+
+    window.__bellNotify = function(sender, preview, conversationId) {
+      if (desktop) desktop.addNotification(sender, preview, conversationId);
+      if (mobile)  mobile.addNotification(sender, preview, conversationId);
+    };
+
+    window.__bellClearAll = function () {
+      if (desktop) desktop.clearRenderedNotifications();
+      if (mobile) mobile.clearRenderedNotifications();
+    };
+
+    function isChatPage() {
+      const path = window.location.pathname;
+      return path.startsWith("/interactions/") || path.startsWith("/chats/");
+    }
+
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const notificationUrl = `${protocol}://${window.location.host}/ws/notifications/`;
+    let notificationSocket = null;
+    let reconnectAttempts = 0;
+
+    function connectNotifications() {
+      notificationSocket = new WebSocket(notificationUrl);
+
+      notificationSocket.onopen = function () {
+        reconnectAttempts = 0;
+      };
+
+      notificationSocket.onmessage = function (event) {
+        if (isChatPage()) return;
+
+        const data = JSON.parse(event.data);
+        if (typeof window.__bellNotify === "function") {
+          window.__bellNotify(
+            data.sender || "Nuevo mensaje",
+            data.message || "Tienes un mensaje nuevo",
+            data.conversation_id
+          );
+        }
+      };
+
+      notificationSocket.onclose = function () {
+        reconnectAttempts += 1;
+        const timeout = Math.min(1000 * reconnectAttempts, 5000);
+        window.setTimeout(connectNotifications, timeout);
+      };
+    }
+
+    connectNotifications();
+  })();
+  </script>
+  {% endif %}
 
   {% block extra_js %}{% endblock %}
 </body>

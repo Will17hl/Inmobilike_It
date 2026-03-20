@@ -1,7 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Perfil{% endblock %}
+
 {% block content %}
-<h2>Perfil</h2>
-<p>Usuario: <b>{{ user.username }}</b></p>
-<p>Email: {{ user.email }}</p>
+<section class="mx-auto max-w-5xl">
+  <div class="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
+      <div class="flex h-20 w-20 items-center justify-center rounded-[2rem] text-3xl font-extrabold text-white" style="background: var(--theme-accent);">
+        {{ user.username|slice:":1"|upper }}
+      </div>
+      <h1 class="brand-serif mt-6 text-5xl text-white">Tu perfil.</h1>
+      <p class="mt-4 text-base leading-8 text-white/72">
+        Gestiona tu identidad dentro de la plataforma y revisa tu estado actual.
+      </p>
+    </div>
+
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.28em]" style="color: var(--theme-accent);">Informacion</p>
+      <div class="mt-6 grid gap-4">
+        <div class="rounded-[1.4rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.86);">
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Usuario</p>
+          <p class="mt-2 text-2xl font-extrabold" style="color: var(--theme-ink);">{{ user.username }}</p>
+        </div>
+        <div class="rounded-[1.4rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.94);">
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Email</p>
+          <p class="mt-2 text-xl font-semibold" style="color: var(--theme-ink);">{{ user.email|default:"Sin email registrado" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 {% endblock %}

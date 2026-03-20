@@ -1,339 +1,745 @@
 {% extends "base.html" %}
 {% block title %}Chats{% endblock %}
+{% block main_class %}p-0{% endblock %}
+
+{% block extra_head %}
+<style>
+  .chat-shell {
+    height: calc(100vh - 80px);
+    box-sizing: border-box;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(241, 137, 45, 0.10), transparent 24%),
+      linear-gradient(180deg, #fffaf4 0%, #fbf6ef 100%);
+  }
+
+  .chat-card {
+    height: 100%;
+    border: 1px solid var(--theme-border-soft);
+    background: rgba(255, 252, 248, 0.96);
+    box-shadow: 0 22px 60px rgba(67, 43, 25, 0.09);
+  }
+
+  .conversation-item {
+    transition: transform 180ms ease, background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  }
+
+  .conversation-item:hover {
+    transform: translateY(-1px);
+  }
+
+  .message-enter {
+    animation: message-enter 220ms ease;
+  }
+
+  @keyframes message-enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.45);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .chat-shell aside {
+    background: rgba(255, 252, 247, 0.78);
+    border-right-color: var(--theme-border-soft);
+  }
+
+  .chat-shell section {
+    background: linear-gradient(180deg, #fffdf9 0%, #fbf6ef 100%) !important;
+  }
+
+  .chat-shell h1,
+  .chat-shell h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  .chat-shell [data-conversation-item] {
+    border-color: var(--theme-border-soft) !important;
+    background: rgba(255, 253, 249, 0.92) !important;
+    border-radius: 1.7rem;
+  }
+
+  .chat-shell [data-conversation-item]:hover {
+    border-color: rgba(241, 137, 45, 0.38) !important;
+    background: #fff8f0 !important;
+    box-shadow: 0 14px 32px rgba(91, 56, 30, 0.08);
+  }
+
+  .chat-shell [data-conversation-item].border-slate-900 {
+    background: var(--theme-dark) !important;
+    border-color: var(--theme-dark) !important;
+    box-shadow: 0 18px 34px rgba(49, 41, 35, 0.18) !important;
+  }
+
+  .chat-shell [data-conversation-item] [data-unread-count] {
+    background: var(--theme-accent) !important;
+    color: #fffaf4 !important;
+  }
+
+  .chat-shell input[type="search"] {
+    border-color: rgba(241, 137, 45, 0.7) !important;
+    background: rgba(255, 253, 249, 0.96) !important;
+    box-shadow: 0 0 0 4px rgba(241, 137, 45, 0.08);
+  }
+
+  .chat-shell input[type="search"]:focus {
+    border-color: var(--theme-accent) !important;
+    box-shadow: 0 0 0 5px rgba(241, 137, 45, 0.12) !important;
+  }
+
+  .chat-shell .bg-slate-950 {
+    background-color: var(--theme-dark) !important;
+  }
+
+  .chat-shell .bg-slate-100 {
+    background-color: #f7efe5 !important;
+  }
+
+  .chat-shell .text-slate-950,
+  .chat-shell .text-slate-900 {
+    color: var(--theme-ink) !important;
+  }
+
+  .chat-shell .text-slate-500,
+  .chat-shell .text-slate-400,
+  .chat-shell .text-slate-600,
+  .chat-shell .text-slate-700 {
+    color: var(--theme-muted) !important;
+  }
+
+  .chat-shell .border-slate-200,
+  .chat-shell .border-slate-200\/70,
+  .chat-shell .border-slate-200\/80,
+  .chat-shell .border-slate-300 {
+    border-color: var(--theme-border-soft) !important;
+  }
+
+  .chat-shell .bg-emerald-50,
+  .chat-shell .bg-amber-50,
+  .chat-shell .bg-white {
+    background-color: rgba(255, 253, 249, 0.96) !important;
+  }
+
+  .chat-shell .text-emerald-700,
+  .chat-shell .text-amber-700 {
+    color: var(--theme-accent) !important;
+  }
+
+  .chat-shell .border-emerald-100,
+  .chat-shell .border-amber-200,
+  .chat-shell .border-emerald-200 {
+    border-color: rgba(241, 137, 45, 0.28) !important;
+  }
+
+  .chat-shell article.bg-slate-950 {
+    background: var(--theme-dark) !important;
+    color: #fffaf4 !important;
+    border-radius: 1.55rem 1.55rem 0.55rem 1.55rem !important;
+  }
+
+  .chat-shell article.border {
+    background: #fffdf9 !important;
+    border-color: var(--theme-border-soft) !important;
+    border-radius: 1.55rem 1.55rem 1.55rem 0.55rem !important;
+    box-shadow: 0 8px 24px rgba(67, 43, 25, 0.06) !important;
+  }
+
+  .chat-shell #chat-form {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .chat-shell #chat-message-input {
+    background: rgba(255, 253, 249, 0.98) !important;
+    border: 1px solid var(--theme-border-soft) !important;
+    border-radius: 1.6rem !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+    padding: 1.05rem 1.35rem !important;
+  }
+
+  .chat-shell #send-button {
+    min-width: 134px;
+    border-radius: 1.5rem !important;
+    background: #a19b95 !important;
+    color: #fffaf4 !important;
+  }
+
+  .chat-shell #send-button:not(:disabled) {
+    background: var(--theme-dark) !important;
+  }
+
+  .chat-shell #send-button:not(:disabled):hover {
+    background: var(--theme-dark-soft) !important;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
-  <div class="bg-white rounded-[2rem] border border-slate-200 overflow-hidden shadow-sm h-[78vh] min-h-[620px]">
-
-    <div class="grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] h-full">
-
-      <!-- Sidebar -->
-      <aside class="border-r border-slate-200 bg-white flex flex-col">
-        <div class="px-5 py-5 border-b border-slate-200">
-          <h1 class="text-2xl font-bold text-slate-900">Chats</h1>
-          <p class="text-sm text-slate-500 mt-1">
-            Conversaciones activas con compradores y asesores.
-          </p>
-        </div>
-
-        <div class="overflow-y-auto flex-1">
-          {% for item in conversations_data %}
-            {% with conversation=item.conversation other_user=item.other_user last_message=item.last_message unread_count=item.unread_count %}
-              <a href="{% url 'interactions:chat_room' conversation.id %}"
-                 class="block px-5 py-4 border-b border-slate-100 hover:bg-slate-50 transition {% if active_conversation and active_conversation.id == conversation.id %}bg-slate-50{% endif %}">
-                <div class="flex items-start gap-3">
-                  <div class="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-semibold shrink-0">
-                    {{ other_user.username|slice:":1"|upper }}
-                  </div>
-
-                  <div class="min-w-0 flex-1">
-                    <div class="flex items-start justify-between gap-3">
-                      <div class="min-w-0">
-                        <div class="flex items-center gap-2">
-                          <p class="font-semibold text-slate-900 truncate">
-                            {{ other_user.username }}
-                          </p>
-
-                          {% if request.user == conversation.buyer %}
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-100">
-                              Asesor
-                            </span>
-                          {% else %}
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
-                              Comprador
-                            </span>
-                          {% endif %}
-                        </div>
-
-                        <p class="text-xs text-slate-400 truncate mt-1">
-                          {{ conversation.property.title }}
-                        </p>
-                      </div>
-
-                      <div class="shrink-0 flex flex-col items-end gap-2">
-                        <span class="text-[11px] text-slate-400 whitespace-nowrap">
-                          {% if last_message %}
-                            {{ last_message.created_at|date:"H:i" }}
-                          {% else %}
-                            {{ conversation.updated_at|date:"d/m/Y" }}
-                          {% endif %}
-                        </span>
-
-                        {% if unread_count > 0 %}
-                          <span class="min-w-[20px] h-[20px] px-1.5 inline-flex items-center justify-center rounded-full bg-[#0B132B] text-white text-[10px] font-semibold">
-                            {{ unread_count }}
-                          </span>
-                        {% endif %}
-                      </div>
-                    </div>
-
-                    <div class="mt-2">
-                      {% if last_message %}
-                        <p class="text-sm {% if unread_count > 0 %}text-slate-800 font-medium{% else %}text-slate-500{% endif %} truncate">
-                          {% if last_message.sender == request.user %}
-                            Tú:
-                          {% endif %}
-                          {{ last_message.content }}
-                        </p>
-                      {% else %}
-                        <p class="text-sm text-slate-400 truncate">
-                          Aún no hay mensajes.
-                        </p>
-                      {% endif %}
-                    </div>
-                  </div>
-                </div>
-              </a>
-            {% endwith %}
-          {% empty %}
-            <div class="px-6 py-16 text-center">
-              <div class="mx-auto w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-500 text-xl">
-                💬
+<section class="chat-shell">
+  <div class="max-w-7xl mx-auto h-full box-border px-4 sm:px-6 py-6">
+    <div class="chat-card rounded-[2rem] overflow-hidden">
+      <div class="grid h-full grid-cols-1 xl:grid-cols-[390px_minmax(0,1fr)]">
+        <aside class="{% if active_conversation %}hidden xl:flex{% else %}flex{% endif %} flex-col border-r border-slate-200/70 bg-white/75 min-h-0">
+          <div class="px-5 sm:px-6 pt-6 pb-5 border-b border-slate-200/70 shrink-0">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Mensajeria</p>
+                <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">Centro de conversaciones</h1>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                  Gestiona tus chats de forma ordenada y responde con rapidez.
+                </p>
               </div>
-              <h2 class="mt-4 text-lg font-semibold text-slate-900">Aún no tienes conversaciones</h2>
-              <p class="mt-2 text-sm text-slate-500">
-                Cuando contactes un asesor o recibas mensajes, aparecerán aquí.
-              </p>
-              <a href="{% url 'properties:catalog' %}"
-                 class="inline-flex items-center mt-6 px-5 py-3 rounded-2xl bg-[#0B132B] text-white font-medium hover:opacity-95 transition">
-                Ir al catálogo
-              </a>
-            </div>
-          {% endfor %}
-        </div>
-      </aside>
-
-      <!-- Chat panel -->
-      <section class="flex flex-col min-w-0 bg-white">
-        {% if active_conversation %}
-          <div class="px-5 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-white">
-            <div class="min-w-0">
-              <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-semibold">
-                  {% if request.user == active_conversation.buyer %}
-                    {{ active_conversation.advisor.username|slice:":1"|upper }}
-                  {% else %}
-                    {{ active_conversation.buyer.username|slice:":1"|upper }}
-                  {% endif %}
-                </div>
-
-                <div class="min-w-0">
-                  <h2 class="font-bold text-lg text-slate-900 truncate">
-                    {% if request.user == active_conversation.buyer %}
-                      {{ active_conversation.advisor.username }}
-                    {% else %}
-                      {{ active_conversation.buyer.username }}
-                    {% endif %}
-                  </h2>
-                  <p class="text-sm text-slate-500 truncate">
-                    {{ active_conversation.property.title }}
-                  </p>
-                </div>
+              <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-slate-950 text-white items-center justify-center shadow-lg shadow-slate-950/15">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0A.375.375 0 1112 9.75a.375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12a8.25 8.25 0 1114.593 5.28L20.25 21l-4.02-1.34A8.214 8.214 0 0112 20.25 8.25 8.25 0 013.75 12z" />
+                </svg>
               </div>
             </div>
 
-            <span id="socket-status"
-                  class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100">
-              Conectando...
-            </span>
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Conversaciones</p>
+                <p class="mt-2 text-2xl font-black tracking-tight text-slate-950">{{ conversation_count }}</p>
+              </div>
+              <div class="rounded-2xl border border-slate-200 bg-slate-950 px-4 py-3 text-white">
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">No leidos</p>
+                <p class="mt-2 text-2xl font-black tracking-tight">{{ total_unread }}</p>
+              </div>
+            </div>
+
+            <div class="mt-5">
+              <label for="chat-search" class="sr-only">Buscar conversacion</label>
+              <div class="relative">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </span>
+                <input
+                  id="chat-search"
+                  type="search"
+                  placeholder="Buscar por persona o propiedad"
+                  class="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-200/60"
+                >
+              </div>
+            </div>
           </div>
 
-          <div id="chat-box"
-               class="flex-1 overflow-y-auto px-4 sm:px-6 py-5 bg-slate-100 space-y-4">
-            {% for message in messages %}
-              <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
-                <div class="max-w-[85%] sm:max-w-[70%] px-4 py-3 rounded-3xl shadow-sm break-words
-                  {% if message.sender == request.user %}
-                    bg-[#0B132B] text-white rounded-br-xl
-                  {% else %}
-                    bg-white text-slate-900 rounded-bl-xl border border-slate-200
-                  {% endif %}">
-                  <p class="text-sm whitespace-pre-wrap leading-relaxed">{{ message.content }}</p>
-                  <p class="text-[11px] mt-2 opacity-70 text-right">
-                    {{ message.created_at|date:"H:i" }}
-                  </p>
-                </div>
-              </div>
+          <div id="conversation-list" class="chat-scrollbar flex-1 overflow-y-auto px-3 py-3 min-h-0">
+            {% for item in conversations_data %}
+              {% with conversation=item.conversation other_user=item.other_user last_message=item.last_message unread_count=item.unread_count %}
+                <a
+                  href="{% url 'interactions:chat_room' conversation.id %}"
+                  data-conversation-item
+                  data-conversation-id="{{ conversation.id }}"
+                  data-search="{{ other_user.username|lower }} {{ conversation.property.title|lower }} {{ item.property_location|lower }}"
+                  class="conversation-item block rounded-[1.5rem] border px-3 py-3 mb-3 {% if active_conversation and active_conversation.id == conversation.id %}border-slate-900 bg-slate-950 text-white shadow-lg shadow-slate-950/10{% else %}border-slate-200/80 bg-white/85 hover:border-slate-300 hover:bg-slate-50/90{% endif %}"
+                >
+                  <div class="flex items-start gap-3">
+                    {% if item.cover_url %}
+                      <img src="{{ item.cover_url }}" alt="{{ conversation.property.title }}" class="w-14 h-14 rounded-2xl object-cover border border-slate-200/80 shrink-0">
+                    {% else %}
+                      <div class="w-14 h-14 rounded-2xl {% if active_conversation and active_conversation.id == conversation.id %}bg-white/10 border border-white/10{% else %}bg-slate-100 border border-slate-200{% endif %} flex items-center justify-center text-sm font-bold shrink-0">
+                        {{ other_user.username|slice:":1"|upper }}
+                      </div>
+                    {% endif %}
+
+                    <div class="min-w-0 flex-1">
+                      <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <div class="flex items-center gap-2">
+                            <p class="truncate text-sm font-bold {% if active_conversation and active_conversation.id == conversation.id %}text-white{% else %}text-slate-900{% endif %}">
+                              {{ other_user.username }}
+                            </p>
+                            <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] {% if active_conversation and active_conversation.id == conversation.id %}bg-white/10 text-slate-200{% else %}bg-slate-100 text-slate-500{% endif %}">
+                              {% if request.user == conversation.buyer %}Asesor{% else %}Cliente{% endif %}
+                            </span>
+                          </div>
+                          <p class="mt-1 truncate text-xs {% if active_conversation and active_conversation.id == conversation.id %}text-slate-300{% else %}text-slate-500{% endif %}">
+                            {{ conversation.property.title }}
+                          </p>
+                        </div>
+                        <div class="shrink-0 text-right">
+                          <p data-preview-time class="text-[11px] font-medium {% if active_conversation and active_conversation.id == conversation.id %}text-slate-300{% else %}text-slate-400{% endif %}">
+                            {% if last_message %}
+                              {{ last_message.created_at|date:"H:i" }}
+                            {% else %}
+                              {{ conversation.updated_at|date:"d/m" }}
+                            {% endif %}
+                          </p>
+                          {% if unread_count > 0 %}
+                            <span data-unread-count class="mt-2 inline-flex min-w-[22px] h-[22px] items-center justify-center rounded-full bg-emerald-400 px-1.5 text-[10px] font-bold text-slate-950">
+                              {{ unread_count }}
+                            </span>
+                          {% else %}
+                            <span data-unread-count class="hidden mt-2 inline-flex min-w-[22px] h-[22px] items-center justify-center rounded-full bg-emerald-400 px-1.5 text-[10px] font-bold text-slate-950"></span>
+                          {% endif %}
+                        </div>
+                      </div>
+
+                      <p class="mt-3 truncate text-sm leading-6 {% if active_conversation and active_conversation.id == conversation.id %}text-slate-200{% elif unread_count > 0 %}text-slate-900 font-semibold{% else %}text-slate-500{% endif %}" data-preview-text>
+                        {% if last_message %}
+                          {% if last_message.sender == request.user %}Tu: {% endif %}{{ last_message.content }}
+                        {% else %}
+                          Conversacion iniciada. Aun no hay mensajes.
+                        {% endif %}
+                      </p>
+
+                      <p class="mt-2 truncate text-xs {% if active_conversation and active_conversation.id == conversation.id %}text-slate-400{% else %}text-slate-400{% endif %}">
+                        {{ item.property_location }}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              {% endwith %}
             {% empty %}
-              <div class="h-full flex items-center justify-center">
-                <div class="text-center text-slate-500">
-                  <p class="font-medium">Todavía no hay mensajes</p>
-                  <p class="text-sm mt-1">Envía el primero para comenzar la conversación.</p>
+              <div class="px-4 py-16 text-center">
+                <div class="mx-auto w-16 h-16 rounded-3xl border border-slate-200 bg-white flex items-center justify-center shadow-sm text-slate-500">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h5.25m-7.5 8.25h9A2.25 2.25 0 0018 17.25V6.75A2.25 2.25 0 0015.75 4.5h-9A2.25 2.25 0 004.5 6.75v10.5A2.25 2.25 0 006.75 19.5z" />
+                  </svg>
                 </div>
+                <h2 class="mt-5 text-lg font-bold text-slate-950">No tienes conversaciones activas</h2>
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                  Cuando contactes una propiedad o recibas respuesta, el chat aparecera aqui.
+                </p>
+                <a href="{% url 'properties:catalog' %}" class="inline-flex items-center mt-6 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition">
+                  Explorar catalogo
+                </a>
               </div>
             {% endfor %}
           </div>
 
-          <div class="border-t border-slate-200 p-4 bg-white">
-            <form id="chat-form" class="flex items-end gap-3">
-              <div class="flex-1">
-                <textarea
-                  id="chat-message-input"
-                  rows="1"
-                  placeholder="Escribe un mensaje..."
-                  class="w-full resize-none rounded-3xl border border-slate-300 px-4 py-3 outline-none focus:ring-2 focus:ring-slate-300 text-slate-900 placeholder:text-slate-400"
-                ></textarea>
-                <p class="mt-2 text-[11px] text-slate-400 px-2">
-                  Enter para enviar · Shift + Enter para salto de línea
-                </p>
+          <div id="conversation-search-empty" class="hidden px-6 py-10 border-t border-slate-200/70 text-center bg-white/70">
+            <p class="text-sm font-semibold text-slate-900">No hubo coincidencias</p>
+            <p class="mt-1 text-sm text-slate-500">Prueba con otro nombre o con el titulo de la propiedad.</p>
+          </div>
+        </aside>
+
+        <section class="flex min-w-0 flex-col bg-[linear-gradient(180deg,#f8fafc_0%,#eff4f8_100%)] min-h-0">
+          {% if active_conversation %}
+            <div class="border-b border-slate-200/80 bg-white/80 px-4 sm:px-6 py-4 shrink-0 backdrop-blur-xl">
+              <div class="flex items-center justify-between gap-4 xl:hidden">
+                <a href="{% url 'interactions:chat_list' %}" class="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                  </svg>
+                  Conversaciones
+                </a>
+                <span id="socket-status-mobile" class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                  Conectando
+                </span>
               </div>
 
-              <button
-                id="send-button"
-                type="submit"
-                class="px-6 py-3 rounded-3xl bg-[#0B132B] text-white font-medium hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Enviar
-              </button>
-            </form>
-          </div>
-        {% else %}
-          <div class="h-full flex items-center justify-center bg-slate-50">
-            <div class="text-center px-6">
-              <div class="mx-auto w-16 h-16 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 text-xl shadow-sm">
-                💬
+              <div class="mt-4 xl:mt-0 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div class="min-w-0 flex items-start gap-4">
+                  {% if active_chat_meta.cover_url %}
+                    <img src="{{ active_chat_meta.cover_url }}" alt="{{ active_conversation.property.title }}" class="w-16 h-16 rounded-3xl object-cover border border-slate-200 shadow-sm shrink-0">
+                  {% else %}
+                    <div class="w-16 h-16 rounded-3xl bg-slate-950 text-white flex items-center justify-center font-black text-xl shadow-sm shrink-0">
+                      {% if request.user == active_conversation.buyer %}
+                        {{ active_conversation.advisor.username|slice:":1"|upper }}
+                      {% else %}
+                        {{ active_conversation.buyer.username|slice:":1"|upper }}
+                      {% endif %}
+                    </div>
+                  {% endif %}
+
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <p class="truncate text-xl font-black tracking-tight text-slate-950">
+                        {% if request.user == active_conversation.buyer %}
+                          {{ active_conversation.advisor.username }}
+                        {% else %}
+                          {{ active_conversation.buyer.username }}
+                        {% endif %}
+                      </p>
+                      <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700 border border-emerald-100">
+                        Chat activo
+                      </span>
+                    </div>
+
+                    <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                      <span class="truncate font-medium text-slate-700">{{ active_conversation.property.title }}</span>
+                      <span class="hidden sm:inline text-slate-300">/</span>
+                      <span>{{ active_chat_meta.property_location }}</span>
+                    </div>
+
+                    <div class="mt-3 flex flex-wrap items-center gap-2">
+                      <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                        {% if active_conversation.property.operation == "sale" %}Venta{% else %}Arriendo{% endif %}
+                      </span>
+                      {% if active_conversation.property.area_m2 %}
+                        <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                          {{ active_conversation.property.area_m2 }} m2
+                        </span>
+                      {% endif %}
+                      <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+                        {{ active_conversation.property.bedrooms }} hab / {{ active_conversation.property.bathrooms }} banos
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 sm:gap-3">
+                  <span id="socket-status" class="hidden xl:inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+                    Conectando
+                  </span>
+                  <a href="{{ active_chat_meta.property_url }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                    Ver propiedad
+                  </a>
+                </div>
               </div>
-              <h2 class="mt-4 text-lg font-semibold text-slate-900">Selecciona una conversación</h2>
-              <p class="mt-2 text-sm text-slate-500">
-                Elige un chat en la barra lateral para ver los mensajes.
-              </p>
             </div>
-          </div>
-        {% endif %}
-      </section>
+
+            <div id="chat-box" class="chat-scrollbar flex-1 overflow-y-auto px-4 sm:px-6 py-6 min-h-0">
+              <div id="messages-stack" class="space-y-4">
+                {% for message in messages %}
+                  <div class="flex {% if message.sender == request.user %}justify-end{% else %}justify-start{% endif %}">
+                    <article class="max-w-[90%] sm:max-w-[75%] rounded-[1.75rem] px-4 py-3 shadow-sm {% if message.sender == request.user %}bg-slate-950 text-white rounded-br-md shadow-slate-950/10{% else %}border border-slate-200 bg-white text-slate-900 rounded-bl-md{% endif %}">
+                      <p class="text-sm leading-7 whitespace-pre-wrap break-words">{{ message.content }}</p>
+                      <div class="mt-2 flex items-center justify-end gap-2">
+                        <span class="text-[11px] {% if message.sender == request.user %}text-slate-300{% else %}text-slate-400{% endif %}">
+                          {{ message.created_at|date:"H:i" }}
+                        </span>
+                      </div>
+                    </article>
+                  </div>
+                {% empty %}
+                  <div id="chat-empty-state" class="py-16">
+                    <div class="mx-auto max-w-md rounded-[2rem] border border-dashed border-slate-300 bg-white/75 px-8 py-10 text-center">
+                      <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-3xl bg-slate-100 text-slate-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h5.25m-9 8.25h12A2.25 2.25 0 0018 17.25V6.75A2.25 2.25 0 0015.75 4.5h-9A2.25 2.25 0 004.5 6.75v10.5A2.25 2.25 0 006.75 19.5z" />
+                        </svg>
+                      </div>
+                      <h2 class="mt-4 text-lg font-bold text-slate-950">Inicia la conversacion</h2>
+                      <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Usa este chat para resolver dudas, coordinar visitas y cerrar el siguiente paso.
+                      </p>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="shrink-0 border-t border-slate-200/80 bg-white/85 px-4 sm:px-6 py-4 backdrop-blur-xl">
+              <form id="chat-form" class="rounded-[1.75rem] border border-slate-200 bg-white p-3 shadow-sm">
+                <div class="flex items-end gap-3">
+                  <div class="min-w-0 flex-1">
+                    <label for="chat-message-input" class="sr-only">Mensaje</label>
+                    <textarea
+                      id="chat-message-input"
+                      rows="1"
+                      maxlength="2000"
+                      placeholder="Escribe un mensaje claro y profesional"
+                      class="w-full resize-none border-0 bg-transparent px-2 py-2 text-[15px] leading-7 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-0"
+                    ></textarea>
+                  </div>
+                  <button
+                    id="send-button"
+                    type="submit"
+                    class="inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
+                  >
+                    Enviar
+                  </button>
+                </div>
+                <div class="mt-2 flex flex-col gap-2 border-t border-slate-100 px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p class="text-xs text-slate-400">Enter envia. Shift + Enter agrega una nueva linea.</p>
+                  <p id="composer-meta" class="text-xs font-medium text-slate-400">0 / 2000</p>
+                </div>
+              </form>
+            </div>
+          {% else %}
+            <div class="flex h-full items-center justify-center px-6">
+              <div class="max-w-xl rounded-[2rem] border border-slate-200 bg-white/85 px-10 py-12 text-center shadow-sm">
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-slate-950 text-white shadow-lg shadow-slate-950/10">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0A.375.375 0 1112 9.75a.375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12a8.25 8.25 0 1114.593 5.28L20.25 21l-4.02-1.34A8.214 8.214 0 0112 20.25 8.25 8.25 0 013.75 12z" />
+                  </svg>
+                </div>
+                <h2 class="mt-6 text-2xl font-black tracking-tight text-slate-950">Selecciona una conversacion</h2>
+                <p class="mt-3 text-sm leading-7 text-slate-500">
+                  Abre un chat desde el panel izquierdo para ver historial, responder mensajes y consultar la propiedad asociada.
+                </p>
+              </div>
+            </div>
+          {% endif %}
+        </section>
+      </div>
     </div>
   </div>
-</div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const searchInput = document.getElementById("chat-search");
+    const conversationItems = Array.from(document.querySelectorAll("[data-conversation-item]"));
+    const searchEmpty = document.getElementById("conversation-search-empty");
+
+    if (searchInput && conversationItems.length) {
+      const applySearch = () => {
+        const query = searchInput.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        conversationItems.forEach((item) => {
+          const haystack = item.dataset.search || "";
+          const matches = !query || haystack.includes(query);
+          item.classList.toggle("hidden", !matches);
+          if (matches) visibleCount += 1;
+        });
+
+        if (searchEmpty) {
+          searchEmpty.classList.toggle("hidden", visibleCount !== 0);
+        }
+      };
+
+      searchInput.addEventListener("input", applySearch);
+    }
+  })();
+</script>
 
 {% if active_conversation %}
 <script>
-  const conversationId = "{{ active_conversation.id }}";
-  const userId = "{{ request.user.id }}";
-  const chatBox = document.getElementById("chat-box");
-  const input = document.getElementById("chat-message-input");
-  const form = document.getElementById("chat-form");
-  const sendButton = document.getElementById("send-button");
-  const socketStatus = document.getElementById("socket-status");
+  (function () {
+    const conversationId = "{{ active_conversation.id }}";
+    const userId = "{{ request.user.id }}";
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const socketUrl = `${protocol}://${window.location.host}/ws/chat/${conversationId}/`;
 
-  const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-  const socketUrl = `${protocol}://${window.location.host}/ws/chat/${conversationId}/`;
+    const chatBox = document.getElementById("chat-box");
+    const messagesStack = document.getElementById("messages-stack");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("chat-message-input");
+    const sendButton = document.getElementById("send-button");
+    const composerMeta = document.getElementById("composer-meta");
+    const socketStatus = document.getElementById("socket-status");
+    const socketStatusMobile = document.getElementById("socket-status-mobile");
+    const activeConversationItem = document.querySelector(`[data-conversation-id="${conversationId}"]`);
 
-  const chatSocket = new WebSocket(socketUrl);
+    let chatSocket = null;
+    let reconnectAttempts = 0;
+    let manualClose = false;
 
-  function scrollToBottom() {
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-
-  function autoResizeTextarea() {
-    input.style.height = "auto";
-    input.style.height = Math.min(input.scrollHeight, 160) + "px";
-  }
-
-  function updateSocketBadge(state) {
-    if (!socketStatus) return;
-
-    if (state === "connected") {
-      socketStatus.textContent = "En línea";
-      socketStatus.className = "hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100";
-    } else if (state === "connecting") {
-      socketStatus.textContent = "Conectando...";
-      socketStatus.className = "hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-100";
-    } else {
-      socketStatus.textContent = "Desconectado";
-      socketStatus.className = "hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-rose-50 text-rose-700 border border-rose-100";
-    }
-  }
-
-  function createMessageBubble(message, senderId, createdAt) {
-    const isMine = String(senderId) === String(userId);
-
-    const wrapper = document.createElement("div");
-    wrapper.className = `flex ${isMine ? "justify-end" : "justify-start"}`;
-
-    const bubble = document.createElement("div");
-    bubble.className = [
-      "max-w-[85%] sm:max-w-[70%] px-4 py-3 rounded-3xl shadow-sm break-words",
-      isMine
-        ? "bg-[#0B132B] text-white rounded-br-xl"
-        : "bg-white text-slate-900 rounded-bl-xl border border-slate-200"
-    ].join(" ");
-
-    const text = document.createElement("p");
-    text.className = "text-sm whitespace-pre-wrap leading-relaxed";
-    text.textContent = message;
-
-    const time = document.createElement("p");
-    time.className = "text-[11px] mt-2 opacity-70 text-right";
-    time.textContent = createdAt;
-
-    bubble.appendChild(text);
-    bubble.appendChild(time);
-    wrapper.appendChild(bubble);
-
-    return wrapper;
-  }
-
-  function appendMessage(message, senderId, createdAt) {
-    const emptyState = chatBox.querySelector(".text-center.text-slate-500");
-    if (emptyState) {
-      emptyState.parentElement.remove();
+    function scrollToBottom(force = false) {
+      if (!chatBox) return;
+      const nearBottom = chatBox.scrollHeight - chatBox.scrollTop - chatBox.clientHeight < 140;
+      if (force || nearBottom) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
     }
 
-    chatBox.appendChild(createMessageBubble(message, senderId, createdAt));
-    scrollToBottom();
-  }
+    function autoResizeTextarea() {
+      if (!input) return;
+      input.style.height = "auto";
+      input.style.height = `${Math.min(input.scrollHeight, 180)}px`;
+    }
 
-  scrollToBottom();
-  autoResizeTextarea();
-  updateSocketBadge("connecting");
+    function updateComposerMeta() {
+      if (!composerMeta || !input) return;
+      composerMeta.textContent = `${input.value.length} / 2000`;
+    }
 
-  chatSocket.onopen = function() {
-    updateSocketBadge("connected");
-  };
+    function setStatus(state) {
+      const targets = [socketStatus, socketStatusMobile].filter(Boolean);
+      const states = {
+        connected: {
+          text: "En linea",
+          className: "inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
+        },
+        connecting: {
+          text: "Conectando",
+          className: "inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700"
+        },
+        disconnected: {
+          text: "Reconectando",
+          className: "inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700"
+        }
+      };
 
-  chatSocket.onmessage = function(e) {
-    const data = JSON.parse(e.data);
-    appendMessage(data.message, data.sender_id, data.created_at);
-  };
+      targets.forEach((node) => {
+        node.textContent = states[state].text;
+        node.className = states[state].className;
+      });
+    }
 
-  chatSocket.onerror = function() {
-    updateSocketBadge("disconnected");
-  };
+    function updateSendState() {
+      if (!sendButton || !input) return;
+      const hasMessage = input.value.trim().length > 0;
+      const socketOpen = chatSocket && chatSocket.readyState === WebSocket.OPEN;
+      sendButton.disabled = !(hasMessage && socketOpen);
+    }
 
-  chatSocket.onclose = function() {
-    updateSocketBadge("disconnected");
-  };
+    function removeEmptyState() {
+      const emptyState = document.getElementById("chat-empty-state");
+      if (emptyState) emptyState.remove();
+    }
 
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
+    function createMessageBubble(message, senderId, createdAt) {
+      const isMine = String(senderId) === String(userId);
+      const wrapper = document.createElement("div");
+      wrapper.className = `flex ${isMine ? "justify-end" : "justify-start"} message-enter`;
 
-    const message = input.value.trim();
-    if (!message) return;
-    if (chatSocket.readyState !== WebSocket.OPEN) return;
+      const bubble = document.createElement("article");
+      bubble.className = [
+        "max-w-[90%] sm:max-w-[75%] rounded-[1.75rem] px-4 py-3 shadow-sm",
+        isMine
+          ? "bg-slate-950 text-white rounded-br-md shadow-slate-950/10"
+          : "border border-slate-200 bg-white text-slate-900 rounded-bl-md"
+      ].join(" ");
 
-    sendButton.disabled = true;
+      const text = document.createElement("p");
+      text.className = "text-sm leading-7 whitespace-pre-wrap break-words";
+      text.textContent = message;
 
-    chatSocket.send(JSON.stringify({
-      message: message
-    }));
+      const footer = document.createElement("div");
+      footer.className = "mt-2 flex items-center justify-end gap-2";
 
-    input.value = "";
+      const time = document.createElement("span");
+      time.className = `text-[11px] ${isMine ? "text-slate-300" : "text-slate-400"}`;
+      time.textContent = createdAt;
+
+      footer.appendChild(time);
+      bubble.appendChild(text);
+      bubble.appendChild(footer);
+      wrapper.appendChild(bubble);
+
+      return wrapper;
+    }
+
+    function updateConversationPreview(message, senderId, createdAt) {
+      if (!activeConversationItem) return;
+
+      const preview = activeConversationItem.querySelector("[data-preview-text]");
+      const previewTime = activeConversationItem.querySelector("[data-preview-time]");
+      const unreadCount = activeConversationItem.querySelector("[data-unread-count]");
+      const isMine = String(senderId) === String(userId);
+
+      if (preview) {
+        preview.textContent = `${isMine ? "Tu: " : ""}${message}`;
+      }
+
+      if (previewTime) {
+        previewTime.textContent = createdAt;
+      }
+
+      if (unreadCount) {
+        unreadCount.textContent = "";
+        unreadCount.classList.add("hidden");
+      }
+    }
+
+    function appendMessage(message, senderId, createdAt) {
+      removeEmptyState();
+      messagesStack.appendChild(createMessageBubble(message, senderId, createdAt));
+      updateConversationPreview(message, senderId, createdAt);
+      scrollToBottom(true);
+    }
+
+    function connectSocket() {
+      setStatus("connecting");
+      chatSocket = new WebSocket(socketUrl);
+      updateSendState();
+
+      chatSocket.onopen = function () {
+        reconnectAttempts = 0;
+        setStatus("connected");
+        updateSendState();
+      };
+
+      chatSocket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        appendMessage(data.message, data.sender_id, data.created_at);
+
+        if (String(data.sender_id) !== String(userId) && typeof window.__bellNotify === "function") {
+          window.__bellNotify(data.sender || "Nuevo mensaje", data.message, conversationId);
+        }
+      };
+
+      chatSocket.onerror = function () {
+        setStatus("disconnected");
+      };
+
+      chatSocket.onclose = function () {
+        updateSendState();
+        if (manualClose) return;
+
+        setStatus("disconnected");
+        reconnectAttempts += 1;
+        const timeout = Math.min(1000 * reconnectAttempts, 5000);
+        window.setTimeout(connectSocket, timeout);
+      };
+    }
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const message = input.value.trim();
+
+      if (!message || !chatSocket || chatSocket.readyState !== WebSocket.OPEN) {
+        updateSendState();
+        return;
+      }
+
+      chatSocket.send(JSON.stringify({ message }));
+      input.value = "";
+      autoResizeTextarea();
+      updateComposerMeta();
+      updateSendState();
+      input.focus();
+    });
+
+    input.addEventListener("input", function () {
+      autoResizeTextarea();
+      updateComposerMeta();
+      updateSendState();
+    });
+
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
+    window.addEventListener("beforeunload", function () {
+      manualClose = true;
+      if (chatSocket) {
+        chatSocket.close();
+      }
+    });
+
     autoResizeTextarea();
-    input.focus();
-
-    setTimeout(() => {
-      sendButton.disabled = false;
-    }, 120);
-  });
-
-  input.addEventListener("input", autoResizeTextarea);
-
-  input.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      form.dispatchEvent(new Event("submit"));
-    }
-  });
+    updateComposerMeta();
+    connectSocket();
+    scrollToBottom(true);
+  })();
 </script>
 {% endif %}
 {% endblock %}

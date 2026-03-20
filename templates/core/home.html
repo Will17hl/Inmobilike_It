@@ -2,81 +2,98 @@
 {% block title %}Inicio - Inmobilike It{% endblock %}
 
 {% block content %}
-
-<section class="space-y-20">
-
-  <!-- HERO -->
-  <div class="grid md:grid-cols-2 gap-10 items-center">
-
-    <!-- Texto -->
-    <div class="space-y-6">
-      <h1 class="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-        Encuentra tu próximo hogar
-        <span class="text-slate-600 block">
-          fácil, rápido y seguro
-        </span>
+<section class="space-y-10 md:space-y-14">
+  <div class="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-stretch">
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.35em]" style="color: var(--theme-accent);">Vive mejor</p>
+      <h1 class="brand-serif mt-4 text-5xl leading-none md:text-7xl" style="color: var(--theme-ink);">
+        Encuentra un hogar con una experiencia mas clara, elegante y humana.
       </h1>
-
-      <p class="text-slate-600 text-lg">
-        Inmobilike It es una plataforma digital que conecta
-        compradores y arrendatarios con asesores inmobiliarios
-        de manera sencilla y profesional.
+      <p class="mt-6 max-w-2xl text-lg leading-8" style="color: var(--theme-muted);">
+        Inmobilike It conecta compradores, arrendatarios y asesores con una plataforma
+        pensada para descubrir propiedades, guardar favoritas y conversar en tiempo real.
       </p>
 
-      <div class="flex gap-4 flex-wrap">
-
-        <!-- BOTÓN PRINCIPAL -->
-        <a href="{% url 'properties:catalog' %}"
-           class="px-6 py-3 rounded-2xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition">
-          Mira nuestro catálogo
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="{% url 'properties:catalog' %}" class="theme-button inline-flex items-center rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
+          Ver catalogo
         </a>
-
-        <!-- BOTÓN SECUNDARIO -->
         {% if not user.is_authenticated %}
-        <a href="{% url 'accounts:register' %}"
-           class="px-6 py-3 rounded-2xl border border-slate-300 hover:bg-slate-100 transition">
-          Crear cuenta
-        </a>
+          <a href="{% url 'accounts:register' %}" class="theme-button-soft inline-flex items-center rounded-2xl px-6 py-3 text-sm font-semibold">
+            Crear cuenta
+          </a>
         {% endif %}
+      </div>
 
+      <div class="mt-10 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.88);">
+          <p class="text-xs font-bold uppercase tracking-[0.25em]" style="color: var(--theme-muted);">Propiedades</p>
+          <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">360</p>
+          <p class="mt-2 text-sm" style="color: var(--theme-muted);">Venta y arriendo en una sola vitrina.</p>
+        </div>
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.92);">
+          <p class="text-xs font-bold uppercase tracking-[0.25em]" style="color: var(--theme-muted);">Chats</p>
+          <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">24/7</p>
+          <p class="mt-2 text-sm" style="color: var(--theme-muted);">Conversaciones mas directas con asesores.</p>
+        </div>
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: var(--theme-dark);">
+          <p class="text-xs font-bold uppercase tracking-[0.25em]" style="color: rgba(255,250,244,0.65);">Experiencia</p>
+          <p class="brand-serif mt-2 text-4xl text-white">Premium</p>
+          <p class="mt-2 text-sm text-white/70">Un tono visual mas editorial y mas profesional.</p>
+        </div>
       </div>
     </div>
 
-    <!-- Imagen placeholder -->
-    <div class="h-80 rounded-3xl bg-gradient-to-br from-slate-200 to-slate-300 shadow-inner"></div>
+    <div class="grid gap-4">
+      <div class="rounded-[2rem] border p-6 md:p-8" style="background: linear-gradient(180deg, rgba(255,240,226,0.96) 0%, rgba(255,251,246,0.96) 100%); border-color: rgba(241,137,45,0.28); box-shadow: var(--theme-shadow);">
+        <p class="text-sm font-semibold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">Curaduria</p>
+        <h2 class="brand-serif mt-3 text-4xl leading-tight" style="color: var(--theme-ink);">Propiedades mejor presentadas y mejor conectadas.</h2>
+        <p class="mt-4 text-base leading-7" style="color: var(--theme-muted);">
+          Cada ficha prioriza fotos, ubicacion, precio y contacto. Sin ruido, sin plantillas frias.
+        </p>
+      </div>
 
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="rounded-[1.75rem] border p-6" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft);">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-white" style="background: var(--theme-accent);">01</div>
+          <h3 class="mt-4 text-xl font-extrabold" style="color: var(--theme-ink);">Busqueda inteligente</h3>
+          <p class="mt-3 text-sm leading-7" style="color: var(--theme-muted);">
+            Filtra por ciudad, barrio, operacion y precio con una interfaz limpia.
+          </p>
+        </div>
+        <div class="rounded-[1.75rem] border p-6" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft);">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-white" style="background: var(--theme-dark);">02</div>
+          <h3 class="mt-4 text-xl font-extrabold" style="color: var(--theme-ink);">Contacto directo</h3>
+          <p class="mt-3 text-sm leading-7" style="color: var(--theme-muted);">
+            Habla con asesores desde la propiedad y sigue la conversacion donde la dejaste.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
 
-
-  <!-- SECCIÓN BENEFICIOS -->
-  <div class="grid md:grid-cols-3 gap-6">
-
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-      <h3 class="font-bold text-lg mb-2">🔍 Búsqueda inteligente</h3>
-      <p class="text-slate-600 text-sm">
-        Filtra por ciudad, barrio, precio y tipo de operación
-        para encontrar exactamente lo que necesitas.
+  <div class="grid gap-5 md:grid-cols-3">
+    <article class="rounded-[1.8rem] border p-7" style="background: rgba(255,253,249,0.9); border-color: var(--theme-border-soft);">
+      <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">Descubre</p>
+      <h3 class="brand-serif mt-3 text-3xl" style="color: var(--theme-ink);">Catalogo con mas criterio</h3>
+      <p class="mt-4 text-sm leading-7" style="color: var(--theme-muted);">
+        Tarjetas sobrias, mejor jerarquia visual y contexto suficiente para decidir rapido.
       </p>
-    </div>
-
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-      <h3 class="font-bold text-lg mb-2">🤝 Conexión directa</h3>
-      <p class="text-slate-600 text-sm">
-        Contacta asesores inmobiliarios directamente
-        desde cada propiedad.
+    </article>
+    <article class="rounded-[1.8rem] border p-7" style="background: rgba(255,248,240,0.84); border-color: rgba(241,137,45,0.22);">
+      <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">Conversa</p>
+      <h3 class="brand-serif mt-3 text-3xl" style="color: var(--theme-ink);">Mensajeria mas premium</h3>
+      <p class="mt-4 text-sm leading-7" style="color: var(--theme-muted);">
+        Un inbox tipo producto real, pensado para seguimiento y confianza.
       </p>
-    </div>
-
-    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-      <h3 class="font-bold text-lg mb-2">❤️ Guarda tus favoritos</h3>
-      <p class="text-slate-600 text-sm">
-        Marca propiedades como favoritas y revísalas
-        cuando quieras.
+    </article>
+    <article class="rounded-[1.8rem] border p-7" style="background: var(--theme-dark); border-color: var(--theme-dark);">
+      <p class="text-xs font-bold uppercase tracking-[0.24em] text-white/60">Gestiona</p>
+      <h3 class="brand-serif mt-3 text-3xl text-white">Publica mejor</h3>
+      <p class="mt-4 text-sm leading-7 text-white/70">
+        Los anfitriones gestionan propiedades con una imagen mucho mas solida y consistente.
       </p>
-    </div>
-
+    </article>
   </div>
-
 </section>
-
 {% endblock %}

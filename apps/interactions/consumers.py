@@ -2,7 +2,6 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from .models import Conversation, Message
-from django.contrib.auth.models import User
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -53,6 +52,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
+        await self.channel_layer.group_send(
+            f"user_{saved_message['recipient_id']}_notifications",
+            {
+                "type": "notify_message",
+                "message": saved_message["content"],
+                "sender": saved_message["sender"],
+                "created_at": saved_message["created_at"],
+                "sender_id": saved_message["sender_id"],
+                "conversation_id": saved_message["conversation_id"],
+            }
+        )
+
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
             "message": event["message"],
@@ -81,9 +92,43 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         conversation.save()
 
+        recipient = (
+            conversation.advisor
+            if self.user == conversation.buyer
+            else conversation.buyer
+        )
+
         return {
             "content": msg.content,
             "sender": self.user.username,
             "created_at": msg.created_at.strftime("%H:%M"),
             "sender_id": self.user.id,
+            "recipient_id": recipient.id,
+            "conversation_id": conversation.id,
         }
+
+
+class NotificationConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user = self.scope["user"]
+
+        if self.user.is_anonymous:
+            await self.close()
+            return
+
+        self.group_name = f"user_{self.user.id}_notifications"
+        await self.channel_layer.group_add(self.group_name, self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if hasattr(self, "group_name"):
+            await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def notify_message(self, event):
+        await self.send(text_data=json.dumps({
+            "message": event["message"],
+            "sender": event["sender"],
+            "created_at": event["created_at"],
+            "sender_id": event["sender_id"],
+            "conversation_id": event["conversation_id"],
+        }))

@@ -1,3 +1,17 @@
-<h2>¡Mensaje enviado!</h2>
-<p>Tu interés por <b>{{ prop.title }}</b> fue enviado correctamente.</p>
-<a href="{% url 'property_detail' prop.id %}">Volver al inmueble</a>
+{% extends "base.html" %}
+{% block title %}Mensaje enviado{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-3xl">
+  <div class="rounded-[2rem] border p-8 md:p-10 text-center" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.5rem] text-white" style="background: var(--theme-accent);">OK</div>
+    <h1 class="brand-serif mt-6 text-4xl" style="color: var(--theme-ink);">Mensaje enviado.</h1>
+    <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
+      Tu interes por <span class="font-semibold" style="color: var(--theme-ink);">{{ prop.title }}</span> fue enviado correctamente.
+    </p>
+    <a href="{% url 'properties:detail' prop.id %}" class="theme-button mt-8 inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
+      Volver al inmueble
+    </a>
+  </div>
+</section>
+{% endblock %}

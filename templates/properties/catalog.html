@@ -1,120 +1,82 @@
 {% extends "base.html" %}
-{% block title %}Catálogo{% endblock %}
+{% block title %}Catalogo{% endblock %}
 
 {% block content %}
-
-<section class="space-y-6">
-
-  <div>
-    <h1 class="text-3xl font-extrabold tracking-tight">
-      Catálogo de propiedades
-    </h1>
-    <p class="text-slate-500 text-sm">
-      Encuentra tu próximo hogar fácilmente.
-    </p>
+<section class="space-y-8">
+  <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.32em]" style="color: var(--theme-accent);">Catalogo</p>
+        <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">Propiedades con una presentacion mas clara.</h1>
+        <p class="mt-3 max-w-2xl text-base leading-7" style="color: var(--theme-muted);">
+          Filtra por ubicacion, operacion y rango de precio para encontrar oportunidades con mas rapidez.
+        </p>
+      </div>
+      <div class="rounded-[1.5rem] border px-5 py-4 text-sm" style="background: rgba(255,248,240,0.86); border-color: rgba(241,137,45,0.24); color: var(--theme-muted);">
+        {{ properties|length }} resultado{{ properties|length|pluralize:"s" }}
+      </div>
+    </div>
   </div>
 
-  <form method="get" class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-    <div class="grid md:grid-cols-5 gap-3">
-
-      <input name="city"
-             class="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-0"
-             placeholder="Ciudad"
-             value="{{ request.GET.city }}">
-
-      <input name="neighborhood"
-             class="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-0"
-             placeholder="Barrio"
-             value="{{ request.GET.neighborhood }}">
-
-      <select name="operation"
-              class="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-0">
-        <option value="">Operación</option>
+  <form method="get" class="rounded-[2rem] border p-5 md:p-6" style="background: rgba(255,253,249,0.92); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+      <input name="city" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Ciudad" value="{{ request.GET.city }}">
+      <input name="neighborhood" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Barrio" value="{{ request.GET.neighborhood }}">
+      <select name="operation" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);">
+        <option value="">Operacion</option>
         <option value="rent" {% if request.GET.operation == "rent" %}selected{% endif %}>Arriendo</option>
         <option value="sale" {% if request.GET.operation == "sale" %}selected{% endif %}>Venta</option>
       </select>
-
-      <input name="min_price"
-             type="number"
-             min="0"
-             step="0.01"
-             class="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-0"
-             placeholder="Precio min"
-             value="{{ request.GET.min_price }}">
-
-      <input name="max_price"
-             type="number"
-             min="0"
-             step="0.01"
-             class="rounded-xl border-slate-200 focus:border-slate-400 focus:ring-0"
-             placeholder="Precio max"
-             value="{{ request.GET.max_price }}">
-
+      <input name="min_price" type="number" min="0" step="0.01" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Precio min" value="{{ request.GET.min_price }}">
+      <input name="max_price" type="number" min="0" step="0.01" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Precio max" value="{{ request.GET.max_price }}">
     </div>
 
-    <div class="mt-4 flex justify-between items-center">
-      <button class="px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800">
-        Filtrar
+    <div class="mt-5 flex flex-wrap items-center justify-between gap-4">
+      <button class="theme-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+        Filtrar propiedades
       </button>
-
-      <a href="{% url 'properties:catalog' %}" class="text-sm text-slate-500 hover:text-slate-700">
+      <a href="{% url 'properties:catalog' %}" class="text-sm font-semibold" style="color: var(--theme-muted);">
         Limpiar filtros
       </a>
     </div>
   </form>
 
-  <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
+  <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
     {% for p in properties %}
-      <a href="{% url 'properties:detail' p.id %}"
-         class="group bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition">
-
+      <a href="{% url 'properties:detail' p.id %}" class="group overflow-hidden rounded-[1.9rem] border transition duration-200 hover:-translate-y-1" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: 0 12px 32px rgba(67,43,25,0.07);">
         {% if p.images.first and p.images.first.image %}
-          <img src="{{ p.images.first.image.url }}"
-               alt="{{ p.title }}"
-               class="w-full h-40 object-cover">
+          <img src="{{ p.images.first.image.url }}" alt="{{ p.title }}" class="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]">
         {% else %}
-          <div class="h-40 bg-gradient-to-br from-slate-100 to-slate-200"></div>
+          <div class="h-56 w-full" style="background: linear-gradient(135deg, #fff0e2 0%, #e8ddd1 100%);"></div>
         {% endif %}
 
-        <div class="p-4 space-y-2">
-          <div class="flex items-start justify-between gap-2">
-            <h3 class="font-bold text-lg group-hover:underline leading-tight">
-              {{ p.title }}
-            </h3>
-
-            <span class="text-[11px] px-2 py-1 rounded-full border shrink-0
-              {% if p.operation == 'sale' %}
-                bg-emerald-50 text-emerald-700 border-emerald-200
-              {% else %}
-                bg-blue-50 text-blue-700 border-blue-200
-              {% endif %}
-            ">
+        <div class="space-y-4 p-5">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-2xl font-extrabold leading-tight" style="color: var(--theme-ink);">{{ p.title }}</h3>
+              <p class="mt-2 text-sm" style="color: var(--theme-muted);">{{ p.location.city }} / {{ p.location.neighborhood }}</p>
+            </div>
+            <span class="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em]" style="{% if p.operation == 'sale' %}background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241,137,45,0.24);{% else %}background: rgba(255,253,249,0.9); color: var(--theme-dark); border: 1px solid var(--theme-border);{% endif %}">
               {{ p.get_operation_display }}
             </span>
           </div>
 
-          <p class="text-sm text-slate-600">
-            {{ p.location.city }} · {{ p.location.neighborhood }}
-          </p>
-
-          <div class="pt-2 font-extrabold text-slate-900">
-            ${{ p.price }}
-            {% if p.operation == 'rent' %}
-              <span class="text-sm font-semibold text-slate-500">/ mes</span>
-            {% endif %}
+          <div class="flex items-end justify-between gap-3">
+            <div>
+              <p class="brand-serif text-4xl leading-none" style="color: var(--theme-ink);">${{ p.price }}</p>
+              {% if p.operation == 'rent' %}
+                <p class="mt-1 text-sm" style="color: var(--theme-muted);">mensual</p>
+              {% endif %}
+            </div>
+            <span class="text-sm font-semibold" style="color: var(--theme-accent);">Ver detalle</span>
           </div>
         </div>
-
       </a>
     {% empty %}
-      <div class="col-span-full bg-white border border-slate-200 rounded-2xl p-6 text-center text-slate-500">
-        No hay propiedades disponibles.
+      <div class="col-span-full rounded-[1.8rem] border px-8 py-12 text-center" style="background: rgba(255,253,249,0.92); border-color: var(--theme-border-soft); color: var(--theme-muted);">
+        No hay propiedades disponibles con esos filtros.
       </div>
     {% endfor %}
-
   </div>
-
 </section>
-
 {% endblock %}

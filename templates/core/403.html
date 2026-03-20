@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Acceso denegado{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-3xl">
+  <div class="rounded-[2rem] border p-8 md:p-10 text-center" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-[1.5rem] text-white" style="background: #c96b56;">
+      403
+    </div>
+    <p class="mt-6 text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">Acceso restringido</p>
+    <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">
+      No puedes abrir esta conversacion.
+    </h1>
+    <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
+      Este chat no pertenece a tu cuenta o ya no tienes permisos para verlo.
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+      <a href="{% url 'interactions:chat_list' %}" class="theme-button inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
+        Ir a mis chats
+      </a>
+      <a href="{% url 'home' %}" class="theme-button-soft inline-flex rounded-2xl px-6 py-3 text-sm font-semibold">
+        Volver al inicio
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

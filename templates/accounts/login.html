@@ -1,10 +1,67 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
+
+{% block extra_head %}
+<style>
+  .auth-shell input,
+  .auth-shell select,
+  .auth-shell textarea {
+    width: 100%;
+    border: 1px solid var(--theme-border);
+    background: rgba(255,253,249,0.98);
+    border-radius: 1rem;
+    padding: 0.9rem 1rem;
+    outline: none;
+  }
+
+  .auth-shell label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--theme-muted);
+  }
+
+  .auth-shell p {
+    margin-bottom: 1rem;
+  }
+
+  .auth-shell ul.errorlist {
+    margin-bottom: 0.75rem;
+    color: #b2543b;
+    font-size: 0.85rem;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Entrar</button>
-</form>
+<section class="auth-shell mx-auto max-w-5xl">
+  <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.32em] text-white/60">Acceso</p>
+      <h1 class="brand-serif mt-4 text-5xl text-white">Bienvenido de nuevo.</h1>
+      <p class="mt-5 text-base leading-8 text-white/72">
+        Entra a tu cuenta para retomar conversaciones, favoritos y propiedades publicadas.
+      </p>
+    </div>
+
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.28em]" style="color: var(--theme-accent);">Iniciar sesion</p>
+      <h2 class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">Accede a tu panel.</h2>
+      <form method="post" class="mt-8">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="theme-button mt-4 inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
+          Entrar
+        </button>
+      </form>
+      <p class="mt-6 text-sm" style="color: var(--theme-muted);">
+        Aun no tienes cuenta?
+        <a href="{% url 'accounts:register' %}" class="font-semibold" style="color: var(--theme-accent);">Creala aqui</a>
+      </p>
+    </div>
+  </div>
+</section>
 {% endblock %}

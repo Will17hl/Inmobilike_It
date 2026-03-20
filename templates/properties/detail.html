@@ -2,214 +2,155 @@
 {% block title %}{{ prop.title }}{% endblock %}
 
 {% block content %}
-
-<section class="max-w-6xl mx-auto bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-
-  <div class="p-4 md:p-6">
-    <div class="flex items-start justify-between gap-4 mb-5">
-      <div class="min-w-0">
-        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
-          {{ prop.title }}
-        </h1>
-        <p class="text-slate-600 text-sm mt-2">
-          {{ prop.location.city }} · {{ prop.location.neighborhood }}
-        </p>
-      </div>
-
-      {% if images %}
-        <div class="hidden md:flex items-center gap-3">
-          <button type="button"
-                  onclick="openGallery(0)"
-                  class="px-4 py-2 rounded-xl border border-slate-300 bg-white text-slate-900 font-medium hover:bg-slate-50 transition">
-            Ver fotos
-          </button>
+<section class="space-y-6">
+  <div class="overflow-hidden rounded-[2rem] border" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <div class="border-b px-6 py-6 md:px-8" style="border-color: var(--theme-border-soft);">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+        <div class="min-w-0">
+          <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">{{ prop.get_operation_display }}</p>
+          <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">{{ prop.title }}</h1>
+          <p class="mt-3 text-base" style="color: var(--theme-muted);">{{ prop.location.city }} / {{ prop.location.neighborhood }}</p>
         </div>
-      {% endif %}
-    </div>
 
-    {% if images and cover and cover.image %}
-      <div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-3">
-
-        {% for img in images|slice:":5" %}
-          {% if img.image %}
-            {% if forloop.first %}
-              <button type="button"
-                      onclick="openGallery({{ forloop.counter0 }})"
-                      class="md:col-span-2 md:row-span-2 overflow-hidden rounded-3xl group">
-                <img src="{{ img.image.url }}"
-                     alt="{{ prop.title }}"
-                     class="w-full h-[260px] md:h-[540px] object-cover group-hover:scale-[1.02] transition duration-300">
-              </button>
-            {% else %}
-              <button type="button"
-                      onclick="openGallery({{ forloop.counter0 }})"
-                      class="overflow-hidden rounded-3xl group relative">
-                <img src="{{ img.image.url }}"
-                     alt="{{ prop.title }}"
-                     class="w-full h-[180px] md:h-[263px] object-cover group-hover:scale-[1.02] transition duration-300">
-
-                {% if forloop.last and images|length > 5 %}
-                  <div class="absolute inset-0 bg-black/35 flex items-end justify-end p-3">
-                    <span class="px-4 py-2 rounded-xl bg-white/95 text-slate-900 text-sm font-semibold shadow">
-                      +{{ images|length|add:"-5" }} fotos
-                    </span>
-                  </div>
-                {% endif %}
-              </button>
-            {% endif %}
+        <div class="flex flex-wrap items-center gap-3">
+          {% if images %}
+            <button type="button" onclick="openGallery(0)" class="theme-button-soft inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
+              Ver fotos
+            </button>
           {% endif %}
-        {% endfor %}
-
-      </div>
-
-      <div class="flex justify-end mt-4">
-        <button type="button"
-                onclick="openGallery(0)"
-                class="px-5 py-3 rounded-2xl border border-slate-300 bg-white text-slate-900 font-medium hover:bg-slate-50 transition shadow-sm">
-          Mostrar todas las fotos
-        </button>
-      </div>
-    {% else %}
-      <div class="h-72 bg-gradient-to-br from-slate-100 to-slate-200 rounded-3xl"></div>
-    {% endif %}
-  </div>
-
-  <div class="px-4 md:px-6 pb-6 space-y-6">
-
-    <div class="flex items-center gap-3 flex-wrap">
-      <span class="text-xs px-3 py-1 rounded-full border
-        {% if prop.operation == 'sale' %}
-          bg-emerald-50 text-emerald-700 border-emerald-200
-        {% else %}
-          bg-blue-50 text-blue-700 border-blue-200
-        {% endif %}
-      ">
-        {{ prop.get_operation_display }}
-      </span>
-    </div>
-
-    <p class="text-slate-700 text-base leading-7">
-      {{ prop.description }}
-    </p>
-
-    <div class="text-3xl font-extrabold text-slate-900">
-      ${{ prop.price }}
-      {% if prop.operation == 'rent' %}
-        <span class="text-base font-semibold text-slate-500">/ mes</span>
-      {% endif %}
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
-        <div class="text-xs text-slate-500 mb-1">Habitaciones</div>
-        <div class="text-2xl font-bold text-slate-900">{{ prop.bedrooms }}</div>
-      </div>
-
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
-        <div class="text-xs text-slate-500 mb-1">Baños</div>
-        <div class="text-2xl font-bold text-slate-900">{{ prop.bathrooms }}</div>
-      </div>
-
-      <div class="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4">
-        <div class="text-xs text-slate-500 mb-1">Área</div>
-        <div class="text-2xl font-bold text-slate-900">
-          {% if prop.area_m2 %}{{ prop.area_m2 }} m²{% else %}—{% endif %}
+          <form action="{% url 'properties:contact_advisor' prop.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="theme-button inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
+              Contactar asesor
+            </button>
+          </form>
         </div>
       </div>
     </div>
 
-    {% if prop.agent %}
-      <div class="text-sm text-slate-600">
-        <b>Asesor:</b>
-        {{ prop.agent.user.get_full_name|default:prop.agent.user.username }}
-      </div>
-    {% endif %}
-
-    <div class="pt-2 flex items-center gap-4 flex-wrap">
-
-      {% if can_edit %}
-        <a href="{% url 'properties:edit' prop.id %}"
-           class="px-5 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition font-medium">
-          Editar propiedad
-        </a>
-
-        <button type="button"
-                onclick="openDeleteModal()"
-                class="px-5 py-2.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 transition font-medium">
-          Eliminar propiedad
-        </button>
-      {% endif %}
-
-      {% if user.is_authenticated %}
-        <form method="post" action="{% url 'interactions:toggle_favorite' prop.id %}">
-          {% csrf_token %}
-          <button type="submit"
-                  class="px-4 py-2.5 rounded-xl border border-slate-200 hover:bg-slate-100 transition">
-            {% if is_fav %}
-              ❤️ Quitar favorito
-            {% else %}
-              🤍 Agregar a favoritos
+    <div class="p-4 md:p-6">
+      {% if images and cover and cover.image %}
+        <div class="grid gap-3 md:grid-cols-4 md:grid-rows-2">
+          {% for img in images|slice:":5" %}
+            {% if img.image %}
+              {% if forloop.first %}
+                <button type="button" onclick="openGallery({{ forloop.counter0 }})" class="overflow-hidden rounded-[1.75rem] md:col-span-2 md:row-span-2">
+                  <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-[260px] w-full object-cover md:h-[540px]">
+                </button>
+              {% else %}
+                <button type="button" onclick="openGallery({{ forloop.counter0 }})" class="relative overflow-hidden rounded-[1.75rem]">
+                  <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-[180px] w-full object-cover md:h-[263px]">
+                  {% if forloop.last and images|length > 5 %}
+                    <div class="absolute inset-0 flex items-end justify-end bg-black/25 p-3">
+                      <span class="rounded-xl px-4 py-2 text-sm font-semibold" style="background: rgba(255,253,249,0.92); color: var(--theme-ink);">
+                        +{{ images|length|add:"-5" }} fotos
+                      </span>
+                    </div>
+                  {% endif %}
+                </button>
+              {% endif %}
             {% endif %}
-          </button>
-        </form>
+          {% endfor %}
+        </div>
       {% else %}
-        <a href="{% url 'accounts:login' %}?next={{ request.path }}"
-           class="text-sm text-slate-600 hover:text-slate-800 underline">
-          Inicia sesión para agregar a favoritos
-        </a>
+        <div class="h-72 rounded-[1.8rem]" style="background: linear-gradient(135deg, #fff0e2 0%, #eadfd3 100%);"></div>
       {% endif %}
-
-      <form action="{% url 'properties:contact_advisor' prop.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="px-6 py-3 rounded-2xl bg-[#0B132B] text-white font-medium">
-          Contactar asesor
-        </button>
-      </form>
-
-    <div class="pt-2">
-      <a href="{% url 'properties:catalog' %}"
-         class="text-sm text-slate-500 hover:text-slate-700 underline">
-        ← Volver al catálogo
-      </a>
     </div>
-
   </div>
 
+  <div class="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div class="rounded-[2rem] border p-6 md:p-8" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.18em]" style="background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241,137,45,0.24);">
+          {{ prop.get_operation_display }}
+        </span>
+        {% if prop.area_m2 %}
+          <span class="rounded-full px-4 py-2 text-xs font-semibold" style="background: rgba(255,253,249,0.92); color: var(--theme-muted); border: 1px solid var(--theme-border);">
+            {{ prop.area_m2 }} m2
+          </span>
+        {% endif %}
+      </div>
+
+      <p class="mt-6 text-base leading-8" style="color: var(--theme-muted);">
+        {{ prop.description }}
+      </p>
+
+      <div class="mt-8 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.84);">
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Habitaciones</p>
+          <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ prop.bedrooms }}</p>
+        </div>
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.94);">
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Banos</p>
+          <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ prop.bathrooms }}</p>
+        </div>
+        <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: var(--theme-dark);">
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/60">Estado</p>
+          <p class="brand-serif mt-2 text-3xl text-white">{% if prop.is_active %}Activa{% else %}Inactiva{% endif %}</p>
+        </div>
+      </div>
+
+      {% if prop.agent %}
+        <div class="mt-8 rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.92);">
+          <p class="text-xs font-bold uppercase tracking-[0.22em]" style="color: var(--theme-muted);">Asesor</p>
+          <p class="mt-2 text-lg font-extrabold" style="color: var(--theme-ink);">{{ prop.agent.user.get_full_name|default:prop.agent.user.username }}</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <aside class="rounded-[2rem] border p-6 md:p-7" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">Resumen</p>
+      <p class="brand-serif mt-3 text-5xl leading-none" style="color: var(--theme-ink);">${{ prop.price }}</p>
+      {% if prop.operation == 'rent' %}
+        <p class="mt-2 text-sm" style="color: var(--theme-muted);">precio mensual</p>
+      {% endif %}
+
+      <div class="mt-8 space-y-3">
+        {% if can_edit %}
+          <a href="{% url 'properties:edit' prop.id %}" class="theme-button-soft flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold">
+            Editar propiedad
+          </a>
+          <button type="button" onclick="openDeleteModal()" class="flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold" style="background: #fff0ec; color: #b2543b; border: 1px solid #f0c4b8;">
+            Eliminar propiedad
+          </button>
+        {% endif %}
+
+        {% if user.is_authenticated %}
+          <form method="post" action="{% url 'interactions:toggle_favorite' prop.id %}">
+            {% csrf_token %}
+            <button type="submit" class="theme-button-soft w-full rounded-2xl px-5 py-3 text-sm font-semibold">
+              {% if is_fav %}Quitar favorito{% else %}Agregar a favoritos{% endif %}
+            </button>
+          </form>
+        {% else %}
+          <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
+            Inicia sesion para guardar esta propiedad
+          </a>
+        {% endif %}
+
+        <a href="{% url 'properties:catalog' %}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
+          Volver al catalogo
+        </a>
+      </div>
+    </aside>
+  </div>
 </section>
 
 {% if can_edit %}
 <div id="deletePropertyModal" class="fixed inset-0 z-[60] hidden">
-  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
-
-  <div class="relative z-10 min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md rounded-3xl bg-white border border-slate-200 shadow-2xl p-6 md:p-7">
-      <div class="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center text-2xl mb-4">
-        🗑️
-      </div>
-
-      <h3 class="text-2xl font-extrabold tracking-tight text-slate-900">
-        Eliminar propiedad
-      </h3>
-
-      <p class="mt-3 text-slate-600 leading-7">
-        ¿Seguro que deseas eliminar
-        <span class="font-semibold text-slate-900">“{{ prop.title }}”</span>?
-        Esta acción no se puede deshacer.
+  <div class="absolute inset-0 bg-[#2f2722]/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+  <div class="relative z-10 flex min-h-screen items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-[2rem] border p-6" style="background: rgba(255,253,249,0.98); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl text-white" style="background: #c96b56;">!</div>
+      <h3 class="brand-serif text-3xl" style="color: var(--theme-ink);">Eliminar propiedad</h3>
+      <p class="mt-3 text-sm leading-7" style="color: var(--theme-muted);">
+        Esta accion eliminara <span style="color: var(--theme-ink);" class="font-semibold">{{ prop.title }}</span> de forma permanente.
       </p>
-
       <div class="mt-6 flex items-center justify-end gap-3">
-        <button type="button"
-                onclick="closeDeleteModal()"
-                class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-medium hover:bg-slate-50 transition">
-          Cancelar
-        </button>
-
+        <button type="button" onclick="closeDeleteModal()" class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">Cancelar</button>
         <form method="post" action="{% url 'properties:delete' prop.id %}">
           {% csrf_token %}
-          <button type="submit"
-                  class="px-4 py-2.5 rounded-xl bg-rose-600 text-white font-semibold hover:bg-rose-700 transition shadow-sm">
-            Sí, eliminar
-          </button>
+          <button type="submit" class="rounded-2xl px-4 py-2.5 text-sm font-semibold text-white" style="background: #c96b56;">Si, eliminar</button>
         </form>
       </div>
     </div>
@@ -219,52 +160,24 @@
 
 {% if images %}
 <div id="galleryModal" class="fixed inset-0 z-50 hidden">
-  <div class="absolute inset-0 bg-black/80" onclick="closeGallery()"></div>
-
-  <div class="relative z-10 h-full w-full flex items-center justify-center p-4 md:p-8">
-    <button type="button"
-            onclick="closeGallery()"
-            class="absolute top-4 right-4 md:top-6 md:right-6 text-white text-4xl leading-none">
-      &times;
-    </button>
-
-    <button type="button"
-            onclick="prevImage()"
-            class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full w-12 h-12 text-2xl">
-      ‹
-    </button>
-
-    <div class="max-w-6xl w-full flex flex-col items-center">
-      <img id="galleryMainImage"
-           src=""
-           alt="{{ prop.title }}"
-           class="max-h-[75vh] w-auto max-w-full rounded-2xl object-contain shadow-2xl">
-
-      <div class="mt-4 text-white text-sm font-medium">
-        <span id="galleryCounter"></span>
-      </div>
-
-      <div class="mt-6 flex gap-3 overflow-x-auto max-w-full pb-2">
+  <div class="absolute inset-0 bg-black/75" onclick="closeGallery()"></div>
+  <div class="relative z-10 flex h-full w-full items-center justify-center p-4 md:p-8">
+    <button type="button" onclick="closeGallery()" class="absolute right-4 top-4 text-4xl leading-none text-white">&times;</button>
+    <button type="button" onclick="prevImage()" class="absolute left-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-white/15 text-2xl text-white">‹</button>
+    <div class="flex w-full max-w-6xl flex-col items-center">
+      <img id="galleryMainImage" src="" alt="{{ prop.title }}" class="max-h-[75vh] max-w-full rounded-2xl object-contain shadow-2xl">
+      <div class="mt-4 text-sm font-medium text-white"><span id="galleryCounter"></span></div>
+      <div class="mt-6 flex max-w-full gap-3 overflow-x-auto pb-2">
         {% for img in images %}
           {% if img.image %}
-            <button type="button"
-                    onclick="setImage({{ forloop.counter0 }})"
-                    class="shrink-0 rounded-xl overflow-hidden border-2 border-transparent"
-                    id="thumb-{{ forloop.counter0 }}">
-              <img src="{{ img.image.url }}"
-                   alt="{{ prop.title }}"
-                   class="w-24 h-20 md:w-28 md:h-24 object-cover">
+            <button type="button" onclick="setImage({{ forloop.counter0 }})" class="shrink-0 overflow-hidden rounded-xl border-2 border-transparent" id="thumb-{{ forloop.counter0 }}">
+              <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-20 w-24 object-cover md:h-24 md:w-28">
             </button>
           {% endif %}
         {% endfor %}
       </div>
     </div>
-
-    <button type="button"
-            onclick="nextImage()"
-            class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 text-white rounded-full w-12 h-12 text-2xl">
-      ›
-    </button>
+    <button type="button" onclick="nextImage()" class="absolute right-3 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-white/15 text-2xl text-white">›</button>
   </div>
 </div>
 
@@ -282,21 +195,13 @@
   function updateGallery() {
     const mainImage = document.getElementById("galleryMainImage");
     const counter = document.getElementById("galleryCounter");
-
     if (!galleryImages.length) return;
-
     mainImage.src = galleryImages[currentImageIndex];
     counter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
-
     for (let i = 0; i < galleryImages.length; i++) {
       const thumb = document.getElementById(`thumb-${i}`);
-      if (thumb) {
-        if (i === currentImageIndex) {
-          thumb.classList.add("border-white");
-        } else {
-          thumb.classList.remove("border-white");
-        }
-      }
+      if (!thumb) continue;
+      thumb.classList.toggle("border-white", i === currentImageIndex);
     }
   }
 
@@ -327,10 +232,9 @@
     updateGallery();
   }
 
-  document.addEventListener("keydown", function(e) {
+  document.addEventListener("keydown", function (e) {
     const modal = document.getElementById("galleryModal");
     if (!modal || modal.classList.contains("hidden")) return;
-
     if (e.key === "Escape") closeGallery();
     if (e.key === "ArrowRight") nextImage();
     if (e.key === "ArrowLeft") prevImage();
@@ -354,13 +258,11 @@
     document.body.classList.remove("overflow-hidden");
   }
 
-  document.addEventListener("keydown", function(e) {
+  document.addEventListener("keydown", function (e) {
     const modal = document.getElementById("deletePropertyModal");
     if (!modal || modal.classList.contains("hidden")) return;
-
     if (e.key === "Escape") closeDeleteModal();
   });
 </script>
 {% endif %}
-
 {% endblock %}
