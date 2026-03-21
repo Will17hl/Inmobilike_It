@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Mis ventas y arriendos{% endblock %}
+
+{% block content %}
+<section class="space-y-6">
+  <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.28em]" style="color: var(--theme-accent);">Host dashboard</p>
+      <h1 class="brand-serif mt-3 text-5xl" style="color: var(--theme-ink);">Tus ventas y arriendos cerrados.</h1>
+      <p class="mt-4 max-w-2xl text-base leading-8" style="color: var(--theme-muted);">
+        Este panel resume las propiedades pagadas a tu nombre y quien hizo cada reserva dentro de la plataforma.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+      <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,248,240,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Operaciones cerradas</p>
+        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{{ transaction_count }}</p>
+      </div>
+      <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Ventas</p>
+        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{{ sale_count }}</p>
+      </div>
+      <div class="rounded-[1.7rem] border p-6" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
+        <p class="text-xs font-bold uppercase tracking-[0.24em] text-white/65">Ingresos registrados</p>
+        <p class="brand-serif mt-3 text-4xl text-white">${{ total_revenue }}</p>
+        <p class="mt-3 text-sm text-white/60">Arriendos: {{ rent_count }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if transaction_items %}
+    <div class="grid gap-5">
+      {% for item in transaction_items %}
+        <article class="overflow-hidden rounded-[2rem] border" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+          <div class="grid gap-0 md:grid-cols-[250px_1fr]">
+            <div class="min-h-[220px]" style="background: linear-gradient(135deg, #fff0e2 0%, #eadfd3 100%);">
+              {% if item.cover and item.cover.image %}
+                <img src="{{ item.cover.image.url }}" alt="{{ item.property.title }}" class="h-full w-full object-cover">
+              {% endif %}
+            </div>
+            <div class="p-6 md:p-8">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                  <p class="text-xs font-bold uppercase tracking-[0.22em]" style="color: var(--theme-accent);">{{ item.property.get_operation_display }}</p>
+                  <h2 class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ item.property.title }}</h2>
+                  <p class="mt-3 text-sm" style="color: var(--theme-muted);">
+                    {{ item.property.location.city }} / {{ item.property.location.neighborhood }}
+                  </p>
+                </div>
+                <div class="rounded-[1.2rem] border px-4 py-3 text-right" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.9);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Cobrado</p>
+                  <p class="mt-1 text-xl font-extrabold" style="color: var(--theme-ink);">${{ item.payment.amount }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 grid gap-4 sm:grid-cols-4">
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Comprador</p>
+                  <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.buyer.get_full_name|default:item.buyer.username }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Email</p>
+                  <p class="mt-2 font-semibold break-all" style="color: var(--theme-ink);">{{ item.buyer.email|default:"Sin email" }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Fecha pago</p>
+                  <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.payment.paid_at|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Sesion Stripe</p>
+                  <p class="mt-2 font-semibold break-all" style="color: var(--theme-ink);">{{ item.payment.stripe_session_id }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{% url 'properties:detail' item.property.id %}" class="theme-button rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+                  Ver propiedad
+                </a>
+                <a href="{% url 'interactions:chat_list' %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
+                  Ver conversaciones
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="rounded-[2rem] border p-10 text-center" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <h2 class="brand-serif text-4xl" style="color: var(--theme-ink);">Aun no tienes ventas o arriendos pagados.</h2>
+      <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
+        Cuando un usuario pague una propiedad asociada a tu perfil, la operacion aparecera aqui.
+      </p>
+      <a href="{% url 'properties:create' %}" class="theme-button mt-6 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+        Publicar propiedad
+      </a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -24,6 +24,7 @@ pyOpenSSL==26.0.0
 python-dotenv==1.0.1
 service-identity==24.2.0
 sqlparse==0.5.5
+stripe==12.5.0
 Twisted==25.5.0
 txaio==25.12.2
 typing_extensions==4.15.0

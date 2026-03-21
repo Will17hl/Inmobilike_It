@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Pago exitoso{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-3xl">
+  <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.96); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+    <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">Pago confirmado</p>
+    <h1 class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">La transaccion fue procesada correctamente.</h1>
+    <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
+      {% if payment %}
+        Recibimos el pago de <strong>${{ payment.amount }}</strong> para <strong>{{ prop.title }}</strong>.
+      {% else %}
+        Stripe devolvio la sesion, pero no encontramos el registro local asociado.
+      {% endif %}
+    </p>
+
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a href="{% url 'properties:detail' prop.id %}" class="theme-button rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+        Volver a la propiedad
+      </a>
+      <a href="{% url 'properties:catalog' %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
+        Ir al catalogo
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

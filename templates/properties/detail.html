@@ -106,6 +106,24 @@
       {% endif %}
 
       <div class="mt-8 space-y-3">
+        {% if stripe_enabled %}
+          {% if user.is_authenticated %}
+            <form method="post" action="{% url 'properties:checkout' prop.id %}">
+              {% csrf_token %}
+              <button type="submit" class="theme-button flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+                Pagar con Stripe
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="theme-button flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+              Inicia sesion para pagar
+            </a>
+          {% endif %}
+          <p class="text-xs leading-6" style="color: var(--theme-muted);">
+            Pago seguro en {{ currency }} por el valor publicado de la propiedad.
+          </p>
+        {% endif %}
+
         {% if can_edit %}
           <a href="{% url 'properties:edit' prop.id %}" class="theme-button-soft flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold">
             Editar propiedad

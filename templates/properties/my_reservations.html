@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Mis reservas{% endblock %}
+
+{% block content %}
+<section class="space-y-6">
+  <div class="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+    <div class="rounded-[2rem] border p-8 md:p-10" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
+      <p class="text-xs font-bold uppercase tracking-[0.28em] text-white/65">Reservas</p>
+      <h1 class="brand-serif mt-3 text-5xl text-white">Tus pagos confirmados.</h1>
+      <p class="mt-4 max-w-2xl text-base leading-8 text-white/72">
+        Aqui ves las propiedades que ya pagaste con Stripe y el estado consolidado de tus reservas.
+      </p>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+      <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Reservas pagadas</p>
+        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{{ reservation_count }}</p>
+      </div>
+      <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,248,240,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Total pagado</p>
+        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">${{ total_spent }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if reservation_items %}
+    <div class="grid gap-5">
+      {% for item in reservation_items %}
+        <article class="overflow-hidden rounded-[2rem] border" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+          <div class="grid gap-0 md:grid-cols-[250px_1fr]">
+            <div class="min-h-[220px]" style="background: linear-gradient(135deg, #fff0e2 0%, #eadfd3 100%);">
+              {% if item.cover and item.cover.image %}
+                <img src="{{ item.cover.image.url }}" alt="{{ item.property.title }}" class="h-full w-full object-cover">
+              {% endif %}
+            </div>
+            <div class="p-6 md:p-8">
+              <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-0">
+                  <p class="text-xs font-bold uppercase tracking-[0.22em]" style="color: var(--theme-accent);">Reserva confirmada</p>
+                  <h2 class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ item.property.title }}</h2>
+                  <p class="mt-3 text-sm" style="color: var(--theme-muted);">
+                    {{ item.property.location.city }} / {{ item.property.location.neighborhood }}
+                  </p>
+                </div>
+                <div class="rounded-[1.2rem] border px-4 py-3 text-right" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.9);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Pagado</p>
+                  <p class="mt-1 text-xl font-extrabold" style="color: var(--theme-ink);">${{ item.payment.amount }}</p>
+                </div>
+              </div>
+
+              <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Operacion</p>
+                  <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.property.get_operation_display }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Fecha pago</p>
+                  <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.payment.paid_at|date:"d/m/Y H:i" }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Asesor</p>
+                  <p class="mt-2 font-semibold" style="color: var(--theme-ink);">
+                    {% if item.property.agent %}
+                      {{ item.property.agent.user.get_full_name|default:item.property.agent.user.username }}
+                    {% else %}
+                      Sin asesor asignado
+                    {% endif %}
+                  </p>
+                </div>
+              </div>
+
+              <div class="mt-6 flex flex-wrap gap-3">
+                <a href="{% url 'properties:detail' item.property.id %}" class="theme-button rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+                  Ver propiedad
+                </a>
+                <form method="post" action="{% url 'properties:contact_advisor' item.property.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
+                    Contactar asesor
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="rounded-[2rem] border p-10 text-center" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
+      <h2 class="brand-serif text-4xl" style="color: var(--theme-ink);">Aun no tienes reservas pagadas.</h2>
+      <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
+        Cuando completes un pago con Stripe, la propiedad aparecera aqui.
+      </p>
+      <a href="{% url 'properties:catalog' %}" class="theme-button mt-6 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+        Explorar propiedades
+      </a>
+    </div>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,17 +1,59 @@
 from django.contrib.auth.decorators import login_required
-from django.http import Http404
+from django.contrib import messages
+from django.conf import settings
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from apps.interactions.models import Conversation, Message
 from apps.accounts.models import AgentProfile
 from apps.interactions.models import Favorite
 from .forms import PropertyForm, LocationForm
 from .services.property_service import PropertyService
-from .models import Property, PropertyImage
-from decimal import Decimal, InvalidOperation
+from .models import Property, PropertyImage, PropertyPayment
+from decimal import Decimal
+
+import stripe
+
+
+def sync_payment_from_checkout_session(payment, checkout_session):
+    payment.stripe_payment_intent_id = checkout_session.payment_intent or ""
+
+    if checkout_session.payment_status == "paid":
+        payment.status = PropertyPayment.STATUS_PAID
+        if payment.paid_at is None:
+            payment.paid_at = timezone.now()
+    elif checkout_session.status == "expired":
+        payment.status = PropertyPayment.STATUS_FAILED
+    else:
+        payment.status = PropertyPayment.STATUS_PENDING
+
+    payment.save(update_fields=["stripe_payment_intent_id", "status", "paid_at"])
 
 def require_host(request):
     return request.session.get("mode", "guest") == "host"
+
+
+def build_payment_summary(payments, include_buyer=False):
+    items = []
+    total_amount = Decimal("0.00")
+
+    for payment in payments:
+        property_obj = payment.property
+        cover = property_obj.images.filter(is_cover=True).first() or property_obj.images.first()
+        total_amount += payment.amount
+        item = {
+            "payment": payment,
+            "property": property_obj,
+            "cover": cover,
+        }
+        if include_buyer:
+            item["buyer"] = payment.user
+        items.append(item)
+
+    return items, total_amount
 
 
 def property_detail(request, pk: int):
@@ -42,6 +84,8 @@ def property_detail(request, pk: int):
             "cover": cover,
             "images": images,
             "can_edit": can_edit,
+            "stripe_enabled": bool(settings.STRIPE_SECRET_KEY and settings.STRIPE_PUBLISHABLE_KEY),
+            "currency": settings.STRIPE_CURRENCY.upper(),
         },
     )
 
@@ -83,6 +127,64 @@ def my_properties(request):
         request,
         "properties/my_properties.html",
         {"properties": properties},
+    )
+
+
+@login_required
+def my_reservations(request):
+    reservations = (
+        PropertyPayment.objects.filter(
+            user=request.user,
+            status=PropertyPayment.STATUS_PAID,
+        )
+        .select_related("property__location", "property__agent__user", "user")
+        .prefetch_related("property__images")
+        .order_by("-paid_at", "-created_at")
+    )
+
+    reservation_items, total_spent = build_payment_summary(reservations)
+
+    return render(
+        request,
+        "properties/my_reservations.html",
+        {
+            "reservation_items": reservation_items,
+            "reservation_count": reservations.count(),
+            "total_spent": total_spent,
+        },
+    )
+
+
+@login_required
+def my_transactions(request):
+    if not require_host(request):
+        messages.info(request, "Activa el modo anfitrion para ver tus ventas y arriendos.")
+        return redirect(f"{reverse('accounts:toggle_mode')}?next={request.path}")
+
+    transactions = (
+        PropertyPayment.objects.filter(
+            property__agent__user=request.user,
+            status=PropertyPayment.STATUS_PAID,
+        )
+        .select_related("property__location", "property__agent__user", "user")
+        .prefetch_related("property__images")
+        .order_by("-paid_at", "-created_at")
+    )
+
+    transaction_items, total_revenue = build_payment_summary(transactions, include_buyer=True)
+    sale_count = transactions.filter(property__operation=Property.OP_SALE).count()
+    rent_count = transactions.filter(property__operation=Property.OP_RENT).count()
+
+    return render(
+        request,
+        "properties/my_transactions.html",
+        {
+            "transaction_items": transaction_items,
+            "transaction_count": transactions.count(),
+            "total_revenue": total_revenue,
+            "sale_count": sale_count,
+            "rent_count": rent_count,
+        },
     )
 
 
@@ -241,3 +343,161 @@ def contact_advisor(request, pk):
         )
 
     return redirect("interactions:chat_room", conversation_id=conversation.id)
+
+
+@login_required
+def create_checkout_session(request, pk: int):
+    if request.method != "POST":
+        raise Http404("Method not allowed")
+
+    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_PUBLISHABLE_KEY:
+        messages.error(request, "Stripe no esta configurado todavia.")
+        return redirect("properties:detail", pk=pk)
+
+    property_obj = get_object_or_404(
+        Property.objects.select_related("location"),
+        pk=pk,
+        is_active=True,
+    )
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    amount_in_cents = int((property_obj.price * Decimal("100")).quantize(Decimal("1")))
+
+    checkout_session = stripe.checkout.Session.create(
+        mode="payment",
+        success_url=request.build_absolute_uri(
+            f"/properties/{property_obj.pk}/payment/success/"
+        ) + "?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url=request.build_absolute_uri(
+            f"/properties/{property_obj.pk}/payment/cancel/"
+        ),
+        customer_email=request.user.email or None,
+        metadata={
+            "property_id": str(property_obj.pk),
+            "user_id": str(request.user.pk),
+        },
+        line_items=[
+            {
+                "price_data": {
+                    "currency": settings.STRIPE_CURRENCY,
+                    "unit_amount": amount_in_cents,
+                    "product_data": {
+                        "name": property_obj.title,
+                        "description": f"{property_obj.get_operation_display()} en {property_obj.location.city}",
+                    },
+                },
+                "quantity": 1,
+            }
+        ],
+    )
+
+    PropertyPayment.objects.update_or_create(
+        stripe_session_id=checkout_session.id,
+        defaults={
+            "property": property_obj,
+            "user": request.user,
+            "amount": property_obj.price,
+            "currency": settings.STRIPE_CURRENCY,
+            "status": PropertyPayment.STATUS_PENDING,
+        },
+    )
+
+    return redirect(checkout_session.url, permanent=False)
+
+
+@login_required
+def payment_success(request, pk: int):
+    property_obj = get_object_or_404(Property, pk=pk)
+    session_id = request.GET.get("session_id", "").strip()
+    payment = None
+
+    if session_id and settings.STRIPE_SECRET_KEY:
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        checkout_session = stripe.checkout.Session.retrieve(session_id)
+        payment = PropertyPayment.objects.filter(
+            stripe_session_id=session_id,
+            property=property_obj,
+            user=request.user,
+        ).first()
+
+        if payment:
+            sync_payment_from_checkout_session(payment, checkout_session)
+
+    return render(
+        request,
+        "properties/payment_success.html",
+        {
+            "prop": property_obj,
+            "payment": payment,
+        },
+    )
+
+
+@login_required
+def payment_cancel(request, pk: int):
+    property_obj = get_object_or_404(Property, pk=pk)
+    pending_payment = (
+        PropertyPayment.objects.filter(
+            property=property_obj,
+            user=request.user,
+            status=PropertyPayment.STATUS_PENDING,
+        )
+        .order_by("-created_at")
+        .first()
+    )
+    if pending_payment:
+        pending_payment.status = PropertyPayment.STATUS_CANCELED
+        pending_payment.save(update_fields=["status"])
+
+    return render(
+        request,
+        "properties/payment_cancel.html",
+        {
+            "prop": property_obj,
+        },
+    )
+
+
+@csrf_exempt
+def stripe_webhook(request):
+    if request.method != "POST":
+        raise Http404("Method not allowed")
+
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
+
+    if not settings.STRIPE_WEBHOOK_SECRET:
+        return JsonResponse(
+            {"detail": "Stripe webhook secret is not configured."},
+            status=503,
+        )
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload=payload,
+            sig_header=sig_header,
+            secret=settings.STRIPE_WEBHOOK_SECRET,
+        )
+    except ValueError:
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError:
+        return HttpResponse(status=400)
+
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        payment = PropertyPayment.objects.filter(
+            stripe_session_id=session.get("id", "")
+        ).first()
+        if payment:
+            sync_payment_from_checkout_session(payment, session)
+
+    if event["type"] == "checkout.session.expired":
+        session = event["data"]["object"]
+        payment = PropertyPayment.objects.filter(
+            stripe_session_id=session.get("id", "")
+        ).first()
+        if payment:
+            payment.status = PropertyPayment.STATUS_FAILED
+            payment.save(update_fields=["status"])
+
+    return HttpResponse(status=200)

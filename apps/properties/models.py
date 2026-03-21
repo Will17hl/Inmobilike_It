@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from apps.accounts.models import AgentProfile
+from django.conf import settings
 
 
 class Location(models.Model):
@@ -51,4 +52,38 @@ class PropertyImage(models.Model):
 
     def __str__(self):
         return f"Img #{self.id} of {self.property_id}"
-    
+
+
+class PropertyPayment(models.Model):
+    STATUS_PENDING = "pending"
+    STATUS_PAID = "paid"
+    STATUS_CANCELED = "canceled"
+    STATUS_FAILED = "failed"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Pendiente"),
+        (STATUS_PAID, "Pagado"),
+        (STATUS_CANCELED, "Cancelado"),
+        (STATUS_FAILED, "Fallido"),
+    ]
+
+    property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="payments")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="property_payments",
+    )
+    amount = models.DecimalField(max_digits=14, decimal_places=2)
+    currency = models.CharField(max_length=10, default="cop")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    stripe_session_id = models.CharField(max_length=255, unique=True)
+    stripe_payment_intent_id = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    paid_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Payment #{self.id} - property {self.property_id} - {self.status}"
