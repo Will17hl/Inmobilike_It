@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load property_format %}
 {% block title %}Mis reservas{% endblock %}
 
 {% block content %}
@@ -15,11 +16,11 @@
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
         <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Reservas pagadas</p>
-        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{{ reservation_count }}</p>
+        <p class="brand-serif mt-3 text-4xl leading-tight" style="color: var(--theme-ink);">{{ reservation_count }}</p>
       </div>
       <div class="rounded-[1.7rem] border p-6" style="background: rgba(255,248,240,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
         <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-muted);">Total pagado</p>
-        <p class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">${{ total_spent }}</p>
+        <p class="brand-serif mt-3 text-[clamp(2rem,3.2vw,2.8rem)] leading-tight" style="color: var(--theme-ink);">{{ total_spent|currency_es }}</p>
       </div>
     </div>
   </div>
@@ -45,7 +46,7 @@
                 </div>
                 <div class="rounded-[1.2rem] border px-4 py-3 text-right" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.9);">
                   <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Pagado</p>
-                  <p class="mt-1 text-xl font-extrabold" style="color: var(--theme-ink);">${{ item.payment.amount }}</p>
+                  <p class="mt-1 text-xl font-extrabold leading-tight" style="color: var(--theme-ink);">{{ item.payment.amount|currency_es }}</p>
                 </div>
               </div>
 

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load property_format %}
 {% block title %}Mis propiedades{% endblock %}
 
 {% block content %}
@@ -37,7 +38,7 @@
             </span>
           </div>
 
-          <p class="brand-serif text-4xl leading-none" style="color: var(--theme-ink);">${{ p.price }}</p>
+          <p class="brand-serif text-[clamp(2rem,3vw,3rem)] leading-tight" style="color: var(--theme-ink);">{{ p.price|currency_es }}</p>
           <div class="flex items-center justify-between text-sm" style="color: var(--theme-muted);">
             <span>{% if p.is_active %}Activa{% else %}Inactiva{% endif %}</span>
             <span>{{ p.bedrooms }} hab / {{ p.bathrooms }} banos</span>

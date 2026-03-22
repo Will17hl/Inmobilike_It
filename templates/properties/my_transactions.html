@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load property_format %}
 {% block title %}Mis ventas y arriendos{% endblock %}
 
 {% block content %}
@@ -23,7 +24,7 @@
       </div>
       <div class="rounded-[1.7rem] border p-6" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
         <p class="text-xs font-bold uppercase tracking-[0.24em] text-white/65">Ingresos registrados</p>
-        <p class="brand-serif mt-3 text-4xl text-white">${{ total_revenue }}</p>
+        <p class="brand-serif mt-3 text-[clamp(2rem,3.2vw,2.8rem)] leading-tight text-white">{{ total_revenue|currency_es }}</p>
         <p class="mt-3 text-sm text-white/60">Arriendos: {{ rent_count }}</p>
       </div>
     </div>
@@ -50,7 +51,7 @@
                 </div>
                 <div class="rounded-[1.2rem] border px-4 py-3 text-right" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.9);">
                   <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Cobrado</p>
-                  <p class="mt-1 text-xl font-extrabold" style="color: var(--theme-ink);">${{ item.payment.amount }}</p>
+                  <p class="mt-1 text-xl font-extrabold leading-tight" style="color: var(--theme-ink);">{{ item.payment.amount|currency_es }}</p>
                 </div>
               </div>
 

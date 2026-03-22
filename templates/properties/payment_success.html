@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load property_format %}
 {% block title %}Pago exitoso{% endblock %}
 
 {% block content %}
@@ -8,7 +9,7 @@
     <h1 class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">La transaccion fue procesada correctamente.</h1>
     <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
       {% if payment %}
-        Recibimos el pago de <strong>${{ payment.amount }}</strong> para <strong>{{ prop.title }}</strong>.
+        Recibimos el pago de <strong>{{ payment.amount|currency_es }}</strong> para <strong>{{ prop.title }}</strong>.
       {% else %}
         Stripe devolvio la sesion, pero no encontramos el registro local asociado.
       {% endif %}

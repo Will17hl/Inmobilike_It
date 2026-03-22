@@ -1,5 +1,6 @@
 from decimal import Decimal, InvalidOperation
 from apps.properties.models import Property
+from apps.properties.utils import normalize_decimal_input
 
 
 class PropertyRepository:
@@ -19,8 +20,8 @@ class PropertyRepository:
         city = (filters.get("city") or "").strip()
         neighborhood = (filters.get("neighborhood") or "").strip()
         operation = (filters.get("operation") or "").strip()
-        min_price = (filters.get("min_price") or "").strip()
-        max_price = (filters.get("max_price") or "").strip()
+        min_price = normalize_decimal_input(filters.get("min_price"))
+        max_price = normalize_decimal_input(filters.get("max_price"))
 
         if city:
             qs = qs.filter(location__city__icontains=city)

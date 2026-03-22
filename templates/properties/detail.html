@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load property_format %}
 {% block title %}{{ prop.title }}{% endblock %}
 
 {% block content %}
@@ -100,7 +101,7 @@
 
     <aside class="rounded-[2rem] border p-6 md:p-7" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
       <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">Resumen</p>
-      <p class="brand-serif mt-3 text-5xl leading-none" style="color: var(--theme-ink);">${{ prop.price }}</p>
+      <p class="brand-serif mt-3 text-[clamp(2.4rem,4vw,3.5rem)] leading-tight" style="color: var(--theme-ink);">{{ prop.price|currency_es }}</p>
       {% if prop.operation == 'rent' %}
         <p class="mt-2 text-sm" style="color: var(--theme-muted);">precio mensual</p>
       {% endif %}
