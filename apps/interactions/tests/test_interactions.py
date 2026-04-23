@@ -72,3 +72,16 @@ class FavoriteServiceTest(TestCase):
         # Debe redirigir al login (302) porque ahora tiene @login_required
         self.assertEqual(response.status_code, 302)
         self.assertTrue(response.url.startswith('/accounts/login/'))
+
+    def test_clear_chat_notifications_api(self):
+        from django.urls import reverse
+        from django.test import Client
+        
+        client = Client()
+        client.force_login(self.user)
+        
+        url = reverse('interactions:clear_chat_notifications')
+        response = client.post(url)
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json().get('ok'))
