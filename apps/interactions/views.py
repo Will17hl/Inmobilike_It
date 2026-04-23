@@ -27,6 +27,7 @@ def toggle_favorite(request, pk: int):
     return redirect("properties:detail", pk=pk)
 
 
+@login_required
 def inquiry_create(request, pk: int):
     prop = PropertyService.get_property_detail(pk)
     if not prop:
