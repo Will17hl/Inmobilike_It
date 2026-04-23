@@ -9,9 +9,8 @@ from django.urls import reverse
 from apps.properties.services.property_service import PropertyService
 from .forms import InquiryForm
 from .services.favorite_service import FavoriteService
-from .services.inquiry_service import InquiryService
+from .services.contact_service import ContactService
 from .models import Conversation, Message
-
 
 @login_required
 def toggle_favorite(request, pk: int):
@@ -19,10 +18,11 @@ def toggle_favorite(request, pk: int):
     if not prop:
         raise Http404("Property not found")
 
-    if FavoriteService.is_favorite(request.user, prop):
-        FavoriteService.remove_from_favorites(request.user, prop)
+    favorite_service = FavoriteService()
+    if favorite_service.is_favorite(request.user, prop):
+        favorite_service.remove_from_favorites(request.user, prop)
     else:
-        FavoriteService.add_to_favorites(request.user, prop)
+        favorite_service.add_to_favorites(request.user, prop)
 
     return redirect("properties:detail", pk=pk)
 
@@ -35,7 +35,8 @@ def inquiry_create(request, pk: int):
     if request.method == "POST":
         form = InquiryForm(request.POST)
         if form.is_valid():
-            InquiryService.create_inquiry(
+            contact_service = ContactService()
+            contact_service.initiate_contact(
                 property_obj=prop,
                 user=request.user if request.user.is_authenticated else None,
                 name=form.cleaned_data["name"],

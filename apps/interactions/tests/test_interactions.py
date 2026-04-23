@@ -32,10 +32,12 @@ class FavoriteServiceTest(TestCase):
         )
 
     def test_add_to_favorites(self):
-        favorite, created = FavoriteService.add_to_favorites(self.user, self.property_obj)
+        favorite_service = FavoriteService()
+        favorite, created = favorite_service.add_to_favorites(self.user, self.property_obj)
         self.assertTrue(created)
         self.assertEqual(Favorite.objects.count(), 1)
 
     def test_is_favorite(self):
+        favorite_service = FavoriteService()
         Favorite.objects.create(user=self.user, property=self.property_obj)
-        self.assertTrue(FavoriteService.is_favorite(self.user, self.property_obj))
+        self.assertTrue(favorite_service.is_favorite(self.user, self.property_obj))
