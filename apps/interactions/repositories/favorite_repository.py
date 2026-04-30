@@ -4,20 +4,13 @@ from apps.interactions.models import Favorite
 
 
 class FavoriteRepository:
-    @staticmethod
-    def is_favorite(user, property_obj):
+    def is_favorite(self, user, property_obj):
         return Favorite.objects.filter(user=user, property=property_obj).exists()
 
-    @staticmethod
-    def get_or_create(user, property_obj):
-        try:
-            return Favorite.objects.get_or_create(user=user, property=property_obj)
-        except IntegrityError:
-            favorite = Favorite.objects.filter(user=user, property=property_obj).first()
-            return favorite, False
+    def get_or_create(self, user, property_obj):
+        return Favorite.objects.get_or_create(user=user, property=property_obj)
 
-    @staticmethod
-    def remove(user, property_obj):
+    def remove(self, user, property_obj):
         deleted_count, _ = Favorite.objects.filter(
             user=user,
             property=property_obj,

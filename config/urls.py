@@ -4,6 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.views.generic import RedirectView
 
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+
 urlpatterns = [
     path("admin/", admin.site.urls),
 
@@ -22,4 +24,4 @@ urlpatterns = [
     # Legacy chat URLs redirect to the canonical interactions routes.
     path("chats/", RedirectView.as_view(pattern_name="interactions:chat_list", permanent=False)),
     path("chats/<int:conversation_id>/", RedirectView.as_view(pattern_name="interactions:chat_room", permanent=False)),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()

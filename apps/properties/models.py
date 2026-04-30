@@ -2,11 +2,11 @@ from django.db import models
 from django.utils import timezone
 from apps.accounts.models import AgentProfile
 from django.conf import settings
-
+from django.core.validators import MinValueValidator
 
 class Location(models.Model):
-    city = models.CharField(max_length=80)
-    neighborhood = models.CharField(max_length=120)
+    city = models.CharField(max_length=80, db_index=True)
+    neighborhood = models.CharField(max_length=120, db_index=True)
     address = models.CharField(max_length=200)
 
     def __str__(self):
@@ -22,14 +22,14 @@ class Property(models.Model):
 
     title = models.CharField(max_length=160)
     description = models.TextField()
-    operation = models.CharField(max_length=10, choices=OP_CHOICES)
-    price = models.DecimalField(max_digits=14, decimal_places=2)
+    operation = models.CharField(max_length=10, choices=OP_CHOICES, db_index=True)
+    price = models.DecimalField(max_digits=14, decimal_places=2, validators=[MinValueValidator(0)])
 
-    bedrooms = models.PositiveSmallIntegerField(default=0)
-    bathrooms = models.PositiveSmallIntegerField(default=0)
-    area_m2 = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    bedrooms = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0)])
+    bathrooms = models.PositiveSmallIntegerField(default=0, validators=[MinValueValidator(0)])
+    area_m2 = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
 
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     location = models.ForeignKey(Location, on_delete=models.PROTECT, related_name="properties")
@@ -40,6 +40,12 @@ class Property(models.Model):
         blank=True,
         related_name="properties",
     )
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["price"]),
+            models.Index(fields=["bedrooms"]),
+        ]
 
     def __str__(self):
         return self.title
