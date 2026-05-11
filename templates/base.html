@@ -1,6 +1,9 @@
 {% load static %}
+{% load i18n %}
+{% load simple_i18n %}
 <!doctype html>
-<html lang="es">
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -113,7 +116,7 @@
                 Inmobilike It
               </div>
               <div class="text-xs -mt-0.5 uppercase tracking-[0.22em]" style="color: var(--theme-accent);">
-                Encuentra tu próximo hogar
+                {% tr "Encuentra tu próximo hogar" %}
               </div>
             </div>
           </a>
@@ -123,23 +126,23 @@
         <nav class="hidden lg:flex items-center gap-1 rounded-2xl px-2 py-2" style="background: rgba(255,255,255,0.62); border: 1px solid var(--theme-border-soft);">
           <a href="{% url 'home' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            Inicio
+            {% tr "Inicio" %}
           </a>
 
           <a href="{% url 'interactions:chat_list' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            Chats
+            {% tr "Chats" %}
           </a>
 
           <a href="{% url 'properties:catalog' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            Catálogo
+            {% tr "Catálogo" %}
           </a>
 
           {% if user.is_authenticated %}
             <a href="{% url 'properties:my_reservations' %}"
                class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-              Mis reservas
+              {% tr "Mis reservas" %}
             </a>
           {% endif %}
         </nav>
@@ -153,7 +156,7 @@
             <div class="relative" id="bell-wrapper">
               <button id="bell-btn"
                       class="theme-button-soft relative inline-flex w-11 h-11 items-center justify-center rounded-2xl transition shadow-sm"
-                      aria-label="Notificaciones">
+                      aria-label="{% tr "Notificaciones" %}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" style="color: var(--theme-muted);" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -169,9 +172,9 @@
               <div id="bell-dropdown"
                    class="hidden absolute right-0 mt-2 w-80 rounded-2xl shadow-xl z-50 overflow-hidden" style="background: var(--theme-surface-strong); border: 1px solid var(--theme-border);">
                 <div class="px-4 py-3 flex items-center justify-between" style="border-bottom: 1px solid var(--theme-border-soft);">
-                  <span class="text-sm font-semibold" style="color: var(--theme-ink);">Notificaciones</span>
+                  <span class="text-sm font-semibold" style="color: var(--theme-ink);">{% tr "Notificaciones" %}</span>
                   <button id="bell-clear" class="text-xs transition" style="color: var(--theme-muted);">
-                    Limpiar
+                    {% tr "Limpiar" %}
                   </button>
                 </div>
                 <ul id="bell-list" class="max-h-72 overflow-y-auto divide-y divide-slate-100">
@@ -186,14 +189,14 @@
                     {% endfor %}
                   {% else %}
                     <li class="px-4 py-4 text-sm text-center" id="bell-empty" style="color: var(--theme-muted);">
-                      Sin notificaciones nuevas
+                      {% tr "Sin notificaciones nuevas" %}
                     </li>
                   {% endif %}
                 </ul>
                 <div class="px-4 py-3" style="border-top: 1px solid var(--theme-border-soft);">
                   <a href="{% url 'interactions:chat_list' %}"
                      class="block text-center text-sm font-medium transition" style="color: var(--theme-ink);">
-                    Ver todos los chats →
+                    {% tr "Ver todos los chats" %} →
                   </a>
                 </div>
               </div>
@@ -204,9 +207,9 @@
                class="theme-button-soft inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl transition shadow-sm">
               <span class="text-sm font-medium">
                 {% if mode == "host" %}
-                  Modo usuario
+                  {% tr "Modo usuario" %}
                 {% else %}
-                  Modo anfitrión
+                  {% tr "Modo anfitrión" %}
                 {% endif %}
               </span>
             </a>
@@ -220,7 +223,7 @@
               {% endif %}
 
               <div class="hidden xl:flex flex-col leading-tight">
-                <span class="text-xs text-slate-400">Bienvenido</span>
+                <span class="text-xs text-slate-400">{% tr "Bienvenido" %}</span>
                 <span class="text-sm font-semibold text-slate-700 max-w-[150px] truncate">
                   {{ user.username }}
                 </span>
@@ -228,37 +231,49 @@
 
               <a href="{% url 'accounts:profile' %}"
                  class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-                Perfil
+                {% tr "Perfil" %}
               </a>
 
               <a href="{% url 'accounts:logout' %}"
                  class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-                Salir
+                {% tr "Salir" %}
               </a>
             </div>
 
           {% else %}
             <a href="{% url 'accounts:login' %}"
                class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-              Iniciar sesión
+              {% tr "Iniciar sesión" %}
             </a>
 
             <a href="{% url 'accounts:register' %}"
                class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-              Crear cuenta
+              {% tr "Crear cuenta" %}
             </a>
           {% endif %}
+          <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-2xl overflow-hidden border" style="border-color: var(--theme-border);">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            <button name="language" value="es" class="px-3 py-2 text-xs font-bold {% if LANGUAGE_CODE == 'es' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">ES</button>
+            <button name="language" value="en" class="px-3 py-2 text-xs font-bold {% if LANGUAGE_CODE == 'en' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">EN</button>
+          </form>
         </div>
 
         <!-- Mobile button -->
         <div class="lg:hidden flex items-center gap-2">
+          <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+            {% csrf_token %}
+            <input name="next" type="hidden" value="{{ request.get_full_path }}">
+            <button name="language" value="es" class="px-3 py-3 text-xs font-bold {% if LANGUAGE_CODE == 'es' %}bg-slate-950 text-white{% else %}text-slate-600{% endif %}">ES</button>
+            <button name="language" value="en" class="px-3 py-3 text-xs font-bold {% if LANGUAGE_CODE == 'en' %}bg-slate-950 text-white{% else %}text-slate-600{% endif %}">EN</button>
+          </form>
 
           <!-- 🔔 Bell mobile — visible in ALL modes -->
           {% if user.is_authenticated %}
           <div class="relative" id="bell-wrapper-mobile">
             <button id="bell-btn-mobile"
                     class="relative inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
-                    aria-label="Notificaciones">
+                    aria-label="{% tr "Notificaciones" %}">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none"
                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -274,9 +289,9 @@
             <div id="bell-dropdown-mobile"
                  class="hidden absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
               <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                <span class="text-sm font-semibold text-slate-900">Notificaciones</span>
+                <span class="text-sm font-semibold text-slate-900">{% tr "Notificaciones" %}</span>
                 <button id="bell-clear-mobile" class="text-xs text-slate-400 hover:text-slate-600 transition">
-                  Limpiar
+                  {% tr "Limpiar" %}
                 </button>
               </div>
               <ul id="bell-list-mobile" class="max-h-60 overflow-y-auto divide-y divide-slate-100">
@@ -291,14 +306,14 @@
                   {% endfor %}
                 {% else %}
                   <li class="px-4 py-4 text-sm text-slate-400 text-center" id="bell-empty-mobile">
-                    Sin notificaciones nuevas
+                    {% tr "Sin notificaciones nuevas" %}
                   </li>
                 {% endif %}
               </ul>
               <div class="px-4 py-3 border-t border-slate-100">
                 <a href="{% url 'interactions:chat_list' %}"
                    class="block text-center text-sm font-medium text-slate-700 hover:text-slate-900 transition">
-                  Ver todos los chats →
+                  {% tr "Ver todos los chats" %} →
                 </a>
               </div>
             </div>
@@ -308,7 +323,7 @@
           <button id="mobileMenuBtn"
                   class="inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
                   type="button"
-                  aria-label="Abrir menú">
+                  aria-label="{% tr "Abrir menú" %}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -321,25 +336,25 @@
         <div class="hidden lg:flex items-center justify-between gap-4 border-t py-3" style="border-color: var(--theme-border-soft);">
           <div class="flex items-center gap-3 min-w-0">
             <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.22em]" style="background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241, 137, 45, 0.22);">
-              Panel host
+              {% tr "Panel host" %}
             </span>
             <p class="text-sm truncate" style="color: var(--theme-muted);">
-              Gestiona tus publicaciones y revisa operaciones cerradas.
+              {% tr "Gestiona tus publicaciones y revisa operaciones cerradas." %}
             </p>
           </div>
 
           <div class="flex items-center gap-2 shrink-0">
             <a href="{% url 'properties:create' %}"
                class="theme-button rounded-2xl px-4 py-2.5 text-sm font-semibold shadow-sm">
-              Publicar
+              {% tr "Publicar" %}
             </a>
             <a href="{% url 'properties:mine' %}"
                class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">
-              Mis propiedades
+              {% tr "Mis propiedades" %}
             </a>
             <a href="{% url 'properties:my_transactions' %}"
                class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">
-              Mis ventas/arriendos
+              {% tr "Mis ventas/arriendos" %}
             </a>
           </div>
         </div>
@@ -352,76 +367,76 @@
 
         <a href="{% url 'home' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          Inicio
+          {% tr "Inicio" %}
         </a>
 
         <a href="{% url 'interactions:chat_list' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          Chats
+          {% tr "Chats" %}
         </a>
 
         <a href="{% url 'properties:catalog' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          Catálogo
+          {% tr "Catálogo" %}
         </a>
 
         {% if user.is_authenticated %}
           <a href="{% url 'properties:my_reservations' %}"
              class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            Mis reservas
+            {% tr "Mis reservas" %}
           </a>
 
           <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
              class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% if mode == "host" %}Modo usuario{% else %}Modo anfitrión{% endif %}
+            {% if mode == "host" %}{% tr "Modo usuario" %}{% else %}{% tr "Modo anfitrión" %}{% endif %}
           </a>
 
           {% if mode == "host" %}
             <a href="{% url 'properties:create' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              Publicar
+              {% tr "Publicar" %}
             </a>
 
             <a href="{% url 'properties:mine' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              Mis propiedades
+              {% tr "Mis propiedades" %}
             </a>
 
             <a href="{% url 'properties:my_transactions' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              Mis ventas/arriendos
+              {% tr "Mis ventas/arriendos" %}
             </a>
 
             <div class="px-4">
               <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold">
-                Host activado
+                {% tr "Host activado" %}
               </span>
             </div>
           {% endif %}
 
           <div class="px-4 pt-2">
-            <div class="text-xs text-slate-400">Bienvenido</div>
+            <div class="text-xs text-slate-400">{% tr "Bienvenido" %}</div>
             <div class="text-sm font-semibold text-slate-700">{{ user.username }}</div>
           </div>
 
           <a href="{% url 'accounts:profile' %}"
              class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            Perfil
+            {% tr "Perfil" %}
           </a>
 
           <a href="{% url 'accounts:logout' %}"
              class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            Salir
+            {% tr "Salir" %}
           </a>
         {% else %}
           <a href="{% url 'accounts:login' %}"
              class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            Iniciar sesión
+            {% tr "Iniciar sesión" %}
           </a>
 
           <a href="{% url 'accounts:register' %}"
              class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            Crear cuenta
+            {% tr "Crear cuenta" %}
           </a>
         {% endif %}
       </div>
@@ -437,7 +452,7 @@
   <!-- FOOTER -->
   <footer class="border-t border-slate-200 bg-white mt-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-500">
-      © {{ now|date:"Y" }} Inmobilike It · Proyecto académico
+      © {{ now|date:"Y" }} Inmobilike It · {% tr "Proyecto académico" %}
     </div>
   </footer>
 
@@ -516,7 +531,7 @@
       }
 
       function clearRenderedNotifications() {
-        list.innerHTML = `<li class="px-4 py-4 text-sm text-slate-400 text-center" id="${emptyId}">Sin notificaciones nuevas</li>`;
+        list.innerHTML = `<li class="px-4 py-4 text-sm text-slate-400 text-center" id="${emptyId}">{% tr "Sin notificaciones nuevas" %}</li>`;
         count = 0;
         updateBadge();
       }
@@ -614,8 +629,8 @@
         const data = JSON.parse(event.data);
         if (typeof window.__bellNotify === "function") {
           window.__bellNotify(
-            data.sender || "Nuevo mensaje",
-            data.message || "Tienes un mensaje nuevo",
+            data.sender || "{% if LANGUAGE_CODE == 'en' %}New message{% else %}Nuevo mensaje{% endif %}",
+            data.message || "{% if LANGUAGE_CODE == 'en' %}You have a new message{% else %}Tienes un mensaje nuevo{% endif %}",
             data.conversation_id
           );
         }

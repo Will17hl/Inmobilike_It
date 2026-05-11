@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block title %}Chats{% endblock %}
+{% load simple_i18n %}
+{% block title %}{% tr "Chats" %}{% endblock %}
 {% block main_class %}p-0{% endblock %}
 
 {% block extra_head %}
@@ -206,10 +207,10 @@
           <div class="px-5 sm:px-6 pt-6 pb-5 border-b border-slate-200/70 shrink-0">
             <div class="flex items-start justify-between gap-4">
               <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Mensajeria</p>
-                <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">Centro de conversaciones</h1>
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">{% tr "Mensajeria" %}</p>
+                <h1 class="mt-2 text-2xl font-black tracking-tight text-slate-950">{% tr "Centro de conversaciones" %}</h1>
                 <p class="mt-2 text-sm leading-6 text-slate-500">
-                  Gestiona tus chats de forma ordenada y responde con rapidez.
+                  {% tr "Gestiona tus chats de forma ordenada y responde con rapidez." %}
                 </p>
               </div>
               <div class="hidden sm:flex w-12 h-12 rounded-2xl bg-slate-950 text-white items-center justify-center shadow-lg shadow-slate-950/15">
@@ -222,17 +223,17 @@
 
             <div class="mt-5 grid grid-cols-2 gap-3">
               <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Conversaciones</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{% tr "Conversaciones" %}</p>
                 <p class="mt-2 text-2xl font-black tracking-tight text-slate-950">{{ conversation_count }}</p>
               </div>
               <div class="rounded-2xl border border-slate-200 bg-slate-950 px-4 py-3 text-white">
-                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">No leidos</p>
+                <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{% tr "No leidos" %}</p>
                 <p class="mt-2 text-2xl font-black tracking-tight">{{ total_unread }}</p>
               </div>
             </div>
 
             <div class="mt-5">
-              <label for="chat-search" class="sr-only">Buscar conversacion</label>
+              <label for="chat-search" class="sr-only">{% tr "Buscar conversacion" %}</label>
               <div class="relative">
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -242,7 +243,7 @@
                 <input
                   id="chat-search"
                   type="search"
-                  placeholder="Buscar por persona o propiedad"
+                  placeholder="{% tr "Buscar por persona o propiedad" %}"
                   class="w-full rounded-2xl border border-slate-200 bg-white pl-11 pr-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none focus:border-slate-300 focus:ring-4 focus:ring-slate-200/60"
                 >
               </div>
@@ -276,7 +277,7 @@
                               {{ other_user.username }}
                             </p>
                             <span class="inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] {% if active_conversation and active_conversation.id == conversation.id %}bg-white/10 text-slate-200{% else %}bg-slate-100 text-slate-500{% endif %}">
-                              {% if request.user == conversation.buyer %}Asesor{% else %}Cliente{% endif %}
+                              {% if request.user == conversation.buyer %}{% tr "Asesor" %}{% else %}{% tr "Cliente" %}{% endif %}
                             </span>
                           </div>
                           <p class="mt-1 truncate text-xs {% if active_conversation and active_conversation.id == conversation.id %}text-slate-300{% else %}text-slate-500{% endif %}">
@@ -303,9 +304,9 @@
 
                       <p class="mt-3 truncate text-sm leading-6 {% if active_conversation and active_conversation.id == conversation.id %}text-slate-200{% elif unread_count > 0 %}text-slate-900 font-semibold{% else %}text-slate-500{% endif %}" data-preview-text>
                         {% if last_message %}
-                          {% if last_message.sender == request.user %}Tu: {% endif %}{{ last_message.content }}
+                          {% if last_message.sender == request.user %}{% if LANGUAGE_CODE == 'en' %}You: {% else %}Tu: {% endif %}{% endif %}{{ last_message.content }}
                         {% else %}
-                          Conversacion iniciada. Aun no hay mensajes.
+                          {% tr "Conversacion iniciada. Aun no hay mensajes." %}
                         {% endif %}
                       </p>
 
@@ -323,20 +324,20 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h5.25m-7.5 8.25h9A2.25 2.25 0 0018 17.25V6.75A2.25 2.25 0 0015.75 4.5h-9A2.25 2.25 0 004.5 6.75v10.5A2.25 2.25 0 006.75 19.5z" />
                   </svg>
                 </div>
-                <h2 class="mt-5 text-lg font-bold text-slate-950">No tienes conversaciones activas</h2>
+                <h2 class="mt-5 text-lg font-bold text-slate-950">{% tr "No tienes conversaciones activas" %}</h2>
                 <p class="mt-2 text-sm leading-6 text-slate-500">
-                  Cuando contactes una propiedad o recibas respuesta, el chat aparecera aqui.
+                  {% tr "Cuando contactes una propiedad o recibas respuesta, el chat aparecera aqui." %}
                 </p>
                 <a href="{% url 'properties:catalog' %}" class="inline-flex items-center mt-6 rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-800 transition">
-                  Explorar catalogo
+                  {% tr "Explorar catalogo" %}
                 </a>
               </div>
             {% endfor %}
           </div>
 
           <div id="conversation-search-empty" class="hidden px-6 py-10 border-t border-slate-200/70 text-center bg-white/70">
-            <p class="text-sm font-semibold text-slate-900">No hubo coincidencias</p>
-            <p class="mt-1 text-sm text-slate-500">Prueba con otro nombre o con el titulo de la propiedad.</p>
+            <p class="text-sm font-semibold text-slate-900">{% tr "No hubo coincidencias" %}</p>
+            <p class="mt-1 text-sm text-slate-500">{% tr "Prueba con otro nombre o con el titulo de la propiedad." %}</p>
           </div>
         </aside>
 
@@ -348,10 +349,10 @@
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                   </svg>
-                  Conversaciones
+                  {% tr "Conversaciones" %}
                 </a>
                 <span id="socket-status-mobile" class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                  Conectando
+                  {% tr "Conectando" %}
                 </span>
               </div>
 
@@ -379,7 +380,7 @@
                         {% endif %}
                       </p>
                       <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700 border border-emerald-100">
-                        Chat activo
+                        {% tr "Chat activo" %}
                       </span>
                     </div>
 
@@ -391,7 +392,7 @@
 
                     <div class="mt-3 flex flex-wrap items-center gap-2">
                       <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                        {% if active_conversation.property.operation == "sale" %}Venta{% else %}Arriendo{% endif %}
+                        {% if active_conversation.property.operation == "sale" %}{% tr "Venta" %}{% else %}{% tr "Arriendo" %}{% endif %}
                       </span>
                       {% if active_conversation.property.area_m2 %}
                         <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
@@ -407,10 +408,10 @@
 
                 <div class="flex items-center gap-2 sm:gap-3">
                   <span id="socket-status" class="hidden xl:inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
-                    Conectando
+                    {% tr "Conectando" %}
                   </span>
                   <a href="{{ active_chat_meta.property_url }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
-                    Ver propiedad
+                    {% tr "Ver propiedad" %}
                   </a>
                 </div>
               </div>
@@ -437,9 +438,9 @@
                           <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h5.25m-9 8.25h12A2.25 2.25 0 0018 17.25V6.75A2.25 2.25 0 0015.75 4.5h-9A2.25 2.25 0 004.5 6.75v10.5A2.25 2.25 0 006.75 19.5z" />
                         </svg>
                       </div>
-                      <h2 class="mt-4 text-lg font-bold text-slate-950">Inicia la conversacion</h2>
+                      <h2 class="mt-4 text-lg font-bold text-slate-950">{% tr "Inicia la conversacion" %}</h2>
                       <p class="mt-2 text-sm leading-6 text-slate-500">
-                        Usa este chat para resolver dudas, coordinar visitas y cerrar el siguiente paso.
+                        {% tr "Usa este chat para resolver dudas, coordinar visitas y cerrar el siguiente paso." %}
                       </p>
                     </div>
                   </div>
@@ -451,12 +452,12 @@
               <form id="chat-form" class="rounded-[1.75rem] border border-slate-200 bg-white p-3 shadow-sm">
                 <div class="flex items-end gap-3">
                   <div class="min-w-0 flex-1">
-                    <label for="chat-message-input" class="sr-only">Mensaje</label>
+                    <label for="chat-message-input" class="sr-only">{% tr "Mensaje" %}</label>
                     <textarea
                       id="chat-message-input"
                       rows="1"
                       maxlength="2000"
-                      placeholder="Escribe un mensaje claro y profesional"
+                      placeholder="{% tr "Escribe un mensaje claro y profesional" %}"
                       class="w-full resize-none border-0 bg-transparent px-2 py-2 text-[15px] leading-7 text-slate-900 placeholder:text-slate-400 outline-none focus:ring-0"
                     ></textarea>
                   </div>
@@ -465,11 +466,11 @@
                     type="submit"
                     class="inline-flex h-12 items-center justify-center rounded-2xl bg-slate-950 px-5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-500"
                   >
-                    Enviar
+                    {% tr "Enviar" %}
                   </button>
                 </div>
                 <div class="mt-2 flex flex-col gap-2 border-t border-slate-100 px-2 pt-3 sm:flex-row sm:items-center sm:justify-between">
-                  <p class="text-xs text-slate-400">Enter envia. Shift + Enter agrega una nueva linea.</p>
+                  <p class="text-xs text-slate-400">{% tr "Enter envia. Shift + Enter agrega una nueva linea." %}</p>
                   <p id="composer-meta" class="text-xs font-medium text-slate-400">0 / 2000</p>
                 </div>
               </form>
@@ -483,9 +484,9 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12a8.25 8.25 0 1114.593 5.28L20.25 21l-4.02-1.34A8.214 8.214 0 0112 20.25 8.25 8.25 0 013.75 12z" />
                   </svg>
                 </div>
-                <h2 class="mt-6 text-2xl font-black tracking-tight text-slate-950">Selecciona una conversacion</h2>
+                <h2 class="mt-6 text-2xl font-black tracking-tight text-slate-950">{% tr "Selecciona una conversacion" %}</h2>
                 <p class="mt-3 text-sm leading-7 text-slate-500">
-                  Abre un chat desde el panel izquierdo para ver historial, responder mensajes y consultar la propiedad asociada.
+                  {% tr "Abre un chat desde el panel izquierdo para ver historial, responder mensajes y consultar la propiedad asociada." %}
                 </p>
               </div>
             </div>
@@ -571,15 +572,15 @@
       const targets = [socketStatus, socketStatusMobile].filter(Boolean);
       const states = {
         connected: {
-          text: "En linea",
+          text: "{% tr "En linea" %}",
           className: "inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700"
         },
         connecting: {
-          text: "Conectando",
+          text: "{% tr "Conectando" %}",
           className: "inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700"
         },
         disconnected: {
-          text: "Reconectando",
+          text: "{% tr "Reconectando" %}",
           className: "inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700"
         }
       };
@@ -643,7 +644,7 @@
       const isMine = String(senderId) === String(userId);
 
       if (preview) {
-        preview.textContent = `${isMine ? "Tu: " : ""}${message}`;
+        preview.textContent = `${isMine ? "{% if LANGUAGE_CODE == 'en' %}You: {% else %}Tu: {% endif %}" : ""}${message}`;
       }
 
       if (previewTime) {
@@ -679,7 +680,7 @@
         appendMessage(data.message, data.sender_id, data.created_at);
 
         if (String(data.sender_id) !== String(userId) && typeof window.__bellNotify === "function") {
-          window.__bellNotify(data.sender || "Nuevo mensaje", data.message, conversationId);
+          window.__bellNotify(data.sender || "{% if LANGUAGE_CODE == 'en' %}New message{% else %}Nuevo mensaje{% endif %}", data.message, conversationId);
         }
       };
 

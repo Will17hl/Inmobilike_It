@@ -1,43 +1,44 @@
 {% extends "base.html" %}
 {% load property_format %}
-{% block title %}Catalogo{% endblock %}
+{% load simple_i18n %}
+{% block title %}{% tr "Catalogo" %}{% endblock %}
 
 {% block content %}
 <section class="space-y-8">
   <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.9); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.32em]" style="color: var(--theme-accent);">Catalogo</p>
-        <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">Propiedades con una presentacion mas clara.</h1>
+        <p class="text-xs font-bold uppercase tracking-[0.32em]" style="color: var(--theme-accent);">{% tr "Catalogo" %}</p>
+        <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">{% tr "Propiedades con una presentacion mas clara." %}</h1>
         <p class="mt-3 max-w-2xl text-base leading-7" style="color: var(--theme-muted);">
-          Filtra por ubicacion, operacion y rango de precio para encontrar oportunidades con mas rapidez.
+          {% tr "Filtra por ubicacion, operacion y rango de precio para encontrar oportunidades con mas rapidez." %}
         </p>
       </div>
       <div class="rounded-[1.5rem] border px-5 py-4 text-sm" style="background: rgba(255,248,240,0.86); border-color: rgba(241,137,45,0.24); color: var(--theme-muted);">
-        {{ properties|length }} resultado{{ properties|length|pluralize:"s" }}
+        {{ properties|length }} {% if properties|length == 1 %}{% tr "resultado" %}{% else %}{% tr "resultados" %}{% endif %}
       </div>
     </div>
   </div>
 
   <form method="get" class="rounded-[2rem] border p-5 md:p-6" style="background: rgba(255,253,249,0.92); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-      <input name="city" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Ciudad" value="{{ request.GET.city }}">
-      <input name="neighborhood" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Barrio" value="{{ request.GET.neighborhood }}">
+      <input name="city" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="{% tr "Ciudad" %}" value="{{ request.GET.city }}">
+      <input name="neighborhood" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="{% tr "Barrio" %}" value="{{ request.GET.neighborhood }}">
       <select name="operation" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);">
-        <option value="">Operacion</option>
-        <option value="rent" {% if request.GET.operation == "rent" %}selected{% endif %}>Arriendo</option>
-        <option value="sale" {% if request.GET.operation == "sale" %}selected{% endif %}>Venta</option>
+        <option value="">{% tr "Operacion" %}</option>
+        <option value="rent" {% if request.GET.operation == "rent" %}selected{% endif %}>{% tr "Arriendo" %}</option>
+        <option value="sale" {% if request.GET.operation == "sale" %}selected{% endif %}>{% tr "Venta" %}</option>
       </select>
-      <input name="min_price" type="text" inputmode="numeric" autocomplete="off" data-price-input="true" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Precio min" value="{{ request.GET.min_price }}">
-      <input name="max_price" type="text" inputmode="numeric" autocomplete="off" data-price-input="true" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="Precio max" value="{{ request.GET.max_price }}">
+      <input name="min_price" type="text" inputmode="numeric" autocomplete="off" data-price-input="true" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="{% tr "Precio min" %}" value="{{ request.GET.min_price }}">
+      <input name="max_price" type="text" inputmode="numeric" autocomplete="off" data-price-input="true" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="{% tr "Precio max" %}" value="{{ request.GET.max_price }}">
     </div>
 
     <div class="mt-5 flex flex-wrap items-center justify-between gap-4">
       <button class="theme-button inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
-        Filtrar propiedades
+        {% tr "Filtrar propiedades" %}
       </button>
       <a href="{% url 'properties:catalog' %}" class="text-sm font-semibold" style="color: var(--theme-muted);">
-        Limpiar filtros
+        {% tr "Limpiar filtros" %}
       </a>
     </div>
   </form>
@@ -58,7 +59,7 @@
               <p class="mt-2 text-sm" style="color: var(--theme-muted);">{{ p.location.city }} / {{ p.location.neighborhood }}</p>
             </div>
             <span class="shrink-0 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em]" style="{% if p.operation == 'sale' %}background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241,137,45,0.24);{% else %}background: rgba(255,253,249,0.9); color: var(--theme-dark); border: 1px solid var(--theme-border);{% endif %}">
-              {{ p.get_operation_display }}
+              {% if p.operation == 'sale' %}{% tr "Venta" %}{% else %}{% tr "Arriendo" %}{% endif %}
             </span>
           </div>
 
@@ -66,16 +67,16 @@
             <div>
               <p class="brand-serif text-[clamp(2rem,3vw,3rem)] leading-tight" style="color: var(--theme-ink);">{{ p.price|currency_es }}</p>
               {% if p.operation == 'rent' %}
-                <p class="mt-1 text-sm" style="color: var(--theme-muted);">mensual</p>
+                <p class="mt-1 text-sm" style="color: var(--theme-muted);">{% tr "mensual" %}</p>
               {% endif %}
             </div>
-            <span class="text-sm font-semibold" style="color: var(--theme-accent);">Ver detalle</span>
+            <span class="text-sm font-semibold" style="color: var(--theme-accent);">{% tr "Ver detalle" %}</span>
           </div>
         </div>
       </a>
     {% empty %}
       <div class="col-span-full rounded-[1.8rem] border px-8 py-12 text-center" style="background: rgba(255,253,249,0.92); border-color: var(--theme-border-soft); color: var(--theme-muted);">
-        No hay propiedades disponibles con esos filtros.
+        {% tr "No hay propiedades disponibles con esos filtros." %}
       </div>
     {% endfor %}
   </div>
