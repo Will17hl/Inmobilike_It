@@ -18,7 +18,6 @@ venv.bak/
 .gitignore
 docker-compose*.yml
 staticfiles/
-media/
 node_modules/
 npm-debug.log
 yarn-error.log
