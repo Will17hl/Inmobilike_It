@@ -14,6 +14,8 @@ from .forms import PropertyForm, LocationForm
 from .services.property_service import PropertyService
 from .models import Property, PropertyImage, PropertyPayment
 from decimal import Decimal
+import json
+from urllib import error, request as url_request
 
 import stripe
 
@@ -113,6 +115,158 @@ def catalog(request):
         {
             "properties": properties,
         },
+    )
+
+
+def build_property_ai_payload(properties):
+    payload = []
+    for property_obj in properties[:60]:
+        payload.append(
+            {
+                "id": property_obj.id,
+                "title": property_obj.title,
+                "description": property_obj.description,
+                "operation": property_obj.operation,
+                "operation_label": property_obj.get_operation_display(),
+                "price": str(property_obj.price),
+                "bedrooms": property_obj.bedrooms,
+                "bathrooms": property_obj.bathrooms,
+                "area_m2": str(property_obj.area_m2 or ""),
+                "city": property_obj.location.city,
+                "neighborhood": property_obj.location.neighborhood,
+                "address": property_obj.location.address,
+            }
+        )
+    return payload
+
+
+def extract_gemini_text(response_payload):
+    candidates = response_payload.get("candidates") or []
+    if not candidates:
+        return ""
+
+    parts = candidates[0].get("content", {}).get("parts", [])
+    return "".join(part.get("text", "") for part in parts).strip()
+
+
+def parse_ai_recommendation(raw_text):
+    cleaned = raw_text.strip()
+    if cleaned.startswith("```"):
+        cleaned = cleaned.strip("`").strip()
+        if cleaned.lower().startswith("json"):
+            cleaned = cleaned[4:].strip()
+    return json.loads(cleaned)
+
+
+def ai_property_recommendation(request):
+    if request.method != "POST":
+        raise Http404("Method not allowed")
+
+    if not settings.GEMINI_API_KEY:
+        return JsonResponse(
+            {"error": "GEMINI_API_KEY is not configured."},
+            status=503,
+        )
+
+    try:
+        body = json.loads(request.body.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return JsonResponse({"error": "Invalid request body."}, status=400)
+
+    user_prompt = (body.get("query") or "").strip()
+    if len(user_prompt) < 8:
+        return JsonResponse(
+            {"error": "Describe un poco mas la casa que buscas."},
+            status=400,
+        )
+
+    properties = list(PropertyService.list_active_properties())
+    if not properties:
+        return JsonResponse(
+            {"error": "No hay propiedades activas para recomendar."},
+            status=404,
+        )
+
+    property_payload = build_property_ai_payload(properties)
+    prompt = (
+        "Eres un asesor inmobiliario para Inmobilike It. "
+        "El usuario describira su casa ideal. Debes elegir exactamente una propiedad "
+        "del catalogo proporcionado. Responde solo JSON valido con estas llaves: "
+        "property_id, match_score, reason, highlights. "
+        "property_id debe ser un id existente. match_score debe ser un numero de 0 a 100. "
+        "reason debe ser breve, amable y en el mismo idioma del usuario. "
+        "highlights debe ser una lista de maximo 3 textos cortos.\n\n"
+        f"Solicitud del usuario: {user_prompt}\n\n"
+        f"Catalogo disponible: {json.dumps(property_payload, ensure_ascii=False)}"
+    )
+
+    request_payload = {
+        "contents": [
+            {
+                "role": "user",
+                "parts": [{"text": prompt}],
+            }
+        ],
+        "generationConfig": {
+            "temperature": 0.2,
+            "responseMimeType": "application/json",
+        },
+    }
+
+    endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{settings.GEMINI_MODEL}:generateContent"
+    api_request = url_request.Request(
+        endpoint,
+        data=json.dumps(request_payload).encode("utf-8"),
+        headers={
+            "Content-Type": "application/json",
+            "x-goog-api-key": settings.GEMINI_API_KEY,
+        },
+        method="POST",
+    )
+
+    try:
+        with url_request.urlopen(api_request, timeout=20) as response:
+            gemini_payload = json.loads(response.read().decode("utf-8"))
+        recommendation = parse_ai_recommendation(extract_gemini_text(gemini_payload))
+    except (error.URLError, TimeoutError, json.JSONDecodeError, KeyError, ValueError):
+        return JsonResponse(
+            {"error": "No pudimos generar una recomendacion en este momento."},
+            status=502,
+        )
+
+    try:
+        property_id = int(recommendation.get("property_id"))
+    except (TypeError, ValueError):
+        property_id = None
+    property_obj = next((item for item in properties if item.id == property_id), None)
+    if not property_obj:
+        return JsonResponse(
+            {"error": "La IA no encontro una propiedad valida del catalogo."},
+            status=502,
+        )
+
+    cover = PropertyService.get_cover_image(property_obj)
+    cover_url = cover.image.url if cover and cover.image else ""
+
+    return JsonResponse(
+        {
+            "property": {
+                "id": property_obj.id,
+                "title": property_obj.title,
+                "operation": property_obj.get_operation_display(),
+                "price": str(property_obj.price),
+                "bedrooms": property_obj.bedrooms,
+                "bathrooms": property_obj.bathrooms,
+                "area_m2": str(property_obj.area_m2 or ""),
+                "city": property_obj.location.city,
+                "neighborhood": property_obj.location.neighborhood,
+                "detail_url": reverse("properties:detail", kwargs={"pk": property_obj.id}),
+                "cover_url": cover_url,
+            },
+            "match_score": recommendation.get("match_score", 0),
+            "reason": recommendation.get("reason", ""),
+            "highlights": recommendation.get("highlights", []),
+        }
     )
     
 @login_required

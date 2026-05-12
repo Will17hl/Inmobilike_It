@@ -186,6 +186,15 @@ TRANSLATIONS = {
         "Abre un chat desde el panel izquierdo para ver historial, responder mensajes y consultar la propiedad asociada.": "Open a chat from the left panel to view history, reply to messages, and check the related property.",
         "No hubo coincidencias": "No matches found",
         "Prueba con otro nombre o con el titulo de la propiedad.": "Try another name or the property title.",
+        "Encuentra tu casa ideal": "Find your ideal home",
+        "Describe que estas buscando y la IA elegira la propiedad del catalogo que mejor encaje contigo.": "Describe what you are looking for and AI will choose the catalog property that best fits you.",
+        "Ej: busco un apartamento en Medellin, de 2 habitaciones, para arriendo, cerca a zonas tranquilas": "Example: I am looking for an apartment in Medellin, with 2 bedrooms, for rent, near quiet areas",
+        "Buscar con IA": "Search with AI",
+        "Analizando catalogo...": "Analyzing catalog...",
+        "Mejor opcion para ti": "Best option for you",
+        "Ver esta propiedad": "View this property",
+        "No pudimos generar una recomendacion en este momento.": "We could not generate a recommendation right now.",
+        "Describe un poco mas la casa que buscas.": "Describe the home you are looking for in a little more detail.",
     }
 }
 

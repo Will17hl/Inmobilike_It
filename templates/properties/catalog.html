@@ -20,6 +20,61 @@
     </div>
   </div>
 
+  <section class="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] rounded-[2rem] border p-6 md:p-8" style="background: linear-gradient(180deg, rgba(255,240,226,0.92) 0%, rgba(255,253,249,0.96) 100%); border-color: rgba(241,137,45,0.24); box-shadow: var(--theme-shadow);">
+    <div>
+      <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">IA</p>
+      <h2 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">{% tr "Encuentra tu casa ideal" %}</h2>
+      <p class="mt-3 max-w-xl text-base leading-7" style="color: var(--theme-muted);">
+        {% tr "Describe que estas buscando y la IA elegira la propiedad del catalogo que mejor encaje contigo." %}
+      </p>
+    </div>
+
+    <div class="rounded-[1.7rem] border p-4 md:p-5" style="background: rgba(255,253,249,0.96); border-color: var(--theme-border-soft);">
+      <form id="ai-recommendation-form" class="space-y-4">
+        {% csrf_token %}
+        <textarea
+          id="ai-recommendation-query"
+          rows="4"
+          class="w-full resize-none rounded-2xl px-4 py-3 text-sm outline-none"
+          style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong); color: var(--theme-ink);"
+          placeholder="{% tr "Ej: busco un apartamento en Medellin, de 2 habitaciones, para arriendo, cerca a zonas tranquilas" %}"
+        ></textarea>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <button id="ai-recommendation-submit" type="submit" class="theme-button rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+            {% tr "Buscar con IA" %}
+          </button>
+          <p id="ai-recommendation-status" class="hidden text-sm font-semibold" style="color: var(--theme-muted);">
+            {% tr "Analizando catalogo..." %}
+          </p>
+        </div>
+      </form>
+
+      <div id="ai-recommendation-error" class="mt-4 hidden rounded-2xl border px-4 py-3 text-sm" style="background: #fff0ec; color: #b2543b; border-color: #f0c4b8;"></div>
+
+      <article id="ai-recommendation-result" class="mt-5 hidden overflow-hidden rounded-[1.6rem] border" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.78);">
+        <div class="grid gap-0 sm:grid-cols-[150px_1fr]">
+          <div id="ai-result-image-wrap" class="min-h-36" style="background: linear-gradient(135deg, #fff0e2 0%, #e8ddd1 100%);">
+            <img id="ai-result-image" src="" alt="" class="hidden h-full w-full object-cover">
+          </div>
+          <div class="p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Mejor opcion para ti" %}</p>
+            <div class="mt-2 flex flex-wrap items-start justify-between gap-3">
+              <h3 id="ai-result-title" class="text-2xl font-extrabold leading-tight" style="color: var(--theme-ink);"></h3>
+              <span id="ai-result-score" class="rounded-full px-3 py-1 text-xs font-bold" style="background: var(--theme-dark); color: #fffaf4;"></span>
+            </div>
+            <p id="ai-result-location" class="mt-2 text-sm" style="color: var(--theme-muted);"></p>
+            <p id="ai-result-price" class="brand-serif mt-3 text-3xl leading-tight" style="color: var(--theme-ink);"></p>
+            <p id="ai-result-reason" class="mt-3 text-sm leading-7" style="color: var(--theme-muted);"></p>
+            <div id="ai-result-highlights" class="mt-4 flex flex-wrap gap-2"></div>
+            <a id="ai-result-link" href="#" class="theme-button mt-5 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
+              {% tr "Ver esta propiedad" %}
+            </a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
   <form method="get" class="rounded-[2rem] border p-5 md:p-6" style="background: rgba(255,253,249,0.92); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
       <input name="city" class="rounded-2xl px-4 py-3 outline-none" style="border: 1px solid var(--theme-border); background: var(--theme-surface-strong);" placeholder="{% tr "Ciudad" %}" value="{{ request.GET.city }}">
@@ -81,4 +136,115 @@
     {% endfor %}
   </div>
 </section>
+<script>
+  (function () {
+    const form = document.getElementById("ai-recommendation-form");
+    const queryInput = document.getElementById("ai-recommendation-query");
+    const submitButton = document.getElementById("ai-recommendation-submit");
+    const status = document.getElementById("ai-recommendation-status");
+    const errorBox = document.getElementById("ai-recommendation-error");
+    const result = document.getElementById("ai-recommendation-result");
+    const image = document.getElementById("ai-result-image");
+    const title = document.getElementById("ai-result-title");
+    const score = document.getElementById("ai-result-score");
+    const location = document.getElementById("ai-result-location");
+    const price = document.getElementById("ai-result-price");
+    const reason = document.getElementById("ai-result-reason");
+    const highlights = document.getElementById("ai-result-highlights");
+    const link = document.getElementById("ai-result-link");
+
+    if (!form) return;
+
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(";").shift();
+      return "";
+    }
+
+    function formatPrice(value) {
+      const numberValue = Number(value);
+      if (!Number.isFinite(numberValue)) return value;
+      return new Intl.NumberFormat("es-CO", {
+        style: "currency",
+        currency: "COP",
+        maximumFractionDigits: 0,
+      }).format(numberValue);
+    }
+
+    function setLoading(isLoading) {
+      submitButton.disabled = isLoading;
+      submitButton.classList.toggle("opacity-60", isLoading);
+      status.classList.toggle("hidden", !isLoading);
+    }
+
+    function showError(message) {
+      errorBox.textContent = message || "{% tr "No pudimos generar una recomendacion en este momento." %}";
+      errorBox.classList.remove("hidden");
+      result.classList.add("hidden");
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const query = queryInput.value.trim();
+
+      errorBox.classList.add("hidden");
+      if (query.length < 8) {
+        showError("{% tr "Describe un poco mas la casa que buscas." %}");
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await fetch("{% url 'properties:ai_recommendation' %}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken"),
+          },
+          body: JSON.stringify({ query }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+          showError(data.error);
+          return;
+        }
+
+        const property = data.property;
+        title.textContent = property.title;
+        score.textContent = `${data.match_score || 0}%`;
+        location.textContent = `${property.city} / ${property.neighborhood}`;
+        price.textContent = formatPrice(property.price);
+        reason.textContent = data.reason || "";
+        link.href = property.detail_url;
+
+        if (property.cover_url) {
+          image.src = property.cover_url;
+          image.alt = property.title;
+          image.classList.remove("hidden");
+        } else {
+          image.classList.add("hidden");
+        }
+
+        highlights.innerHTML = "";
+        (data.highlights || []).slice(0, 3).forEach((item) => {
+          const chip = document.createElement("span");
+          chip.className = "rounded-full px-3 py-1 text-xs font-semibold";
+          chip.style.background = "rgba(255,253,249,0.95)";
+          chip.style.border = "1px solid var(--theme-border)";
+          chip.style.color = "var(--theme-muted)";
+          chip.textContent = item;
+          highlights.appendChild(chip);
+        });
+
+        result.classList.remove("hidden");
+      } catch (error) {
+        showError();
+      } finally {
+        setLoading(false);
+      }
+    });
+  })();
+</script>
 {% endblock %}

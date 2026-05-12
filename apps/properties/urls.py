@@ -5,6 +5,7 @@ app_name = "properties"
 
 urlpatterns = [
     path("", views.catalog, name="catalog"),
+    path("ai/recommend/", views.ai_property_recommendation, name="ai_recommendation"),
     path("mine/", views.my_properties, name="mine"),
     path("reservations/", views.my_reservations, name="my_reservations"),
     path("transactions/", views.my_transactions, name="my_transactions"),
