@@ -25,4 +25,10 @@ urlpatterns = [
     # Legacy chat URLs redirect to the canonical interactions routes.
     path("chats/", RedirectView.as_view(pattern_name="interactions:chat_list", permanent=False)),
     path("chats/<int:conversation_id>/", RedirectView.as_view(pattern_name="interactions:chat_room", permanent=False)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + staticfiles_urlpatterns()
+]
+
+# Serve media files in production
+if settings.MEDIA_URL and settings.MEDIA_ROOT:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+urlpatterns += staticfiles_urlpatterns()
