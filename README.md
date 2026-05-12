@@ -154,6 +154,34 @@ El proyecto incluye un entorno preconfigurado usando `docker-compose` que levant
 
 ---
 
+## Despliegue en Render
+
+El proyecto ya incluye un archivo `render.yaml` que define el servicio web Docker y una base de datos PostgreSQL administrada.
+
+### Requisitos
+- Cuenta en Render
+- Acceso al repositorio GitHub o importe del repositorio en Render
+
+### Pasos rápidos
+1. En Render, crea un nuevo servicio usando el repositorio de este proyecto.
+2. Selecciona `Docker` como entorno de ejecución.
+3. En `Render.yaml` deja la configuración predeterminada: el contenedor usará el `Dockerfile` del proyecto.
+4. Verifica que las variables de entorno en Render incluyen:
+   - `DEBUG=0`
+   - `ALLOWED_HOSTS=*`
+   - `CSRF_TRUSTED_ORIGINS=https://<tu-servicio>.onrender.com`
+   - `SECRET_KEY` (o usa el generador de secrets de Render)
+
+### Base de datos
+Render creará un servicio PostgreSQL que expone `DATABASE_URL`. El proyecto ya está configurado para leer `DATABASE_URL` y usarlo en producción.
+
+### Consideraciones
+- El servicio usa `daphne` para Django Channels y WebSockets.
+- WhiteNoise sirve archivos estáticos desde `STATIC_ROOT`.
+- Si necesitas soporte de Redis para canales con múltiples instancias, tendrás que añadir una capa de `CHANNEL_LAYERS` en `config/settings.py`.
+
+---
+
 ## Ejemplos de Uso
 
 ### 1. Búsqueda Avanzada de Propiedades

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: inmobilike-it-web
+    env: docker
+    dockerfilePath: Dockerfile
+    plan: starter
+    envVars:
+      - key: DEBUG
+        value: "0"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: CSRF_TRUSTED_ORIGINS
+        value: "https://inmobilike-it.onrender.com"
+      - key: SECRET_KEY
+        generator: secret
+  - type: postgres
+    name: inmobilike-it-db
+    plan: starter
+    databaseName: inmobilike_it
