@@ -38,6 +38,8 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     "daphne",
+    "cloudinary",
+    "cloudinary_storage",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -166,8 +168,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# Create media directory if it doesn't exist
-MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+# Create media directory if it doesn't exist when using local storage
+if not os.getenv("CLOUDINARY_URL"):
+    MEDIA_ROOT.mkdir(parents=True, exist_ok=True)
+
+CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "")
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.getenv("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET", ""),
+    "SECURE": True,
+}
+
+if CLOUDINARY_URL or CLOUDINARY_STORAGE["CLOUD_NAME"]:
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY", "")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY", "")
