@@ -1,10 +1,7 @@
-# 📘 Inmobilike It — Onboarding del Proyecto
+# Inmobilike It — Onboarding del Proyecto
 
-> Guía completa para nuevos miembros del equipo. Este documento cubre la visión del proyecto, las tecnologías utilizadas, la funcionalidad implementada y la lógica de negocio.
 
----
-
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 1. [Descripción General](#-descripción-general)
 2. [Stack Tecnológico](#-stack-tecnológico)
@@ -23,7 +20,7 @@
 
 ---
 
-## 🎯 Descripción General
+## Descripción General
 
 **Inmobilike It** es una plataforma inmobiliaria web completa tipo Airbnb/Fincaraíz que permite a los usuarios:
 
@@ -37,7 +34,7 @@ El proyecto fue desarrollado como proyecto académico de la materia **Tópicos d
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Stack Tecnológico
 
 ### Backend
 
@@ -76,7 +73,7 @@ El proyecto fue desarrollado como proyecto académico de la materia **Tópicos d
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 Inmobilike_It/
@@ -150,9 +147,9 @@ Inmobilike_It/
 
 ---
 
-## ✅ Funcionalidades Implementadas
+## Funcionalidades Implementadas
 
-### 🏠 Gestión de Propiedades
+### Gestión de Propiedades
 
 | Funcionalidad | Descripción |
 |--------------|-------------|
@@ -164,7 +161,7 @@ Inmobilike_It/
 | **Búsqueda avanzada** | Motor de búsqueda con Strategy Pattern que soporta ORM y Elasticsearch |
 | **Comparación** | Comparar múltiples propiedades lado a lado con métricas como precio/m² |
 
-### 👤 Gestión de Usuarios
+### Gestión de Usuarios
 
 | Funcionalidad | Descripción |
 |--------------|-------------|
@@ -173,7 +170,7 @@ Inmobilike_It/
 | **Perfil** | Vista del perfil del usuario autenticado |
 | **Modo Dual (Guest/Host)** | Toggle entre modo usuario (buscar/alquilar) y modo anfitrión (publicar/gestionar). Al activar modo host se crea automáticamente un `AgentProfile` |
 
-### 💬 Interacciones
+### Interacciones
 
 | Funcionalidad | Descripción |
 |--------------|-------------|
@@ -183,7 +180,7 @@ Inmobilike_It/
 | **Notificaciones** | Sistema de notificaciones en tiempo real para mensajes nuevos vía WebSocket dedicado |
 | **Contactar asesor** | Crea automáticamente una conversación y envía un primer mensaje predeterminado |
 
-### 💳 Pagos
+### Pagos
 
 | Funcionalidad | Descripción |
 |--------------|-------------|
@@ -196,7 +193,7 @@ Inmobilike_It/
 
 ---
 
-## 🧠 Lógica de Negocio
+## Lógica de Negocio
 
 ### Modelo de Dominio
 
@@ -248,7 +245,7 @@ El sistema modela un **marketplace inmobiliario** con los siguientes conceptos:
 
 ---
 
-## 🏗️ Arquitectura de Software
+## Arquitectura de Software
 
 El proyecto implementa una arquitectura en capas con los siguientes patrones:
 
@@ -274,11 +271,11 @@ Los servicios centralizan la lógica de negocio:
 ### Inyección de Dependencias
 Los servicios reciben sus repositorios por constructor, permitiendo sustituirlos fácilmente en tests.
 
-> 📄 **Para diagramas detallados**, consultar [`arquitectura.md`](./arquitectura.md).
+>  **Para diagramas detallados**, consultar [`arquitectura.md`](./arquitectura.md).
 
 ---
 
-## 🗃️ Base de Datos
+## Base de Datos
 
 ### Motor
 - **PostgreSQL 16** ejecutado en un contenedor Docker.
@@ -319,7 +316,7 @@ erDiagram
 
 ---
 
-## 🔌 WebSockets y Tiempo Real
+## WebSockets y Tiempo Real
 
 ### Infraestructura
 - **Django Channels** con `InMemoryChannelLayer` (desarrollo).
@@ -343,7 +340,7 @@ erDiagram
 
 ---
 
-## 💳 Integración con Stripe
+## Integración con Stripe
 
 ### Flujo de Pago
 
@@ -385,7 +382,7 @@ sequenceDiagram
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ### Tests Implementados
 
@@ -418,7 +415,7 @@ python manage.py test -v 2
 
 ---
 
-## ⚙️ Configuración y Variables de Entorno
+## Configuración y Variables de Entorno
 
 Crear un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
@@ -444,7 +441,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 
 ---
 
-## 🚀 Instalación y Ejecución
+## Instalación y Ejecución
 
 ### Opción 1: Docker (recomendado)
 
@@ -491,11 +488,11 @@ python manage.py migrate
 python -m daphne -b 0.0.0.0 -p 8000 config.asgi:application
 ```
 
-> ⚠️ **Nota**: Para WebSockets se requiere ejecutar con **Daphne** (servidor ASGI), no con `runserver`.
+>  **Nota**: Para WebSockets se requiere ejecutar con **Daphne** (servidor ASGI), no con `runserver`.
 
 ---
 
-## 🗺️ Endpoints y Rutas
+## Endpoints y Rutas
 
 ### HTTP
 
@@ -535,7 +532,7 @@ python -m daphne -b 0.0.0.0 -p 8000 config.asgi:application
 
 ---
 
-## 📝 Convenciones del Código
+## Convenciones del Código
 
 | Aspecto | Convención |
 |---------|-----------|
@@ -550,10 +547,4 @@ python -m daphne -b 0.0.0.0 -p 8000 config.asgi:application
 | **Queries** | Siempre con `select_related` / `prefetch_related` |
 | **Formularios** | Clases CSS aplicadas directamente en widgets |
 
----
 
-## 👥 Equipo
-
-Proyecto desarrollado para la materia **Tópicos de Ingeniería de Software**.
-
-Repositorio: [https://github.com/Will17hl/Inmobilike_It](https://github.com/Will17hl/Inmobilike_It)
