@@ -662,37 +662,40 @@ def stripe_webhook(request):
 
 
 def properties_report_pdf(request):
-    """Genera y devuelve un PDF con el listado de propiedades."""
+    """Genera y devuelve un PDF con el listado de propiedades (DIP: PdfPropertyReportExporter)."""
     filters = {
         "city": request.GET.get("city"),
         "neighborhood": request.GET.get("neighborhood"),
         "operation": request.GET.get("operation"),
     }
-    from .reports import generate_properties_pdf
+    from .report_exporters import PdfPropertyReportExporter
 
-    buffer = generate_properties_pdf(filters=filters)
+    buffer = PdfPropertyReportExporter().export(filters=filters)
     response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="properties_report.pdf"'
     return response
 
 
 def properties_report_excel(request):
-    """Genera y devuelve un Excel con el listado de propiedades."""
+    """Genera y devuelve un Excel con el listado de propiedades (DIP: ExcelPropertyReportExporter)."""
     filters = {
         "city": request.GET.get("city"),
         "neighborhood": request.GET.get("neighborhood"),
         "operation": request.GET.get("operation"),
     }
-    from .reports import generate_properties_excel
+    from .report_exporters import ExcelPropertyReportExporter
 
-    buffer = generate_properties_excel(filters=filters)
+    buffer = ExcelPropertyReportExporter().export(filters=filters)
     response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename="properties_report.xlsx"'
     return response
 
 
 def productos_aliados(request):
-    """Consume el endpoint interno `/api/properties/` vía HTTP y muestra resultados."""
+    """Consume el endpoint interno `/api/properties/` vía HTTP y muestra resultados.
+
+    Rutas: `/productos-aliados/` y `/properties/productos-aliados/`.
+    """
     api_url = request.build_absolute_uri(reverse("properties:api_properties_list"))
     params = {
         "page": request.GET.get("page", "1"),

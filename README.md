@@ -224,14 +224,30 @@ datos_comparativos = comparison_service.compare_properties([1, 4, 7])
 
 El proyecto expone un endpoint que devuelve un listado paginado de propiedades en formato JSON. Esto puede ser consumido por otros equipos o servicios.
 
-- Ruta: `/properties/api/properties/`
+- Rutas: `/api/properties/` y `/properties/api/properties/`
 - Parámetros GET: `page` (int), `page_size` (int), `city`, `neighborhood`, `operation`, `min_price`, `max_price`.
 - Respuesta: JSON con `results` (lista), `page`, `page_size`, `total_pages`, `total`.
 
 Ejemplo de uso con `curl`:
 
 ```bash
-curl 'http://localhost:8000/properties/api/properties/?page=1&page_size=10'
+curl 'http://localhost:8000/api/properties/?page=1&page_size=10'
+```
+
+### Consumo interno — Productos aliados
+
+Vista que consume la API anterior vía HTTP (`requests` / `urllib`):
+
+- Rutas: `/productos-aliados/` y `/properties/productos-aliados/`
+
+### Consumo externo — Clima (Open-Meteo)
+
+El header muestra la temperatura actual de Medellín consumiendo la API pública de Open-Meteo (sin API key).
+
+### Inversión de dependencias (DIP)
+
+- **Informes:** interfaz `PropertyReportExporter` con `PdfPropertyReportExporter` y `ExcelPropertyReportExporter` (`apps/properties/report_exporters/`).
+- **Búsqueda:** interfaz `PropertySearchEngine` con `ORMPropertySearch` y `ElasticPropertySearch` (`apps/properties/repositories/`).
 ```
 
 ## Internacionalización (i18n)

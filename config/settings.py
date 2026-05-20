@@ -92,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'apps.interactions.context_processors.chat_notifications',
+                'apps.core.context_processors.weather_header',
             ],
         },
     },
@@ -177,6 +178,8 @@ LANGUAGES = [
     ("es", "Español"),
     ("en", "English"),
 ]
+
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 TIME_ZONE = 'UTC'
 

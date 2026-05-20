@@ -7,9 +7,16 @@ from django.views.static import serve
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+from apps.properties.api import properties_list_api
+from apps.properties.views import productos_aliados
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("i18n/", include("django.conf.urls.i18n")),
+
+    # Rutas de la rúbrica (también disponibles bajo /properties/...)
+    path("api/properties/", properties_list_api, name="api_properties_list_root"),
+    path("productos-aliados/", productos_aliados, name="productos_aliados_root"),
 
     # Home
     path("", include("apps.core.urls")),

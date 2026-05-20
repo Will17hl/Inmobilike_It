@@ -65,6 +65,38 @@
       color: var(--theme-accent);
     }
 
+    .nav-link.is-active {
+      color: var(--theme-ink);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 0 0 1px var(--theme-border-soft);
+    }
+
+    .nav-dropdown {
+      background: var(--theme-surface-strong);
+      border: 1px solid var(--theme-border);
+      box-shadow: var(--theme-shadow);
+    }
+
+    .nav-dropdown a,
+    .nav-dropdown button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.65rem 0.9rem;
+      border-radius: 0.85rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--theme-ink);
+      transition: background-color 160ms ease, color 160ms ease;
+    }
+
+    .nav-dropdown a:hover,
+    .nav-dropdown button:hover {
+      background: #fff4e7;
+      color: var(--theme-accent);
+    }
+
     .theme-panel {
       background: var(--theme-surface);
       border: 1px solid var(--theme-border-soft);
@@ -103,52 +135,52 @@
   <!-- NAVBAR -->
   <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl supports-[backdrop-filter]:bg-white/75">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="h-20 flex items-center justify-between gap-4">
+      <div class="h-16 lg:h-[4.25rem] flex items-center justify-between gap-3">
 
-        <!-- LEFT: Logo -->
-        <div class="flex items-center gap-10 min-w-0">
-          <a href="{% url 'home' %}" class="flex items-center gap-3 shrink-0 group">
-            <div class="w-14 h-14 overflow-hidden rounded-2xl shadow-sm ring-1 ring-[rgba(231,216,200,0.8)] group-hover:scale-[1.02] transition bg-white p-1.5">
-              <img src="{% static 'logo.jpeg' %}" alt="Inmobilike It" class="w-full h-full object-contain">
+        <a href="{% url 'home' %}" class="flex items-center gap-2.5 shrink-0 group min-w-0">
+          <div class="w-11 h-11 overflow-hidden rounded-2xl shadow-sm ring-1 ring-[rgba(231,216,200,0.8)] group-hover:scale-[1.02] transition bg-white p-1.5">
+            <img src="{% static 'logo.jpeg' %}" alt="Inmobilike It" class="w-full h-full object-contain">
+          </div>
+          <div class="leading-tight min-w-0">
+            <div class="brand-serif text-xl font-bold tracking-tight text-slate-950 truncate">Inmobilike It</div>
+            <div class="hidden xl:block text-[10px] uppercase tracking-[0.2em] truncate" style="color: var(--theme-accent);">
+              {% trans "Encuentra tu próximo hogar" %}
             </div>
-            <div class="leading-tight">
-              <div class="brand-serif text-2xl font-bold tracking-tight text-slate-950">
-                Inmobilike It
-              </div>
-              <div class="text-xs -mt-0.5 uppercase tracking-[0.22em]" style="color: var(--theme-accent);">
-                {% trans "Encuentra tu próximo hogar" %}
-              </div>
+          </div>
+        </a>
+
+        <nav class="hidden lg:flex flex-1 items-center justify-center gap-0.5 min-w-0 px-2" aria-label="{% trans 'Navegación principal' %}">
+          <a href="{% url 'home' %}" class="nav-link px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap">{% trans "Inicio" %}</a>
+          <a href="{% url 'properties:catalog' %}" class="nav-link px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap">{% trans "Catálogo" %}</a>
+          <a href="{% url 'interactions:chat_list' %}" class="nav-link px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap">{% trans "Chats" %}</a>
+          <div class="relative" id="nav-more-wrapper">
+            <button id="nav-more-btn" type="button"
+                    class="nav-link inline-flex items-center gap-1 px-3 py-2 rounded-xl text-sm font-medium whitespace-nowrap"
+                    aria-expanded="false" aria-haspopup="true">
+              {% trans "Más" %}
+              <svg class="w-4 h-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            <div id="nav-more-dropdown" class="nav-dropdown hidden absolute left-0 top-full z-50 mt-2 w-52 rounded-2xl p-1.5">
+              <a href="{% url 'properties:productos_aliados' %}">{% trans "Productos aliados" %}</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'properties:my_reservations' %}">{% trans "Mis reservas" %}</a>
+              {% endif %}
             </div>
-          </a>
-        </div>
-
-        <!-- CENTER: Desktop nav -->
-        <nav class="hidden lg:flex items-center gap-1 rounded-2xl px-2 py-2" style="background: rgba(255,255,255,0.62); border: 1px solid var(--theme-border-soft);">
-          <a href="{% url 'home' %}"
-             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% trans "Inicio" %}
-          </a>
-
-          <a href="{% url 'interactions:chat_list' %}"
-             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% trans "Chats" %}
-          </a>
-
-          <a href="{% url 'properties:catalog' %}"
-             class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% trans "Catálogo" %}
-          </a>
-
-          {% if user.is_authenticated %}
-            <a href="{% url 'properties:my_reservations' %}"
-               class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-              {% trans "Mis reservas" %}
-            </a>
-          {% endif %}
+          </div>
         </nav>
 
-        <!-- RIGHT -->
-        <div class="hidden lg:flex items-center gap-3 shrink-0">
+        <div class="hidden lg:flex items-center gap-1.5 shrink-0">
+
+          {% if header_weather %}
+            <span class="inline-flex items-center gap-1 rounded-xl px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap"
+                  style="color: var(--theme-muted);"
+                  title="{% trans 'Clima en Medellín (Open-Meteo)' %}">
+              <span aria-hidden="true">☀</span>
+              <span>{% blocktrans with temp=header_weather.temperature %}{{ temp }}°C{% endblocktrans %}</span>
+            </span>
+          {% endif %}
 
           {% if user.is_authenticated %}
 
@@ -202,65 +234,55 @@
               </div>
             </div>
 
-            <!-- Switch mode -->
-            <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
-               class="theme-button-soft inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl transition shadow-sm">
-              <span class="text-sm font-medium">
-                {% if mode == "host" %}
-                  {% trans "Modo usuario" %}
-                {% else %}
-                  {% trans "Modo anfitrión" %}
-                {% endif %}
-              </span>
-            </a>
-
-            <!-- User block -->
-            <div class="flex items-center gap-3 pl-1">
-              {% if mode == "host" %}
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold shadow-sm">
-                  Host
+            <div class="relative ml-1 pl-2" id="user-menu-wrapper" style="border-left: 1px solid var(--theme-border-soft);">
+              <button id="user-menu-btn" type="button"
+                      class="inline-flex items-center gap-2 rounded-xl px-2 py-1.5 hover:bg-white/80 transition"
+                      aria-expanded="false" aria-haspopup="true">
+                <span class="inline-flex w-9 h-9 items-center justify-center rounded-full text-xs font-bold text-white" style="background: var(--theme-dark);">
+                  {{ user.username|slice:":1"|upper }}
                 </span>
-              {% endif %}
-
-              <div class="hidden xl:flex flex-col leading-tight">
-                <span class="text-xs text-slate-400">{% trans "Bienvenido" %}</span>
-                <span class="text-sm font-semibold text-slate-700 max-w-[150px] truncate">
-                  {{ user.username }}
-                </span>
+                <span class="hidden xl:block text-sm font-semibold max-w-[7rem] truncate" style="color: var(--theme-ink);">{{ user.username }}</span>
+                <svg class="w-4 h-4 opacity-50 hidden xl:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div id="user-menu-dropdown" class="nav-dropdown hidden absolute right-0 top-full z-50 mt-2 w-56 rounded-2xl p-1.5">
+                <div class="px-3 py-2 mb-1 rounded-xl" style="background: rgba(251, 246, 239, 0.8);">
+                  <p class="text-xs" style="color: var(--theme-muted);">{% trans "Cuenta" %}</p>
+                  <p class="text-sm font-semibold truncate" style="color: var(--theme-ink);">{{ user.username }}</p>
+                  {% if mode == "host" %}
+                    <span class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide text-white" style="background: var(--theme-dark);">{% trans "Host" %}</span>
+                  {% endif %}
+                </div>
+                <a href="{% url 'accounts:profile' %}">{% trans "Perfil" %}</a>
+                <a href="{% url 'properties:my_reservations' %}">{% trans "Mis reservas" %}</a>
+                <a href="{% url 'properties:productos_aliados' %}">{% trans "Productos aliados" %}</a>
+                <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}">
+                  {% if mode == "host" %}{% trans "Modo usuario" %}{% else %}{% trans "Modo anfitrión" %}{% endif %}
+                </a>
+                <a href="{% url 'accounts:logout' %}" style="color: #be123c;">{% trans "Salir" %}</a>
               </div>
-
-              <a href="{% url 'accounts:profile' %}"
-                 class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-                {% trans "Perfil" %}
-              </a>
-
-              <a href="{% url 'accounts:logout' %}"
-                 class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-                {% trans "Salir" %}
-              </a>
             </div>
 
           {% else %}
-            <a href="{% url 'accounts:login' %}"
-               class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-              {% trans "Iniciar sesión" %}
-            </a>
-
-            <a href="{% url 'accounts:register' %}"
-               class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-              {% trans "Crear cuenta" %}
-            </a>
+            <a href="{% url 'accounts:login' %}" class="nav-link px-3 py-2 rounded-xl text-sm font-medium">{% trans "Iniciar sesión" %}</a>
+            <a href="{% url 'accounts:register' %}" class="theme-button inline-flex items-center px-3.5 py-2 rounded-xl text-sm font-semibold">{% trans "Crear cuenta" %}</a>
           {% endif %}
-          <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-2xl overflow-hidden border" style="border-color: var(--theme-border);">
+          <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-xl overflow-hidden border ml-1" style="border-color: var(--theme-border);">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path }}">
-            <button name="language" value="es" class="px-3 py-2 text-xs font-bold {% if LANGUAGE_CODE == 'es' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">ES</button>
-            <button name="language" value="en" class="px-3 py-2 text-xs font-bold {% if LANGUAGE_CODE == 'en' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">EN</button>
+            <button name="language" value="es" type="submit" class="px-2.5 py-1.5 text-[11px] font-bold {% if LANGUAGE_CODE == 'es' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">ES</button>
+            <button name="language" value="en" type="submit" class="px-2.5 py-1.5 text-[11px] font-bold {% if LANGUAGE_CODE == 'en' %}bg-slate-950 text-white{% else %}bg-white text-slate-600{% endif %}">EN</button>
           </form>
         </div>
 
         <!-- Mobile button -->
         <div class="lg:hidden flex items-center gap-2">
+          {% if header_weather %}
+            <span class="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-2.5 py-2 text-[10px] font-bold text-slate-600 shadow-sm">
+              {% blocktrans with temp=header_weather.temperature %}{{ temp }}°C{% endblocktrans %}
+            </span>
+          {% endif %}
           <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-sm">
             {% csrf_token %}
             <input name="next" type="hidden" value="{{ request.get_full_path }}">
@@ -363,81 +385,53 @@
 
     <!-- MOBILE MENU -->
     <div id="mobileMenu" class="lg:hidden hidden border-t border-slate-200 bg-white/95 backdrop-blur">
-      <div class="px-4 py-4 space-y-3">
+      <div class="px-4 py-4 space-y-4">
 
-        <a href="{% url 'home' %}"
-           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% trans "Inicio" %}
-        </a>
+        <div>
+          <p class="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{% trans "Explorar" %}</p>
+          <div class="space-y-1">
+            <a href="{% url 'home' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Inicio" %}</a>
+            <a href="{% url 'properties:catalog' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Catálogo" %}</a>
+            <a href="{% url 'interactions:chat_list' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Chats" %}</a>
+            <a href="{% url 'properties:productos_aliados' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Productos aliados" %}</a>
+          </div>
+        </div>
 
-        <a href="{% url 'interactions:chat_list' %}"
-           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% trans "Chats" %}
-        </a>
-
-        <a href="{% url 'properties:catalog' %}"
-           class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% trans "Catálogo" %}
-        </a>
+        {% if header_weather %}
+          <p class="px-4 text-xs font-semibold text-slate-500">
+            {% blocktrans with temp=header_weather.temperature %}Clima Medellín: {{ temp }}°C{% endblocktrans %}
+          </p>
+        {% endif %}
 
         {% if user.is_authenticated %}
-          <a href="{% url 'properties:my_reservations' %}"
-             class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% trans "Mis reservas" %}
-          </a>
-
-          <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
-             class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+        <div>
+          <p class="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{% trans "Mi cuenta" %}</p>
+          <div class="space-y-1">
+          <a href="{% url 'properties:my_reservations' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Mis reservas" %}</a>
+          <a href="{% url 'accounts:profile' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Perfil" %}</a>
+          <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">
             {% if mode == "host" %}{% trans "Modo usuario" %}{% else %}{% trans "Modo anfitrión" %}{% endif %}
           </a>
-
-          {% if mode == "host" %}
-            <a href="{% url 'properties:create' %}"
-               class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% trans "Publicar" %}
-            </a>
-
-            <a href="{% url 'properties:mine' %}"
-               class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% trans "Mis propiedades" %}
-            </a>
-
-            <a href="{% url 'properties:my_transactions' %}"
-               class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% trans "Mis ventas/arriendos" %}
-            </a>
-
-            <div class="px-4">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold">
-                {% trans "Host activado" %}
-              </span>
-            </div>
-          {% endif %}
-
-          <div class="px-4 pt-2">
-            <div class="text-xs text-slate-400">{% trans "Bienvenido" %}</div>
-            <div class="text-sm font-semibold text-slate-700">{{ user.username }}</div>
+          <a href="{% url 'accounts:logout' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-rose-600 hover:bg-rose-50">{% trans "Salir" %}</a>
           </div>
+        </div>
 
-          <a href="{% url 'accounts:profile' %}"
-             class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            {% trans "Perfil" %}
-          </a>
+        {% if mode == "host" %}
+        <div>
+          <p class="px-2 mb-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{% trans "Panel host" %}</p>
+          <div class="space-y-1">
+            <a href="{% url 'properties:create' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Publicar" %}</a>
+            <a href="{% url 'properties:mine' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Mis propiedades" %}</a>
+            <a href="{% url 'properties:my_transactions' %}" class="block px-4 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Mis ventas/arriendos" %}</a>
+          </div>
+        </div>
+        {% endif %}
 
-          <a href="{% url 'accounts:logout' %}"
-             class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% trans "Salir" %}
-          </a>
         {% else %}
-          <a href="{% url 'accounts:login' %}"
-             class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% trans "Iniciar sesión" %}
-          </a>
-
-          <a href="{% url 'accounts:register' %}"
-             class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            {% trans "Crear cuenta" %}
-          </a>
+        <div class="space-y-2 pt-1">
+          <a href="{% url 'accounts:login' %}" class="block px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50">{% trans "Iniciar sesión" %}</a>
+          <a href="{% url 'accounts:register' %}" class="block px-4 py-2.5 rounded-xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800">{% trans "Crear cuenta" %}</a>
+        </div>
         {% endif %}
       </div>
     </div>
@@ -474,6 +468,36 @@
           const clickedInside = menu.contains(e.target) || btn.contains(e.target);
           if (!clickedInside) menu.classList.add("hidden");
         }
+      });
+    })();
+
+    // ── Nav dropdowns (Más / Cuenta) ─────────────────────────
+    (function () {
+      function setupDropdown(wrapperId, btnId, dropdownId) {
+        const wrapper = document.getElementById(wrapperId);
+        const btn = document.getElementById(btnId);
+        const dropdown = document.getElementById(dropdownId);
+        if (!wrapper || !btn || !dropdown) return;
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          document.querySelectorAll(".nav-dropdown").forEach((el) => {
+            if (el !== dropdown) el.classList.add("hidden");
+          });
+          dropdown.classList.toggle("hidden");
+          btn.setAttribute("aria-expanded", dropdown.classList.contains("hidden") ? "false" : "true");
+        });
+      }
+
+      setupDropdown("nav-more-wrapper", "nav-more-btn", "nav-more-dropdown");
+      setupDropdown("user-menu-wrapper", "user-menu-btn", "user-menu-dropdown");
+
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".nav-dropdown").forEach((el) => el.classList.add("hidden"));
+        const moreBtn = document.getElementById("nav-more-btn");
+        const userBtn = document.getElementById("user-menu-btn");
+        if (moreBtn) moreBtn.setAttribute("aria-expanded", "false");
+        if (userBtn) userBtn.setAttribute("aria-expanded", "false");
       });
     })();
   </script>
