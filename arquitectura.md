@@ -1,4 +1,4 @@
-# 🏗️ Inmobilike It — Arquitectura del Sistema
+# Inmobilike It — Arquitectura del Sistema
 
 > Documento técnico que describe la arquitectura general y el modelo de clases del proyecto **Inmobilike It**.
 
@@ -11,12 +11,12 @@ El siguiente diagrama muestra cómo fluyen las peticiones del usuario a través 
 ```mermaid
 flowchart TB
     %% ─── Actores & Servicios Externos ───────────────────────────
-    User["🧑‍💻 Usuario / Navegador"]
-    StripeAPI["💳 Stripe API"]
-    PG[("🐘 PostgreSQL")]
+    User[" Usuario / Navegador"]
+    StripeAPI[" Stripe API"]
+    PG[(" PostgreSQL")]
 
     %% ─── Capa de Entrada ────────────────────────────────────────
-    subgraph EntryLayer ["🌐 Capa de Entrada — Protocolos"]
+    subgraph EntryLayer [" Capa de Entrada — Protocolos"]
         direction LR
         ASGI["ASGI Application\n(config/asgi.py)"]
         HTTP["ProtocolTypeRouter\nHTTP"]
@@ -24,7 +24,7 @@ flowchart TB
     end
 
     %% ─── Middleware & Routing ───────────────────────────────────
-    subgraph MiddlewareLayer ["🔒 Middleware & Enrutamiento"]
+    subgraph MiddlewareLayer [" Middleware & Enrutamiento"]
         direction LR
         DjangoMiddleware["Django Middleware\n(Session, CSRF, Auth)"]
         URLConf["URLConf\n(config/urls.py)"]
@@ -33,7 +33,7 @@ flowchart TB
     end
 
     %% ─── Capa de Presentación ───────────────────────────────────
-    subgraph PresentationLayer ["🎨 Capa de Presentación"]
+    subgraph PresentationLayer [" Capa de Presentación"]
         direction TB
 
         subgraph AccountsViews ["accounts/views.py"]
@@ -65,11 +65,11 @@ flowchart TB
             NotifConsumer["NotificationConsumer\n(AsyncWebsocketConsumer)"]
         end
 
-        Templates["📄 Templates HTML\n(templates/)"]
+        Templates[" Templates HTML\n(templates/)"]
     end
 
     %% ─── Capa de Servicios ──────────────────────────────────────
-    subgraph ServiceLayer ["⚙️ Capa de Servicios — Lógica de Negocio"]
+    subgraph ServiceLayer [" Capa de Servicios — Lógica de Negocio"]
         direction LR
         PropertySvc["PropertyService\n(property_service.py)"]
         SearchSvc["AdvancedSearchService\n(search_service.py)"]
@@ -79,7 +79,7 @@ flowchart TB
     end
 
     %% ─── Capa de Repositorios ───────────────────────────────────
-    subgraph RepositoryLayer ["🗄️ Capa de Repositorios — Acceso a Datos"]
+    subgraph RepositoryLayer [" Capa de Repositorios — Acceso a Datos"]
         direction LR
         SearchIface{{"«ABC»\nPropertySearchEngine"}}
         ORMSearch["ORMPropertySearch\n(orm_search.py)"]
@@ -90,7 +90,7 @@ flowchart TB
     end
 
     %% ─── Capa de Modelos ────────────────────────────────────────
-    subgraph ModelLayer ["📦 Capa de Modelos — Django ORM"]
+    subgraph ModelLayer [" Capa de Modelos — Django ORM"]
         direction LR
         MUser["User\n(auth.User)"]
         MAgent["AgentProfile"]
