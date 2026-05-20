@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load simple_i18n %}
-{% block title %}{% tr "Iniciar sesion" %}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Iniciar sesion" %}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -41,26 +41,26 @@
 <section class="auth-shell mx-auto max-w-5xl">
   <div class="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
     <div class="rounded-[2rem] border p-8 md:p-10" style="background: var(--theme-dark); border-color: var(--theme-dark); box-shadow: var(--theme-shadow);">
-      <p class="text-xs font-bold uppercase tracking-[0.32em] text-white/60">{% tr "Acceso" %}</p>
-      <h1 class="brand-serif mt-4 text-5xl text-white">{% tr "Bienvenido de nuevo." %}</h1>
+      <p class="text-xs font-bold uppercase tracking-[0.32em] text-white/60">{% trans "Acceso" %}</p>
+      <h1 class="brand-serif mt-4 text-5xl text-white">{% trans "Bienvenido de nuevo." %}</h1>
       <p class="mt-5 text-base leading-8 text-white/72">
-        {% tr "Entra a tu cuenta para retomar conversaciones, favoritos y propiedades publicadas." %}
+        {% trans "Entra a tu cuenta para retomar conversaciones, favoritos y propiedades publicadas." %}
       </p>
     </div>
 
     <div class="rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
-      <p class="text-xs font-bold uppercase tracking-[0.28em]" style="color: var(--theme-accent);">{% tr "Iniciar sesion" %}</p>
-      <h2 class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{% tr "Accede a tu panel." %}</h2>
+      <p class="text-xs font-bold uppercase tracking-[0.28em]" style="color: var(--theme-accent);">{% trans "Iniciar sesion" %}</p>
+      <h2 class="brand-serif mt-3 text-4xl" style="color: var(--theme-ink);">{% trans "Accede a tu panel." %}</h2>
       <form method="post" class="mt-8">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="theme-button mt-4 inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
-          {% tr "Entrar" %}
+          {% trans "Entrar" %}
         </button>
       </form>
       <p class="mt-6 text-sm" style="color: var(--theme-muted);">
-        {% tr "Aun no tienes cuenta?" %}
-        <a href="{% url 'accounts:register' %}" class="font-semibold" style="color: var(--theme-accent);">{% tr "Creala aqui" %}</a>
+        {% trans "Aun no tienes cuenta?" %}
+        <a href="{% url 'accounts:register' %}" class="font-semibold" style="color: var(--theme-accent);">{% trans "Creala aqui" %}</a>
       </p>
     </div>
   </div>

@@ -132,7 +132,7 @@ flowchart TD
 
 ## Ejecución con Docker
 
-El proyecto incluye un entorno preconfigurado usando `docker-compose` que levanta la aplicación Django junto con una base de datos PostgreSQL y Redis (para Django Channels).
+El proyecto incluye un entorno preconfigurado usando `docker-compose` que levanta la aplicación Django junto con una base de datos PostgreSQL. Para desarrollo, Django Channels usa `InMemoryChannelLayer`, por lo que no se requiere Redis en este `docker-compose.yml`.
 
 ### Pasos
 1. Asegúrate de tener instalado **Docker** y **Docker Compose**.
@@ -219,3 +219,39 @@ from apps.properties.services.comparison_service import ComparisonService
 comparison_service = ComparisonService()
 datos_comparativos = comparison_service.compare_properties([1, 4, 7])
 ```
+
+### 4. API pública interna - Propiedades (JSON)
+
+El proyecto expone un endpoint que devuelve un listado paginado de propiedades en formato JSON. Esto puede ser consumido por otros equipos o servicios.
+
+- Ruta: `/properties/api/properties/`
+- Parámetros GET: `page` (int), `page_size` (int), `city`, `neighborhood`, `operation`, `min_price`, `max_price`.
+- Respuesta: JSON con `results` (lista), `page`, `page_size`, `total_pages`, `total`.
+
+Ejemplo de uso con `curl`:
+
+```bash
+curl 'http://localhost:8000/properties/api/properties/?page=1&page_size=10'
+```
+
+## Internacionalización (i18n)
+
+El proyecto usa el sistema estándar de internacionalización de Django (`{% trans %}` en plantillas y `gettext`/`gettext_lazy` en Python). Pasos para generar y compilar traducciones:
+
+1. Extraer cadenas marcadas para traducción:
+
+```bash
+python manage.py makemessages -l en
+```
+
+2. Editar el archivo generado en `locale/en/LC_MESSAGES/django.po` y traducir las cadenas.
+
+3. Compilar mensajes:
+
+```bash
+python manage.py compilemessages
+```
+
+Las traducciones en inglés están en `locale/en/LC_MESSAGES/django.po`; después de editarlas, compila el catálogo para actualizar `django.mo`.
+
+

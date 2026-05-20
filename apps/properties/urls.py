@@ -1,11 +1,16 @@
 from django.urls import path
 from . import views
+from . import api
 
 app_name = "properties"
 
 urlpatterns = [
     path("", views.catalog, name="catalog"),
     path("ai/recommend/", views.ai_property_recommendation, name="ai_recommendation"),
+    path("api/properties/", api.properties_list_api, name="api_properties_list"),
+    path("productos-aliados/", views.productos_aliados, name="productos_aliados"),
+    path("reports/properties.pdf", views.properties_report_pdf, name="properties_report_pdf"),
+    path("reports/properties.xlsx", views.properties_report_excel, name="properties_report_excel"),
     path("mine/", views.my_properties, name="mine"),
     path("reservations/", views.my_reservations, name="my_reservations"),
     path("transactions/", views.my_transactions, name="my_transactions"),

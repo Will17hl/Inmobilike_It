@@ -89,12 +89,12 @@
     </div>
   {% else %}
     <div class="rounded-[2rem] border p-10 text-center" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
-      <h2 class="brand-serif text-4xl" style="color: var(--theme-ink);">Aun no tienes ventas o arriendos pagados.</h2>
+      <h2 class="brand-serif text-4xl" style="color: var(--theme-ink);">{% trans "Aun no tienes ventas o arriendos pagados." %}</h2>
       <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
-        Cuando un usuario pague una propiedad asociada a tu perfil, la operacion aparecera aqui.
+        {% trans "Cuando un usuario pague una propiedad asociada a tu perfil, la operacion aparecera aqui." %}
       </p>
       <a href="{% url 'properties:create' %}" class="theme-button mt-6 inline-flex rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
-        Publicar propiedad
+        {% trans "Publicar propiedad" %}
       </a>
     </div>
   {% endif %}

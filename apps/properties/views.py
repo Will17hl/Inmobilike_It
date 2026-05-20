@@ -16,8 +16,12 @@ from .models import Property, PropertyImage, PropertyPayment
 from decimal import Decimal
 import json
 from urllib import error, request as url_request
+from django.utils.translation import gettext as _
 
-import stripe
+try:
+    import stripe
+except ImportError:
+    stripe = None
 
 
 def sync_payment_from_checkout_session(payment, checkout_session):
@@ -61,7 +65,7 @@ def build_payment_summary(payments, include_buyer=False):
 def property_detail(request, pk: int):
     prop = PropertyService.get_property_detail(pk)
     if not prop:
-        raise Http404("Property not found")
+        raise Http404(_("Propiedad no encontrada"))
 
     is_fav = False
     can_edit = False
@@ -86,7 +90,7 @@ def property_detail(request, pk: int):
             "cover": cover,
             "images": images,
             "can_edit": can_edit,
-            "stripe_enabled": bool(settings.STRIPE_SECRET_KEY and settings.STRIPE_PUBLISHABLE_KEY),
+            "stripe_enabled": bool(stripe and settings.STRIPE_SECRET_KEY and settings.STRIPE_PUBLISHABLE_KEY),
             "currency": settings.STRIPE_CURRENCY.upper(),
         },
     )
@@ -160,30 +164,30 @@ def parse_ai_recommendation(raw_text):
 
 def ai_property_recommendation(request):
     if request.method != "POST":
-        raise Http404("Method not allowed")
+        raise Http404(_("Método no permitido"))
 
     if not settings.GEMINI_API_KEY:
         return JsonResponse(
-            {"error": "GEMINI_API_KEY is not configured."},
+            {"error": _("GEMINI_API_KEY no está configurada.")},
             status=503,
         )
 
     try:
         body = json.loads(request.body.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
-        return JsonResponse({"error": "Invalid request body."}, status=400)
+        return JsonResponse({"error": _("Cuerpo de solicitud inválido.")}, status=400)
 
     user_prompt = (body.get("query") or "").strip()
     if len(user_prompt) < 8:
         return JsonResponse(
-            {"error": "Describe un poco mas la casa que buscas."},
+            {"error": _("Describe un poco más la casa que buscas.")},
             status=400,
         )
 
     properties = list(PropertyService.list_active_properties())
     if not properties:
         return JsonResponse(
-            {"error": "No hay propiedades activas para recomendar."},
+            {"error": _("No hay propiedades activas para recomendar.")},
             status=404,
         )
 
@@ -230,7 +234,7 @@ def ai_property_recommendation(request):
         recommendation = parse_ai_recommendation(extract_gemini_text(gemini_payload))
     except (error.URLError, TimeoutError, json.JSONDecodeError, KeyError, ValueError):
         return JsonResponse(
-            {"error": "No pudimos generar una recomendacion en este momento."},
+            {"error": _("No pudimos generar una recomendacion en este momento.")},
             status=502,
         )
 
@@ -241,7 +245,7 @@ def ai_property_recommendation(request):
     property_obj = next((item for item in properties if item.id == property_id), None)
     if not property_obj:
         return JsonResponse(
-            {"error": "La IA no encontro una propiedad valida del catalogo."},
+            {"error": _("La IA no encontro una propiedad valida del catalogo.")},
             status=502,
         )
 
@@ -312,7 +316,7 @@ def my_reservations(request):
 @login_required
 def my_transactions(request):
     if not require_host(request):
-        messages.info(request, "Activa el modo anfitrion para ver tus ventas y arriendos.")
+        messages.info(request, _("Activa el modo anfitrión para ver tus ventas y arriendos."))
         return redirect(f"{reverse('accounts:toggle_mode')}?next={request.path}")
 
     transactions = (
@@ -393,10 +397,10 @@ def property_edit(request, pk: int):
 
     prop = Property.objects.select_related("location", "agent").prefetch_related("images").filter(pk=pk).first()
     if not prop:
-        raise Http404("Property not found")
+        raise Http404(_("Propiedad no encontrada"))
 
     if prop.agent_id != agent.id:
-        raise Http404("You do not have permission to edit this property")
+        raise Http404(_("No tienes permiso para editar esta propiedad"))
 
     if request.method == "POST":
         loc_form = LocationForm(request.POST, instance=prop.location, prefix="loc")
@@ -460,10 +464,10 @@ def property_delete(request, pk: int):
 
     prop = Property.objects.select_related("agent").filter(pk=pk).first()
     if not prop:
-        raise Http404("Property not found")
+        raise Http404(_("Propiedad no encontrada"))
 
     if prop.agent_id != agent.id:
-        raise Http404("You do not have permission to delete this property")
+        raise Http404(_("No tienes permiso para eliminar esta propiedad"))
 
     if request.method == "POST":
         prop.delete()
@@ -493,7 +497,7 @@ def contact_advisor(request, pk):
         Message.objects.create(
             conversation=conversation,
             sender=request.user,
-            content=f"Hola, estoy interesado en la propiedad #{property_obj.pk}."
+            content=_("Hola, estoy interesado en la propiedad #%d.") % property_obj.pk,
         )
 
     return redirect("interactions:chat_room", conversation_id=conversation.id)
@@ -502,10 +506,10 @@ def contact_advisor(request, pk):
 @login_required
 def create_checkout_session(request, pk: int):
     if request.method != "POST":
-        raise Http404("Method not allowed")
+        raise Http404(_("Método no permitido"))
 
-    if not settings.STRIPE_SECRET_KEY or not settings.STRIPE_PUBLISHABLE_KEY:
-        messages.error(request, "Stripe no esta configurado todavia.")
+    if not stripe or not settings.STRIPE_SECRET_KEY or not settings.STRIPE_PUBLISHABLE_KEY:
+        messages.error(request, _("Stripe no está configurado todavía."))
         return redirect("properties:detail", pk=pk)
 
     property_obj = get_object_or_404(
@@ -565,7 +569,7 @@ def payment_success(request, pk: int):
     session_id = request.GET.get("session_id", "").strip()
     payment = None
 
-    if session_id and settings.STRIPE_SECRET_KEY:
+    if stripe and session_id and settings.STRIPE_SECRET_KEY:
         stripe.api_key = settings.STRIPE_SECRET_KEY
         checkout_session = stripe.checkout.Session.retrieve(session_id)
         payment = PropertyPayment.objects.filter(
@@ -615,14 +619,14 @@ def payment_cancel(request, pk: int):
 @csrf_exempt
 def stripe_webhook(request):
     if request.method != "POST":
-        raise Http404("Method not allowed")
+        raise Http404(_("Método no permitido"))
 
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
 
-    if not settings.STRIPE_WEBHOOK_SECRET:
+    if not stripe or not settings.STRIPE_WEBHOOK_SECRET:
         return JsonResponse(
-            {"detail": "Stripe webhook secret is not configured."},
+            {"detail": _("La clave secreta del webhook de Stripe no está configurada.")},
             status=503,
         )
 
@@ -655,3 +659,78 @@ def stripe_webhook(request):
             payment.save(update_fields=["status"])
 
     return HttpResponse(status=200)
+
+
+def properties_report_pdf(request):
+    """Genera y devuelve un PDF con el listado de propiedades."""
+    filters = {
+        "city": request.GET.get("city"),
+        "neighborhood": request.GET.get("neighborhood"),
+        "operation": request.GET.get("operation"),
+    }
+    from .reports import generate_properties_pdf
+
+    buffer = generate_properties_pdf(filters=filters)
+    response = HttpResponse(buffer.getvalue(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="properties_report.pdf"'
+    return response
+
+
+def properties_report_excel(request):
+    """Genera y devuelve un Excel con el listado de propiedades."""
+    filters = {
+        "city": request.GET.get("city"),
+        "neighborhood": request.GET.get("neighborhood"),
+        "operation": request.GET.get("operation"),
+    }
+    from .reports import generate_properties_excel
+
+    buffer = generate_properties_excel(filters=filters)
+    response = HttpResponse(buffer.getvalue(), content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="properties_report.xlsx"'
+    return response
+
+
+def productos_aliados(request):
+    """Consume el endpoint interno `/api/properties/` vía HTTP y muestra resultados."""
+    api_url = request.build_absolute_uri(reverse("properties:api_properties_list"))
+    params = {
+        "page": request.GET.get("page", "1"),
+        "page_size": request.GET.get("page_size", "12"),
+    }
+
+    results = []
+    error = None
+    try:
+        try:
+            import requests
+            resp = requests.get(api_url, params=params, timeout=6)
+            if resp.status_code == 200:
+                payload = resp.json()
+                results = payload.get("results", [])
+                page = payload.get("page", 1)
+                total_pages = payload.get("total_pages", 1)
+                page_size = payload.get("page_size", params.get("page_size"))
+            else:
+                error = _("La API devolvió %(status)s") % {"status": resp.status_code}
+        except Exception:
+            # Fallback to urllib if requests is not available
+            from urllib import request as urlreq
+            import urllib.parse
+            query = urllib.parse.urlencode(params)
+            with urlreq.urlopen(api_url + "?" + query, timeout=6) as r:
+                import json as _json
+                payload = _json.loads(r.read().decode("utf-8"))
+                results = payload.get("results", [])
+                page = payload.get("page", 1)
+                total_pages = payload.get("total_pages", 1)
+                page_size = payload.get("page_size", params.get("page_size"))
+    except Exception as exc:
+        error = str(exc)
+
+    # Valores por defecto si la API falló
+    page = locals().get("page", int(params.get("page", 1)))
+    total_pages = locals().get("total_pages", 1)
+    page_size = locals().get("page_size", int(params.get("page_size", 12)))
+
+    return render(request, "properties/productos_aliados.html", {"results": results, "error": error, "page": page, "total_pages": total_pages, "page_size": page_size})

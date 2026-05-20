@@ -1,0 +1,705 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Inmobilike It\n"
+"Report-Msgid-Bugs-To: you@example.com\n"
+"POT-Creation-Date: 2026-05-19 00:00+0000\n"
+"PO-Revision-Date: 2026-05-19 00:00+0000\n"
+"Last-Translator: You <you@example.com>\n"
+"Language-Team: English <you@example.com>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Abre tu perfil."
+msgstr "Open your profile."
+
+msgid "Abre un chat desde el panel izquierdo para ver historial, responder mensajes y consultar la propiedad asociada."
+msgstr "Open a chat from the left panel to view history, reply to messages, and check the related property."
+
+msgid "Abrir menú"
+msgstr "Open menu"
+
+msgid "Accede a tu panel."
+msgstr "Access your dashboard."
+
+msgid "Acceso"
+msgstr "Access"
+
+msgid "Activa"
+msgstr "Active"
+
+msgid "Administra anuncios, edita detalles o crea nuevas publicaciones."
+msgstr "Manage listings, edit details, or create new posts."
+
+msgid "Agregar a favoritos"
+msgstr "Add to favorites"
+
+msgid "Analizando catalogo..."
+msgstr "Analyzing catalog..."
+
+msgid "Anterior"
+msgstr "Previous"
+
+msgid "Anuncio"
+msgstr "Listing"
+
+msgid "Aqui ves las propiedades que ya pagaste con Stripe y el estado consolidado de tus reservas."
+msgstr "Here you can see the properties you have already paid for with Stripe and the consolidated status of your reservations."
+
+msgid "Area (m2)"
+msgstr "Area (m2)"
+
+msgid "Arriendo"
+msgstr "Rent"
+
+msgid "Asesor"
+msgstr "Advisor"
+
+msgid "Aun no has publicado propiedades."
+msgstr "You have not published any properties yet."
+
+msgid "Aun no tienes cuenta?"
+msgstr "Don't have an account yet?"
+
+msgid "Aun no tienes reservas pagadas."
+msgstr "You do not have any paid reservations yet."
+
+msgid "Aun no tienes ventas o arriendos pagados."
+msgstr "You do not have paid sales or rentals yet."
+
+msgid "Banos"
+msgstr "Bathrooms"
+
+msgid "Barrio"
+msgstr "Neighborhood"
+
+msgid "Bienvenido"
+msgstr "Welcome"
+
+msgid "Bienvenido de nuevo."
+msgstr "Welcome back."
+
+msgid "Buscar con IA"
+msgstr "Search with AI"
+
+msgid "Buscar conversacion"
+msgstr "Search conversation"
+
+msgid "Buscar por persona o propiedad"
+msgstr "Search by person or property"
+
+msgid "Busqueda inteligente"
+msgstr "Smart search"
+
+msgid "Cada ficha prioriza fotos, ubicacion, precio y contacto. Sin ruido, sin plantillas frias."
+msgstr "Each listing prioritizes photos, location, price, and contact. No noise, no cold templates."
+
+msgid "Cancelar"
+msgstr "Cancel"
+
+msgid "Catalogo"
+msgstr "Catalog"
+
+msgid "Catalogo con mas criterio"
+msgstr "A more thoughtful catalog"
+
+msgid "Catálogo"
+msgstr "Catalog"
+
+msgid "Centro de conversaciones"
+msgstr "Conversation center"
+
+msgid "Chat activo"
+msgstr "Active chat"
+
+msgid "Chats"
+msgstr "Chats"
+
+msgid "Ciudad"
+msgstr "City"
+
+msgid "Cliente"
+msgstr "Client"
+
+msgid "Completa la informacion del anuncio con una presentacion mas premium."
+msgstr "Complete the listing information with a more polished presentation."
+
+msgid "Conectando"
+msgstr "Connecting"
+
+msgid "Contactar asesor"
+msgstr "Contact advisor"
+
+msgid "Contacto directo"
+msgstr "Direct contact"
+
+msgid "Contexto del inmueble"
+msgstr "Property context"
+
+msgid "Contrasena"
+msgstr "Password"
+
+msgid "Conversa"
+msgstr "Chat"
+
+msgid "Conversacion iniciada. Aun no hay mensajes."
+msgstr "Conversation started. There are no messages yet."
+
+msgid "Conversaciones"
+msgstr "Conversations"
+
+msgid "Conversaciones mas directas con asesores."
+msgstr "More direct conversations with advisors."
+
+msgid "Correo"
+msgstr "Email"
+
+msgid "Crea una cuenta con mejor presencia."
+msgstr "Create an account with a better presence."
+
+msgid "Creala aqui"
+msgstr "Create it here"
+
+msgid "Crear cuenta"
+msgstr "Create account"
+
+msgid "Cuando completes un pago con Stripe, la propiedad aparecera aqui."
+msgstr "When you complete a Stripe payment, the property will appear here."
+
+msgid "Cuando contactes una propiedad o recibas respuesta, el chat aparecera aqui."
+msgstr "When you contact a property or receive a reply, the chat will appear here."
+
+msgid "cuando quieras."
+msgstr "whenever you want."
+
+msgid "Cuando un usuario pague una propiedad asociada a tu perfil, la operacion aparecera aqui."
+msgstr "When a user pays for a property associated with your profile, the operation will appear here."
+
+msgid "Cuenta creada"
+msgstr "Account created"
+
+msgid "Curaduria"
+msgstr "Curation"
+
+msgid "Datos del inmueble"
+msgstr "Property data"
+
+msgid "de"
+msgstr "of"
+
+msgid "de forma permanente."
+msgstr "permanently."
+
+msgid "Describe que estas buscando y la IA elegira la propiedad del catalogo que mejor encaje contigo."
+msgstr "Describe what you are looking for and AI will choose the catalog property that best fits you."
+
+msgid "Describe un poco mas la casa que buscas."
+msgstr "Describe the home you are looking for in a little more detail."
+
+msgid "Descripcion"
+msgstr "Description"
+
+msgid "Descubre"
+msgstr "Discover"
+
+msgid "Detalles"
+msgstr "Details"
+
+msgid "Direccion"
+msgstr "Address"
+
+msgid "Editar"
+msgstr "Edit"
+
+msgid "Editar propiedad"
+msgstr "Edit property"
+
+msgid "Ej: busco un apartamento en Medellin, de 2 habitaciones, para arriendo, cerca a zonas tranquilas"
+msgstr "Example: I am looking for an apartment in Medellin, with 2 bedrooms, for rent, near quiet areas"
+
+msgid "Eliminar"
+msgstr "Delete"
+
+msgid "Eliminar propiedad"
+msgstr "Delete property"
+
+msgid "Empieza a guardar propiedades, contactar asesores y gestionar tu experiencia en un solo lugar."
+msgstr "Start saving properties, contacting advisors, and managing your experience in one place."
+
+msgid "En linea"
+msgstr "Online"
+
+msgid "Encuentra tu casa ideal"
+msgstr "Find your ideal home"
+
+msgid "Encuentra tu próximo hogar"
+msgstr "Find your next home"
+
+msgid "Encuentra un hogar con una experiencia mas clara, elegante y humana."
+msgstr "Find a home through a clearer, elegant, and more human experience."
+
+msgid "Enter envia. Shift + Enter agrega una nueva linea."
+msgstr "Enter sends. Shift + Enter adds a new line."
+
+msgid "Entra a tu cuenta para retomar conversaciones, favoritos y propiedades publicadas."
+msgstr "Log in to resume conversations, favorites, and published properties."
+
+msgid "Entrar"
+msgstr "Enter"
+
+msgid "Enviar"
+msgstr "Send"
+
+msgid "Error al consultar el servicio:"
+msgstr "Error querying the service:"
+
+msgid "Escribe un mensaje claro y profesional"
+msgstr "Write a clear and professional message"
+
+msgid "Esta accion eliminara"
+msgstr "This action will permanently remove"
+
+msgid "Estado"
+msgstr "Status"
+
+msgid "Experiencia"
+msgstr "Experience"
+
+msgid "Explorar catalogo"
+msgstr "Explore catalog"
+
+msgid "Explorar propiedades"
+msgstr "Explore properties"
+
+msgid "Fecha pago"
+msgstr "Payment date"
+
+msgid "Filtra por ciudad, barrio, operacion y precio con una interfaz limpia."
+msgstr "Filter by city, neighborhood, operation, and price with a clean interface."
+
+msgid "Filtra por ubicacion, operacion y rango de precio para encontrar oportunidades con mas rapidez."
+msgstr "Filter by location, operation, and price range to find opportunities faster."
+
+msgid "Filtrar propiedades"
+msgstr "Filter properties"
+
+msgid "fotos"
+msgstr "photos"
+
+msgid "Fotos"
+msgstr "Photos"
+
+msgid "Gestion"
+msgstr "Management"
+
+msgid "Gestiona"
+msgstr "Manage"
+
+msgid "Gestiona tu identidad dentro de la plataforma y revisa tu estado actual."
+msgstr "Manage your identity within the platform and review your current status."
+
+msgid "Gestiona tus chats de forma ordenada y responde con rapidez."
+msgstr "Manage your chats in an organized way and reply quickly."
+
+msgid "Gestiona tus publicaciones y revisa operaciones cerradas."
+msgstr "Manage your listings and review closed operations."
+
+msgid "Habitaciones"
+msgstr "Bedrooms"
+
+msgid "Habla con asesores desde la propiedad y sigue la conversacion donde la dejaste."
+msgstr "Talk to advisors from the property and continue the conversation where you left off."
+
+msgid "Host activado"
+msgstr "Host enabled"
+
+msgid "Inactiva"
+msgstr "Inactive"
+
+msgid "Informacion"
+msgstr "Information"
+
+msgid "Informacion principal"
+msgstr "Main information"
+
+msgid "Inicia la conversacion"
+msgstr "Start the conversation"
+
+msgid "Inicia sesion"
+msgstr "Log in"
+
+msgid "Inicia sesion para guardar esta propiedad"
+msgstr "Log in to save this property"
+
+msgid "Inicia sesion para pagar"
+msgstr "Log in to pay"
+
+msgid "Iniciar sesion"
+msgstr "Log in"
+
+msgid "Iniciar sesión"
+msgstr "Log in"
+
+msgid "Inicio"
+msgstr "Home"
+
+msgid "Inmobilike It conecta compradores, arrendatarios y asesores con una plataforma pensada para descubrir propiedades, guardar favoritas y conversar en tiempo real."
+msgstr "Inmobilike It connects buyers, tenants, and advisors with a platform designed to discover properties, save favorites, and chat in real time."
+
+msgid "Intentar de nuevo"
+msgstr "Try again"
+
+msgid "Ir al catalogo"
+msgstr "Go to catalog"
+
+msgid "La primera imagen sera la portada inicial."
+msgstr "The first image will be the cover photo."
+
+msgid "La transaccion fue procesada correctamente."
+msgstr "The transaction was processed successfully."
+
+msgid "Limpiar"
+msgstr "Clear"
+
+msgid "Limpiar filtros"
+msgstr "Clear filters"
+
+msgid "Listado de propiedades"
+msgstr "Property list"
+
+msgid "Los anfitriones gestionan propiedades con una imagen mucho mas solida y consistente."
+msgstr "Hosts manage properties with a much stronger and more consistent image."
+
+msgid "Material visual"
+msgstr "Visual material"
+
+msgid "Mejor opcion para ti"
+msgstr "Best option for you"
+
+msgid "Mensaje"
+msgstr "Message"
+
+msgid "Mensajeria"
+msgstr "Messaging"
+
+msgid "Mensajeria mas premium"
+msgstr "More polished messaging"
+
+msgid "mensual"
+msgstr "monthly"
+
+msgid "Mis propiedades"
+msgstr "My properties"
+
+msgid "Mis reservas"
+msgstr "My reservations"
+
+msgid "Mis ventas/arriendos"
+msgstr "My sales/rentals"
+
+msgid "Modo anfitrion activado"
+msgstr "Host mode enabled"
+
+msgid "Modo anfitrión"
+msgstr "Host mode"
+
+msgid "Modo usuario"
+msgstr "User mode"
+
+msgid "Modo usuario activado"
+msgstr "User mode enabled"
+
+msgid "No hay productos aliados disponibles."
+msgstr "There are no allied products available."
+
+msgid "No hay propiedades disponibles con esos filtros."
+msgstr "There are no properties available with those filters."
+
+msgid "No hubo coincidencias"
+msgstr "No matches found"
+
+msgid "No leidos"
+msgstr "Unread"
+
+msgid "No pudimos generar una recomendacion en este momento."
+msgstr "We could not generate a recommendation right now."
+
+msgid "No se completo el pago."
+msgstr "The payment was not completed."
+
+msgid "No tienes acceso a esa conversación."
+msgstr ""
+
+msgid "No tienes conversaciones activas"
+msgstr "You have no active conversations"
+
+msgid "Notificaciones"
+msgstr "Notifications"
+
+msgid "Operacion"
+msgstr "Operation"
+
+msgid "Pagado"
+msgstr "Paid"
+
+msgid "Pagar con Stripe"
+msgstr "Pay with Stripe"
+
+msgid "Pagina"
+msgstr "Page"
+
+msgid "Pago cancelado"
+msgstr "Payment canceled"
+
+msgid "Pago confirmado"
+msgstr "Payment confirmed"
+
+msgid "Pago exitoso"
+msgstr "Successful payment"
+
+msgid "Propiedad no encontrada"
+msgstr "Property not found"
+
+msgid "No tienes permiso para editar esta propiedad"
+msgstr "You do not have permission to edit this property"
+
+msgid "No tienes permiso para eliminar esta propiedad"
+msgstr "You do not have permission to delete this property"
+
+msgid "Método no permitido"
+msgstr "Method not allowed"
+
+msgid "GEMINI_API_KEY no está configurada."
+msgstr "GEMINI_API_KEY is not configured."
+
+msgid "Cuerpo de solicitud inválido."
+msgstr "Invalid request body."
+
+msgid "Activa el modo anfitrión para ver tus ventas y arriendos."
+msgstr "Activate host mode to see your sales and rentals."
+
+msgid "Hola, estoy interesado en la propiedad #%d."
+msgstr "Hello, I am interested in property #%d."
+
+msgid "La clave secreta del webhook de Stripe no está configurada."
+msgstr "Stripe webhook secret is not configured."
+
+msgid "La API devolvió %(status)s"
+msgstr "API returned %(status)s"
+
+msgid "La IA no encontro una propiedad valida del catalogo."
+msgstr "The AI did not find a valid property from the catalog."
+
+msgid "Confirmacion de contraseña"
+msgstr "Password confirmation"
+
+msgid "Pago seguro en"
+msgstr "Secure payment in"
+
+msgid "Panel host"
+msgstr "Host panel"
+
+msgid "para"
+msgstr "for"
+
+msgid "Perfil"
+msgstr "Profile"
+
+msgid "por el valor publicado de la propiedad."
+msgstr "for the listed value of the property."
+
+msgid "Portada"
+msgstr "Cover"
+
+msgid "Precio"
+msgstr "Price"
+
+msgid "Precio max"
+msgstr "Max price"
+
+msgid "precio mensual"
+msgstr "monthly price"
+
+msgid "Precio min"
+msgstr "Min price"
+
+msgid "Productos aliados"
+msgstr "Allied products"
+
+msgid "Productos aliados (consumidos)"
+msgstr "Allied products (consumed)"
+
+msgid "Propiedad activa"
+msgstr "Active property"
+
+msgid "Propiedades"
+msgstr "Properties"
+
+msgid "Propiedades con una presentacion mas clara."
+msgstr "Properties with a clearer presentation."
+
+msgid "Propiedades mejor presentadas y mejor conectadas."
+msgstr "Better presented and better connected properties."
+
+msgid "Proyecto académico"
+msgstr "Academic project"
+
+msgid "Prueba con otro nombre o con el titulo de la propiedad."
+msgstr "Try another name or the property title."
+
+msgid "Publica mejor"
+msgstr "Publish better"
+
+msgid "Publicacion"
+msgstr "Listing"
+
+msgid "Publicar"
+msgstr "Publish"
+
+msgid "Publicar propiedad"
+msgstr "Publish property"
+
+msgid "Puedes elegir una o varias imagenes al mismo tiempo."
+msgstr "You can choose one or several images at the same time."
+
+msgid "Puedes volver a intentarlo desde la ficha de"
+msgstr "You can try again from the listing for"
+
+msgid "Quitar favorito"
+msgstr "Remove favorite"
+
+msgid "Quitar todas"
+msgstr "Remove all"
+
+msgid "Recibimos el pago de"
+msgstr "We received the payment of"
+
+msgid "Reconectando"
+msgstr "Reconnecting"
+
+msgid "Registro"
+msgstr "Sign up"
+
+msgid "Reserva confirmada"
+msgstr "Confirmed reservation"
+
+msgid "Reservas"
+msgstr "Reservations"
+
+msgid "Reservas pagadas"
+msgstr "Paid reservations"
+
+msgid "resultado"
+msgstr "result"
+
+msgid "resultados"
+msgstr "results"
+
+msgid "Resumen"
+msgstr "Summary"
+
+msgid "Salir"
+msgstr "Log out"
+
+msgid "Selecciona una conversacion"
+msgstr "Select a conversation"
+
+msgid "Seleccionar fotos"
+msgstr "Select photos"
+
+msgid "Si, eliminar"
+msgstr "Yes, delete"
+
+msgid "Siguiente"
+msgstr "Next"
+
+msgid "Sin asesor asignado"
+msgstr "No advisor assigned"
+
+msgid "Sin email registrado"
+msgstr "No registered email"
+
+msgid "Sin notificaciones nuevas"
+msgstr "No new notifications"
+
+msgid "Stripe devolvio la sesion, pero no encontramos el registro local asociado."
+msgstr "Stripe returned the session, but we could not find the associated local record."
+
+msgid "Stripe no está configurado todavía."
+msgstr ""
+
+msgid "Tarjetas sobrias, mejor jerarquia visual y contexto suficiente para decidir rapido."
+msgstr "Clean cards, better visual hierarchy, and enough context to decide quickly."
+
+msgid "Titulo"
+msgstr "Title"
+
+msgid "Total pagado"
+msgstr "Total paid"
+
+msgid "Tu perfil."
+msgstr "Your profile."
+
+msgid "Tus pagos confirmados."
+msgstr "Your confirmed payments."
+
+msgid "Tus propiedades publicadas."
+msgstr "Your published properties."
+
+msgid "Ubicacion"
+msgstr "Location"
+
+msgid "Un inbox tipo producto real, pensado para seguimiento y confianza."
+msgstr "A real product-style inbox, designed for follow-up and trust."
+
+msgid "Un tono visual mas editorial y mas profesional."
+msgstr "A more editorial and professional visual tone."
+
+msgid "Usa este chat para resolver dudas, coordinar visitas y cerrar el siguiente paso."
+msgstr "Use this chat to answer questions, coordinate visits, and close the next step."
+
+msgid "Usuario"
+msgstr "Username"
+
+msgid "Venta"
+msgstr "Sale"
+
+msgid "Venta y arriendo en una sola vitrina."
+msgstr "Sales and rentals in one place."
+
+msgid "Ver catalogo"
+msgstr "View catalog"
+
+msgid "Ver detalle"
+msgstr "View details"
+
+msgid "Ver esta propiedad"
+msgstr "View this property"
+
+msgid "Ver fotos"
+msgstr "View photos"
+
+msgid "Ver propiedad"
+msgstr "View property"
+
+msgid "Ver todos los chats"
+msgstr "View all chats"
+
+msgid "Vista previa"
+msgstr "Preview"
+
+msgid "Vive mejor"
+msgstr "Live better"
+
+msgid "Volver"
+msgstr "Back"
+
+msgid "Volver a la propiedad"
+msgstr "Back to property"
+
+msgid "Volver al catalogo"
+msgstr "Back to catalog"
+
+msgid "Ya tienes una cuenta?"
+msgstr "Already have an account?"

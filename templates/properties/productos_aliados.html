@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Productos aliados" %}{% endblock %}
+
+{% block content %}
+<section class="mx-auto max-w-4xl">
+  <h1 class="brand-serif text-3xl mb-4">{% trans "Productos aliados (consumidos)" %}</h1>
+
+  {% if error %}
+    <div class="p-4 rounded border text-red-700">{% trans "Error al consultar el servicio:" %} {{ error }}</div>
+  {% endif %}
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+    {% for p in results %}
+      <article class="rounded-lg border p-4 bg-white">
+        <h2 class="font-semibold text-lg">{{ p.title }}</h2>
+        <p class="text-sm text-gray-600">{{ p.city }} - {{ p.neighborhood }}</p>
+        <p class="mt-2 text-sm">{{ p.description }}</p>
+        <div class="mt-3 flex items-center justify-between">
+          <span class="font-bold">{{ p.price }}</span>
+          {% if p.cover_url %}
+            <img src="{{ p.cover_url }}" alt="{% trans 'Portada' %}" class="w-20 h-14 object-cover rounded" />
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <p>{% trans "No hay productos aliados disponibles." %}</p>
+    {% endfor %}
+  </div>
+
+  <div class="mt-6 flex items-center gap-3">
+    {% if page and page > 1 %}
+      <a href="?page={{ page|add:-1 }}&page_size={{ page_size }}" class="theme-button-soft px-4 py-2 rounded">{% trans "Anterior" %}</a>
+    {% endif %}
+
+    <span class="text-sm text-gray-600">{% trans "Pagina" %} {{ page }} {% trans "de" %} {{ total_pages }}</span>
+
+    {% if page and page < total_pages %}
+      <a href="?page={{ page|add:1 }}&page_size={{ page_size }}" class="theme-button px-4 py-2 rounded">{% trans "Siguiente" %}</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load property_format %}
-{% load simple_i18n %}
+{% load i18n %}
 {% block title %}{{ prop.title }}{% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@
     <div class="border-b px-6 py-6 md:px-8" style="border-color: var(--theme-border-soft);">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
         <div class="min-w-0">
-          <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">{% if prop.operation == 'sale' %}{% tr "Venta" %}{% else %}{% tr "Arriendo" %}{% endif %}</p>
+          <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">{% if prop.operation == 'sale' %}{% trans "Venta" %}{% else %}{% trans "Arriendo" %}{% endif %}</p>
           <h1 class="brand-serif mt-3 text-4xl md:text-5xl" style="color: var(--theme-ink);">{{ prop.title }}</h1>
           <p class="mt-3 text-base" style="color: var(--theme-muted);">{{ prop.location.city }} / {{ prop.location.neighborhood }}</p>
         </div>
@@ -17,13 +17,13 @@
         <div class="flex flex-wrap items-center gap-3">
           {% if images %}
             <button type="button" onclick="openGallery(0)" class="theme-button-soft inline-flex rounded-2xl px-5 py-3 text-sm font-semibold">
-              {% tr "Ver fotos" %}
+              {% trans "Ver fotos" %}
             </button>
           {% endif %}
           <form action="{% url 'properties:contact_advisor' prop.id %}" method="post">
             {% csrf_token %}
             <button type="submit" class="theme-button inline-flex rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">
-              {% tr "Contactar asesor" %}
+              {% trans "Contactar asesor" %}
             </button>
           </form>
         </div>
@@ -45,7 +45,7 @@
                   {% if forloop.last and images|length > 5 %}
                     <div class="absolute inset-0 flex items-end justify-end bg-black/25 p-3">
                       <span class="rounded-xl px-4 py-2 text-sm font-semibold" style="background: rgba(255,253,249,0.92); color: var(--theme-ink);">
-                        +{{ images|length|add:"-5" }} {% tr "fotos" %}
+                        +{{ images|length|add:"-5" }} {% trans "fotos" %}
                       </span>
                     </div>
                   {% endif %}
@@ -64,7 +64,7 @@
     <div class="rounded-[2rem] border p-6 md:p-8" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
       <div class="flex flex-wrap items-center gap-3">
         <span class="rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.18em]" style="background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241,137,45,0.24);">
-          {% if prop.operation == 'sale' %}{% tr "Venta" %}{% else %}{% tr "Arriendo" %}{% endif %}
+          {% if prop.operation == 'sale' %}{% trans "Venta" %}{% else %}{% trans "Arriendo" %}{% endif %}
         </span>
         {% if prop.area_m2 %}
           <span class="rounded-full px-4 py-2 text-xs font-semibold" style="background: rgba(255,253,249,0.92); color: var(--theme-muted); border: 1px solid var(--theme-border);">
@@ -79,32 +79,32 @@
 
       <div class="mt-8 grid gap-4 sm:grid-cols-3">
         <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,248,240,0.84);">
-          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Habitaciones" %}</p>
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Habitaciones" %}</p>
           <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ prop.bedrooms }}</p>
         </div>
         <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.94);">
-          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Banos" %}</p>
+          <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Banos" %}</p>
           <p class="brand-serif mt-2 text-4xl" style="color: var(--theme-ink);">{{ prop.bathrooms }}</p>
         </div>
         <div class="rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: var(--theme-dark);">
-          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/60">{% tr "Estado" %}</p>
-          <p class="brand-serif mt-2 text-3xl text-white">{% if prop.is_active %}{% tr "Activa" %}{% else %}{% tr "Inactiva" %}{% endif %}</p>
+          <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/60">{% trans "Estado" %}</p>
+          <p class="brand-serif mt-2 text-3xl text-white">{% if prop.is_active %}{% trans "Activa" %}{% else %}{% trans "Inactiva" %}{% endif %}</p>
         </div>
       </div>
 
       {% if prop.agent %}
         <div class="mt-8 rounded-[1.5rem] border p-5" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.92);">
-          <p class="text-xs font-bold uppercase tracking-[0.22em]" style="color: var(--theme-muted);">{% tr "Asesor" %}</p>
+          <p class="text-xs font-bold uppercase tracking-[0.22em]" style="color: var(--theme-muted);">{% trans "Asesor" %}</p>
           <p class="mt-2 text-lg font-extrabold" style="color: var(--theme-ink);">{{ prop.agent.user.get_full_name|default:prop.agent.user.username }}</p>
         </div>
       {% endif %}
     </div>
 
     <aside class="rounded-[2rem] border p-6 md:p-7" style="background: rgba(255,253,249,0.94); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
-      <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Resumen" %}</p>
+      <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% trans "Resumen" %}</p>
       <p class="brand-serif mt-3 text-[clamp(2.4rem,4vw,3.5rem)] leading-tight" style="color: var(--theme-ink);">{{ prop.price|currency_es }}</p>
       {% if prop.operation == 'rent' %}
-        <p class="mt-2 text-sm" style="color: var(--theme-muted);">{% tr "precio mensual" %}</p>
+        <p class="mt-2 text-sm" style="color: var(--theme-muted);">{% trans "precio mensual" %}</p>
       {% endif %}
 
       <div class="mt-8 space-y-3">
@@ -113,25 +113,25 @@
             <form method="post" action="{% url 'properties:checkout' prop.id %}">
               {% csrf_token %}
               <button type="submit" class="theme-button flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
-                {% tr "Pagar con Stripe" %}
+                {% trans "Pagar con Stripe" %}
               </button>
             </form>
           {% else %}
             <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="theme-button flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold shadow-sm">
-              {% tr "Inicia sesion para pagar" %}
+              {% trans "Inicia sesion para pagar" %}
             </a>
           {% endif %}
           <p class="text-xs leading-6" style="color: var(--theme-muted);">
-            {% tr "Pago seguro en" %} {{ currency }} {% tr "por el valor publicado de la propiedad." %}
+            {% trans "Pago seguro en" %} {{ currency }} {% trans "por el valor publicado de la propiedad." %}
           </p>
         {% endif %}
 
         {% if can_edit %}
           <a href="{% url 'properties:edit' prop.id %}" class="theme-button-soft flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold">
-            {% tr "Editar propiedad" %}
+            {% trans "Editar propiedad" %}
           </a>
           <button type="button" onclick="openDeleteModal()" class="flex w-full items-center justify-center rounded-2xl px-5 py-3 text-sm font-semibold" style="background: #fff0ec; color: #b2543b; border: 1px solid #f0c4b8;">
-            {% tr "Eliminar propiedad" %}
+            {% trans "Eliminar propiedad" %}
           </button>
         {% endif %}
 
@@ -139,17 +139,17 @@
           <form method="post" action="{% url 'interactions:toggle_favorite' prop.id %}">
             {% csrf_token %}
             <button type="submit" class="theme-button-soft w-full rounded-2xl px-5 py-3 text-sm font-semibold">
-              {% if is_fav %}{% tr "Quitar favorito" %}{% else %}{% tr "Agregar a favoritos" %}{% endif %}
+              {% if is_fav %}{% trans "Quitar favorito" %}{% else %}{% trans "Agregar a favoritos" %}{% endif %}
             </button>
           </form>
         {% else %}
           <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
-            {% tr "Inicia sesion para guardar esta propiedad" %}
+            {% trans "Inicia sesion para guardar esta propiedad" %}
           </a>
         {% endif %}
 
         <a href="{% url 'properties:catalog' %}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
-          {% tr "Volver al catalogo" %}
+          {% trans "Volver al catalogo" %}
         </a>
       </div>
     </aside>
@@ -162,15 +162,15 @@
   <div class="relative z-10 flex min-h-screen items-center justify-center p-4">
     <div class="w-full max-w-md rounded-[2rem] border p-6" style="background: rgba(255,253,249,0.98); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
       <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl text-white" style="background: #c96b56;">!</div>
-      <h3 class="brand-serif text-3xl" style="color: var(--theme-ink);">{% tr "Eliminar propiedad" %}</h3>
+      <h3 class="brand-serif text-3xl" style="color: var(--theme-ink);">{% trans "Eliminar propiedad" %}</h3>
       <p class="mt-3 text-sm leading-7" style="color: var(--theme-muted);">
-        {% tr "Esta accion eliminara" %} <span style="color: var(--theme-ink);" class="font-semibold">{{ prop.title }}</span> {% tr "de forma permanente." %}
+        {% trans "Esta accion eliminara" %} <span style="color: var(--theme-ink);" class="font-semibold">{{ prop.title }}</span> {% trans "de forma permanente." %}
       </p>
       <div class="mt-6 flex items-center justify-end gap-3">
-        <button type="button" onclick="closeDeleteModal()" class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">{% tr "Cancelar" %}</button>
+        <button type="button" onclick="closeDeleteModal()" class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">{% trans "Cancelar" %}</button>
         <form method="post" action="{% url 'properties:delete' prop.id %}">
           {% csrf_token %}
-          <button type="submit" class="rounded-2xl px-4 py-2.5 text-sm font-semibold text-white" style="background: #c96b56;">{% tr "Si, eliminar" %}</button>
+          <button type="submit" class="rounded-2xl px-4 py-2.5 text-sm font-semibold text-white" style="background: #c96b56;">{% trans "Si, eliminar" %}</button>
         </form>
       </div>
     </div>

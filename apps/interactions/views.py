@@ -3,6 +3,7 @@ from django.db.models import Prefetch, Q
 from django.http import Http404
 from django.http import JsonResponse
 from django.contrib import messages
+from django.utils.translation import gettext as _
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
@@ -16,7 +17,7 @@ from .models import Conversation, Message
 def toggle_favorite(request, pk: int):
     prop = PropertyService.get_property_detail(pk)
     if not prop:
-        raise Http404("Property not found")
+        raise Http404(_("Propiedad no encontrada"))
 
     favorite_service = FavoriteService()
     if favorite_service.is_favorite(request.user, prop):
@@ -31,7 +32,7 @@ def toggle_favorite(request, pk: int):
 def inquiry_create(request, pk: int):
     prop = PropertyService.get_property_detail(pk)
     if not prop:
-        raise Http404("Property not found")
+        raise Http404(_("Propiedad no encontrada"))
 
     if request.method == "POST":
         form = InquiryForm(request.POST)
@@ -71,7 +72,7 @@ def inquiry_create(request, pk: int):
 @login_required
 def clear_chat_notifications(request):
     if request.method != "POST":
-        return JsonResponse({"detail": "Method not allowed"}, status=405)
+        return JsonResponse({"detail": _("Método no permitido")}, status=405)
 
     updated = (
         Message.objects
@@ -119,7 +120,7 @@ def chat_dashboard(request, conversation_id=None):
         )
 
         if request.user != active_conversation.buyer and request.user != active_conversation.advisor:
-            messages.error(request, "No tienes acceso a esa conversacion.")
+            messages.error(request, _("No tienes acceso a esa conversación."))
             return redirect("interactions:chat_list")
 
         messages = active_conversation.messages.select_related("sender")

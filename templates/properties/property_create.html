@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% load simple_i18n %}
-{% block title %}{% tr "Publicar propiedad" %}{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Publicar propiedad" %}{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -24,9 +24,9 @@
 {% block content %}
 <div class="property-form mx-auto max-w-5xl rounded-[2rem] border p-8 md:p-10" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
   <div class="mb-10">
-    <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">{% tr "Publicacion" %}</p>
-    <h1 class="brand-serif mt-3 text-5xl" style="color: var(--theme-ink);">{% tr "Publicar propiedad" %}</h1>
-    <p class="mt-3 text-base" style="color: var(--theme-muted);">{% tr "Completa la informacion del anuncio con una presentacion mas premium." %}</p>
+    <p class="text-xs font-bold uppercase tracking-[0.3em]" style="color: var(--theme-accent);">{% trans "Publicacion" %}</p>
+    <h1 class="brand-serif mt-3 text-5xl" style="color: var(--theme-ink);">{% trans "Publicar propiedad" %}</h1>
+    <p class="mt-3 text-base" style="color: var(--theme-muted);">{% trans "Completa la informacion del anuncio con una presentacion mas premium." %}</p>
   </div>
 
   <form method="post" class="space-y-10" enctype="multipart/form-data">
@@ -34,13 +34,13 @@
 
     <section class="space-y-5">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Ubicacion" %}</p>
-        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% tr "Contexto del inmueble" %}</h2>
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% trans "Ubicacion" %}</p>
+        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% trans "Contexto del inmueble" %}</h2>
       </div>
       <div class="grid gap-4 md:grid-cols-2">
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Ciudad" %}</label>{{ loc_form.city }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Barrio" %}</label>{{ loc_form.neighborhood }}</div>
-        <div class="md:col-span-2"><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Direccion" %}</label>{{ loc_form.address }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Ciudad" %}</label>{{ loc_form.city }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Barrio" %}</label>{{ loc_form.neighborhood }}</div>
+        <div class="md:col-span-2"><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Direccion" %}</label>{{ loc_form.address }}</div>
       </div>
     </section>
 
@@ -48,12 +48,12 @@
 
     <section class="space-y-5">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Anuncio" %}</p>
-        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% tr "Informacion principal" %}</h2>
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% trans "Anuncio" %}</p>
+        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% trans "Informacion principal" %}</h2>
       </div>
       <div class="space-y-4">
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Titulo" %}</label>{{ prop_form.title }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Descripcion" %}</label>{{ prop_form.description }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Titulo" %}</label>{{ prop_form.title }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Descripcion" %}</label>{{ prop_form.description }}</div>
       </div>
     </section>
 
@@ -61,18 +61,18 @@
 
     <section class="space-y-5">
       <div>
-        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Detalles" %}</p>
-        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% tr "Datos del inmueble" %}</h2>
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% trans "Detalles" %}</p>
+        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% trans "Datos del inmueble" %}</h2>
       </div>
       <div class="grid gap-4 md:grid-cols-2">
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Operacion" %}</label>{{ prop_form.operation }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Precio" %}</label>{{ prop_form.price }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Habitaciones" %}</label>{{ prop_form.bedrooms }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Banos" %}</label>{{ prop_form.bathrooms }}</div>
-        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% tr "Area (m2)" %}</label>{{ prop_form.area_m2 }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Operacion" %}</label>{{ prop_form.operation }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Precio" %}</label>{{ prop_form.price }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Habitaciones" %}</label>{{ prop_form.bedrooms }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Banos" %}</label>{{ prop_form.bathrooms }}</div>
+        <div><label class="mb-2 block text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">{% trans "Area (m2)" %}</label>{{ prop_form.area_m2 }}</div>
         <label class="flex items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold" style="border-color: var(--theme-border-soft); color: var(--theme-ink);">
           {{ prop_form.is_active }}
-          {% tr "Propiedad activa" %}
+          {% trans "Propiedad activa" %}
         </label>
       </div>
     </section>
@@ -81,32 +81,32 @@
 
     <section>
       <div class="mb-4">
-        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% tr "Fotos" %}</p>
-        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% tr "Material visual" %}</h2>
-        <p class="mt-2 text-sm" style="color: var(--theme-muted);">{% tr "La primera imagen sera la portada inicial." %}</p>
+        <p class="text-xs font-bold uppercase tracking-[0.24em]" style="color: var(--theme-accent);">{% trans "Fotos" %}</p>
+        <h2 class="brand-serif mt-2 text-3xl" style="color: var(--theme-ink);">{% trans "Material visual" %}</h2>
+        <p class="mt-2 text-sm" style="color: var(--theme-muted);">{% trans "La primera imagen sera la portada inicial." %}</p>
       </div>
 
       <div class="rounded-[1.8rem] border border-dashed p-6" style="border-color: rgba(241,137,45,0.34); background: rgba(255,248,240,0.84);">
         <label for="create-images" class="flex cursor-pointer flex-col items-center justify-center text-center">
           <div class="flex h-14 w-14 items-center justify-center rounded-2xl text-white" style="background: var(--theme-accent);">+</div>
-          <p class="mt-3 text-base font-semibold" style="color: var(--theme-ink);">{% tr "Seleccionar fotos" %}</p>
-          <p class="mt-1 text-sm" style="color: var(--theme-muted);">{% tr "Puedes elegir una o varias imagenes al mismo tiempo." %}</p>
+          <p class="mt-3 text-base font-semibold" style="color: var(--theme-ink);">{% trans "Seleccionar fotos" %}</p>
+          <p class="mt-1 text-sm" style="color: var(--theme-muted);">{% trans "Puedes elegir una o varias imagenes al mismo tiempo." %}</p>
         </label>
         <input id="create-images" type="file" name="images" multiple accept="image/*" class="hidden">
       </div>
 
       <div id="create-preview-wrapper" class="mt-5 hidden">
         <div class="mb-3 flex items-center justify-between">
-          <h3 class="text-sm font-semibold" style="color: var(--theme-ink);">{% tr "Vista previa" %}</h3>
-          <button type="button" id="create-clear-all" class="text-sm font-semibold" style="color: #b2543b;">{% tr "Quitar todas" %}</button>
+          <h3 class="text-sm font-semibold" style="color: var(--theme-ink);">{% trans "Vista previa" %}</h3>
+          <button type="button" id="create-clear-all" class="text-sm font-semibold" style="color: #b2543b;">{% trans "Quitar todas" %}</button>
         </div>
         <div id="create-preview-grid" class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
       </div>
     </section>
 
     <div class="flex flex-wrap items-center justify-between gap-4 pt-6">
-      <a href="{% url 'properties:mine' %}" class="text-sm font-semibold" style="color: var(--theme-muted);">{% tr "Volver" %}</a>
-      <button class="theme-button rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">{% tr "Publicar propiedad" %}</button>
+      <a href="{% url 'properties:mine' %}" class="text-sm font-semibold" style="color: var(--theme-muted);">{% trans "Volver" %}</a>
+      <button class="theme-button rounded-2xl px-6 py-3 text-sm font-semibold shadow-sm">{% trans "Publicar propiedad" %}</button>
     </div>
   </form>
 </div>
@@ -141,7 +141,7 @@
           card.innerHTML = `
             <div class="relative">
               <img src="${e.target.result}" alt="${file.name}" class="h-40 w-full object-cover">
-              ${index === 0 ? `<div class="absolute left-2 top-2 rounded-lg px-2 py-1 text-[11px] font-semibold text-white" style="background: var(--theme-dark);">{% tr "Portada" %}</div>` : ""}
+              ${index === 0 ? `<div class="absolute left-2 top-2 rounded-lg px-2 py-1 text-[11px] font-semibold text-white" style="background: var(--theme-dark);">{% trans "Portada" %}</div>` : ""}
               <button type="button" data-index="${index}" class="remove-create-image absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border bg-white/95 shadow" style="border-color: var(--theme-border); color: var(--theme-ink);">x</button>
             </div>
             <div class="p-3">

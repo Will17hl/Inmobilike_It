@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-{% load simple_i18n %}
+{% load i18n %}
 <!doctype html>
 {% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}">
@@ -116,7 +116,7 @@
                 Inmobilike It
               </div>
               <div class="text-xs -mt-0.5 uppercase tracking-[0.22em]" style="color: var(--theme-accent);">
-                {% tr "Encuentra tu próximo hogar" %}
+                {% trans "Encuentra tu próximo hogar" %}
               </div>
             </div>
           </a>
@@ -126,23 +126,23 @@
         <nav class="hidden lg:flex items-center gap-1 rounded-2xl px-2 py-2" style="background: rgba(255,255,255,0.62); border: 1px solid var(--theme-border-soft);">
           <a href="{% url 'home' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% tr "Inicio" %}
+            {% trans "Inicio" %}
           </a>
 
           <a href="{% url 'interactions:chat_list' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% tr "Chats" %}
+            {% trans "Chats" %}
           </a>
 
           <a href="{% url 'properties:catalog' %}"
              class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-            {% tr "Catálogo" %}
+            {% trans "Catálogo" %}
           </a>
 
           {% if user.is_authenticated %}
             <a href="{% url 'properties:my_reservations' %}"
                class="nav-link px-4 py-2 rounded-xl text-sm font-medium hover:bg-white/80">
-              {% tr "Mis reservas" %}
+              {% trans "Mis reservas" %}
             </a>
           {% endif %}
         </nav>
@@ -156,7 +156,7 @@
             <div class="relative" id="bell-wrapper">
               <button id="bell-btn"
                       class="theme-button-soft relative inline-flex w-11 h-11 items-center justify-center rounded-2xl transition shadow-sm"
-                      aria-label="{% tr "Notificaciones" %}">
+                      aria-label="{% trans "Notificaciones" %}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" style="color: var(--theme-muted);" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -172,9 +172,9 @@
               <div id="bell-dropdown"
                    class="hidden absolute right-0 mt-2 w-80 rounded-2xl shadow-xl z-50 overflow-hidden" style="background: var(--theme-surface-strong); border: 1px solid var(--theme-border);">
                 <div class="px-4 py-3 flex items-center justify-between" style="border-bottom: 1px solid var(--theme-border-soft);">
-                  <span class="text-sm font-semibold" style="color: var(--theme-ink);">{% tr "Notificaciones" %}</span>
+                  <span class="text-sm font-semibold" style="color: var(--theme-ink);">{% trans "Notificaciones" %}</span>
                   <button id="bell-clear" class="text-xs transition" style="color: var(--theme-muted);">
-                    {% tr "Limpiar" %}
+                    {% trans "Limpiar" %}
                   </button>
                 </div>
                 <ul id="bell-list" class="max-h-72 overflow-y-auto divide-y divide-slate-100">
@@ -189,14 +189,14 @@
                     {% endfor %}
                   {% else %}
                     <li class="px-4 py-4 text-sm text-center" id="bell-empty" style="color: var(--theme-muted);">
-                      {% tr "Sin notificaciones nuevas" %}
+                      {% trans "Sin notificaciones nuevas" %}
                     </li>
                   {% endif %}
                 </ul>
                 <div class="px-4 py-3" style="border-top: 1px solid var(--theme-border-soft);">
                   <a href="{% url 'interactions:chat_list' %}"
                      class="block text-center text-sm font-medium transition" style="color: var(--theme-ink);">
-                    {% tr "Ver todos los chats" %} →
+                    {% trans "Ver todos los chats" %} →
                   </a>
                 </div>
               </div>
@@ -207,9 +207,9 @@
                class="theme-button-soft inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl transition shadow-sm">
               <span class="text-sm font-medium">
                 {% if mode == "host" %}
-                  {% tr "Modo usuario" %}
+                  {% trans "Modo usuario" %}
                 {% else %}
-                  {% tr "Modo anfitrión" %}
+                  {% trans "Modo anfitrión" %}
                 {% endif %}
               </span>
             </a>
@@ -223,7 +223,7 @@
               {% endif %}
 
               <div class="hidden xl:flex flex-col leading-tight">
-                <span class="text-xs text-slate-400">{% tr "Bienvenido" %}</span>
+                <span class="text-xs text-slate-400">{% trans "Bienvenido" %}</span>
                 <span class="text-sm font-semibold text-slate-700 max-w-[150px] truncate">
                   {{ user.username }}
                 </span>
@@ -231,24 +231,24 @@
 
               <a href="{% url 'accounts:profile' %}"
                  class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-                {% tr "Perfil" %}
+                {% trans "Perfil" %}
               </a>
 
               <a href="{% url 'accounts:logout' %}"
                  class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-                {% tr "Salir" %}
+                {% trans "Salir" %}
               </a>
             </div>
 
           {% else %}
             <a href="{% url 'accounts:login' %}"
                class="theme-button-soft inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-medium transition">
-              {% tr "Iniciar sesión" %}
+              {% trans "Iniciar sesión" %}
             </a>
 
             <a href="{% url 'accounts:register' %}"
                class="theme-button inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-semibold transition shadow-sm">
-              {% tr "Crear cuenta" %}
+              {% trans "Crear cuenta" %}
             </a>
           {% endif %}
           <form action="{% url 'set_language' %}" method="post" class="inline-flex rounded-2xl overflow-hidden border" style="border-color: var(--theme-border);">
@@ -273,7 +273,7 @@
           <div class="relative" id="bell-wrapper-mobile">
             <button id="bell-btn-mobile"
                     class="relative inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
-                    aria-label="{% tr "Notificaciones" %}">
+                    aria-label="{% trans "Notificaciones" %}">
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none"
                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -289,9 +289,9 @@
             <div id="bell-dropdown-mobile"
                  class="hidden absolute right-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 overflow-hidden">
               <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
-                <span class="text-sm font-semibold text-slate-900">{% tr "Notificaciones" %}</span>
+                <span class="text-sm font-semibold text-slate-900">{% trans "Notificaciones" %}</span>
                 <button id="bell-clear-mobile" class="text-xs text-slate-400 hover:text-slate-600 transition">
-                  {% tr "Limpiar" %}
+                  {% trans "Limpiar" %}
                 </button>
               </div>
               <ul id="bell-list-mobile" class="max-h-60 overflow-y-auto divide-y divide-slate-100">
@@ -306,14 +306,14 @@
                   {% endfor %}
                 {% else %}
                   <li class="px-4 py-4 text-sm text-slate-400 text-center" id="bell-empty-mobile">
-                    {% tr "Sin notificaciones nuevas" %}
+                    {% trans "Sin notificaciones nuevas" %}
                   </li>
                 {% endif %}
               </ul>
               <div class="px-4 py-3 border-t border-slate-100">
                 <a href="{% url 'interactions:chat_list' %}"
                    class="block text-center text-sm font-medium text-slate-700 hover:text-slate-900 transition">
-                  {% tr "Ver todos los chats" %} →
+                  {% trans "Ver todos los chats" %} →
                 </a>
               </div>
             </div>
@@ -323,7 +323,7 @@
           <button id="mobileMenuBtn"
                   class="inline-flex w-11 h-11 items-center justify-center rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 transition shadow-sm"
                   type="button"
-                  aria-label="{% tr "Abrir menú" %}">
+                  aria-label="{% trans "Abrir menú" %}">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
@@ -336,25 +336,25 @@
         <div class="hidden lg:flex items-center justify-between gap-4 border-t py-3" style="border-color: var(--theme-border-soft);">
           <div class="flex items-center gap-3 min-w-0">
             <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.22em]" style="background: var(--theme-accent-soft); color: var(--theme-accent); border: 1px solid rgba(241, 137, 45, 0.22);">
-              {% tr "Panel host" %}
+              {% trans "Panel host" %}
             </span>
             <p class="text-sm truncate" style="color: var(--theme-muted);">
-              {% tr "Gestiona tus publicaciones y revisa operaciones cerradas." %}
+              {% trans "Gestiona tus publicaciones y revisa operaciones cerradas." %}
             </p>
           </div>
 
           <div class="flex items-center gap-2 shrink-0">
             <a href="{% url 'properties:create' %}"
                class="theme-button rounded-2xl px-4 py-2.5 text-sm font-semibold shadow-sm">
-              {% tr "Publicar" %}
+              {% trans "Publicar" %}
             </a>
             <a href="{% url 'properties:mine' %}"
                class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">
-              {% tr "Mis propiedades" %}
+              {% trans "Mis propiedades" %}
             </a>
             <a href="{% url 'properties:my_transactions' %}"
                class="theme-button-soft rounded-2xl px-4 py-2.5 text-sm font-semibold">
-              {% tr "Mis ventas/arriendos" %}
+              {% trans "Mis ventas/arriendos" %}
             </a>
           </div>
         </div>
@@ -367,76 +367,76 @@
 
         <a href="{% url 'home' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% tr "Inicio" %}
+          {% trans "Inicio" %}
         </a>
 
         <a href="{% url 'interactions:chat_list' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% tr "Chats" %}
+          {% trans "Chats" %}
         </a>
 
         <a href="{% url 'properties:catalog' %}"
            class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-          {% tr "Catálogo" %}
+          {% trans "Catálogo" %}
         </a>
 
         {% if user.is_authenticated %}
           <a href="{% url 'properties:my_reservations' %}"
              class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% tr "Mis reservas" %}
+            {% trans "Mis reservas" %}
           </a>
 
           <a href="{% url 'accounts:toggle_mode' %}?next={{ request.path }}"
              class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% if mode == "host" %}{% tr "Modo usuario" %}{% else %}{% tr "Modo anfitrión" %}{% endif %}
+            {% if mode == "host" %}{% trans "Modo usuario" %}{% else %}{% trans "Modo anfitrión" %}{% endif %}
           </a>
 
           {% if mode == "host" %}
             <a href="{% url 'properties:create' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% tr "Publicar" %}
+              {% trans "Publicar" %}
             </a>
 
             <a href="{% url 'properties:mine' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% tr "Mis propiedades" %}
+              {% trans "Mis propiedades" %}
             </a>
 
             <a href="{% url 'properties:my_transactions' %}"
                class="block px-4 py-3 rounded-2xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-              {% tr "Mis ventas/arriendos" %}
+              {% trans "Mis ventas/arriendos" %}
             </a>
 
             <div class="px-4">
               <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-950 text-white text-xs font-semibold">
-                {% tr "Host activado" %}
+                {% trans "Host activado" %}
               </span>
             </div>
           {% endif %}
 
           <div class="px-4 pt-2">
-            <div class="text-xs text-slate-400">{% tr "Bienvenido" %}</div>
+            <div class="text-xs text-slate-400">{% trans "Bienvenido" %}</div>
             <div class="text-sm font-semibold text-slate-700">{{ user.username }}</div>
           </div>
 
           <a href="{% url 'accounts:profile' %}"
              class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            {% tr "Perfil" %}
+            {% trans "Perfil" %}
           </a>
 
           <a href="{% url 'accounts:logout' %}"
              class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% tr "Salir" %}
+            {% trans "Salir" %}
           </a>
         {% else %}
           <a href="{% url 'accounts:login' %}"
              class="block px-4 py-3 rounded-2xl border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
-            {% tr "Iniciar sesión" %}
+            {% trans "Iniciar sesión" %}
           </a>
 
           <a href="{% url 'accounts:register' %}"
              class="block px-4 py-3 rounded-2xl bg-slate-950 text-white text-sm font-semibold hover:bg-slate-800 transition">
-            {% tr "Crear cuenta" %}
+            {% trans "Crear cuenta" %}
           </a>
         {% endif %}
       </div>
@@ -452,7 +452,7 @@
   <!-- FOOTER -->
   <footer class="border-t border-slate-200 bg-white mt-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-sm text-slate-500">
-      © {{ now|date:"Y" }} Inmobilike It · {% tr "Proyecto académico" %}
+      © {{ now|date:"Y" }} Inmobilike It · {% trans "Proyecto académico" %}
     </div>
   </footer>
 
@@ -531,7 +531,7 @@
       }
 
       function clearRenderedNotifications() {
-        list.innerHTML = `<li class="px-4 py-4 text-sm text-slate-400 text-center" id="${emptyId}">{% tr "Sin notificaciones nuevas" %}</li>`;
+        list.innerHTML = `<li class="px-4 py-4 text-sm text-slate-400 text-center" id="${emptyId}">{% trans "Sin notificaciones nuevas" %}</li>`;
         count = 0;
         updateBadge();
       }
