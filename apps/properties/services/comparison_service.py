@@ -9,9 +9,6 @@ class ComparisonService:
         
         comparison_data = []
         for prop in properties:
-            cover = prop.images.filter(is_cover=True).first() or prop.images.first()
-            cover_url = cover.display_url if cover else None
-            
             comparison_data.append({
                 "id": prop.id,
                 "title": prop.title,
@@ -21,7 +18,7 @@ class ComparisonService:
                 "bathrooms": prop.bathrooms,
                 "area_m2": prop.area_m2,
                 "location": str(prop.location),
-                "cover_url": cover_url,
+                "cover_url": prop.cover_display_url,
                 "price_per_m2": round(prop.price / prop.area_m2, 2) if prop.area_m2 and prop.area_m2 > 0 else None
             })
             

@@ -55,7 +55,7 @@
           {% endfor %}
         </div>
       {% else %}
-        <div class="h-72 rounded-[1.8rem]" style="background: linear-gradient(135deg, #fff0e2 0%, #eadfd3 100%);"></div>
+        <img src="{{ prop.cover_display_url }}" alt="{{ prop.title }}" class="h-72 w-full rounded-[1.8rem] object-cover">
       {% endif %}
     </div>
   </div>

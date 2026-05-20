@@ -48,12 +48,11 @@ def build_payment_summary(payments, include_buyer=False):
 
     for payment in payments:
         property_obj = payment.property
-        cover = property_obj.images.filter(is_cover=True).first() or property_obj.images.first()
         total_amount += payment.amount
         item = {
             "payment": payment,
             "property": property_obj,
-            "cover": cover,
+            "cover_url": property_obj.cover_display_url,
         }
         if include_buyer:
             item["buyer"] = payment.user
@@ -249,9 +248,6 @@ def ai_property_recommendation(request):
             status=502,
         )
 
-    cover = PropertyService.get_cover_image(property_obj)
-    cover_url = cover.display_url if cover else ""
-
     return JsonResponse(
         {
             "property": {
@@ -265,7 +261,7 @@ def ai_property_recommendation(request):
                 "city": property_obj.location.city,
                 "neighborhood": property_obj.location.neighborhood,
                 "detail_url": reverse("properties:detail", kwargs={"pk": property_obj.id}),
-                "cover_url": cover_url,
+                "cover_url": property_obj.cover_display_url,
             },
             "match_score": recommendation.get("match_score", 0),
             "reason": recommendation.get("reason", ""),

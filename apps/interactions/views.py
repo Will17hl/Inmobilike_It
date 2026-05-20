@@ -142,10 +142,6 @@ def chat_dashboard(request, conversation_id=None):
         )
 
         property_obj = conversation.property
-        cover = property_obj.images.filter(is_cover=True).first() or property_obj.images.first()
-        cover_url = None
-        if cover:
-            cover_url = cover.display_url
 
         last_message = conversation.messages.all().last()
         unread_count = (
@@ -167,24 +163,17 @@ def chat_dashboard(request, conversation_id=None):
             "unread_count": unread_count,
             "property_location": str(property_obj.location),
             "property_url": reverse("properties:detail", kwargs={"pk": property_obj.pk}),
-            "cover_url": cover_url,
+            "cover_url": property_obj.cover_display_url,
         })
 
     active_chat_meta = None
     if active_conversation:
         active_property = active_conversation.property
-        active_cover = (
-            active_property.images.filter(is_cover=True).first()
-            or active_property.images.first()
-        )
-        active_cover_url = None
-        if active_cover:
-            active_cover_url = active_cover.display_url
 
         active_chat_meta = {
             "property_location": str(active_property.location),
             "property_url": reverse("properties:detail", kwargs={"pk": active_property.pk}),
-            "cover_url": active_cover_url,
+            "cover_url": active_property.cover_display_url,
         }
 
     return render(request, "interactions/chat_dashboard.html", {

@@ -2,7 +2,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from unittest.mock import patch, Mock
 
-from apps.properties.models import Location, Property, PropertyImage
+from apps.properties.models import DEFAULT_PROPERTY_COVER_URL, Location, Property, PropertyImage
 
 
 @override_settings(SECURE_SSL_REDIRECT=False)
@@ -66,3 +66,24 @@ class ProductosAliadosViewTest(TestCase):
         payload = resp.json()
         self.assertEqual(payload["page"], 1)
         self.assertEqual(payload["page_size"], 10)
+
+    def test_properties_api_returns_default_cover_without_images(self):
+        location = Location.objects.create(
+            city="Medellin",
+            neighborhood="La Aguacatala",
+            address="Calle 1 # 2-3",
+        )
+        Property.objects.create(
+            title="Apartamento Familiar",
+            description="Hermoso apto familiar en increible zona.",
+            price=4000000,
+            operation=Property.OP_RENT,
+            is_active=True,
+            location=location,
+        )
+
+        resp = self.client.get(reverse("properties:api_properties_list"), HTTP_HOST="localhost")
+
+        self.assertEqual(resp.status_code, 200)
+        payload = resp.json()
+        self.assertEqual(payload["results"][0]["cover_url"], DEFAULT_PROPERTY_COVER_URL)

@@ -1,10 +1,25 @@
 import builtins
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from apps.accounts.models import AgentProfile
-from django.conf import settings
 from django.core.validators import MinValueValidator
+
+
+DEFAULT_PROPERTY_COVER_URL = (
+    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2"
+    "?auto=format&fit=crop&w=1200&q=80"
+)
+
+
+def is_unserved_local_media_url(url):
+    return (
+        url.startswith(settings.MEDIA_URL)
+        and not settings.DEBUG
+        and not getattr(settings, "USE_CLOUDINARY", False)
+    )
+
 
 class Location(models.Model):
     city = models.CharField(max_length=80, db_index=True)
@@ -51,6 +66,23 @@ class Property(models.Model):
 
     def __str__(self):
         return self.title
+
+    @builtins.property
+    def cover_display_url(self):
+        images = list(self.images.all())
+        cover = next((image for image in images if image.is_cover), None)
+        if not cover and images:
+            cover = images[0]
+
+        if cover:
+            try:
+                url = cover.display_url
+            except Exception:
+                url = ""
+            if url and not is_unserved_local_media_url(url):
+                return url
+
+        return DEFAULT_PROPERTY_COVER_URL
 
 class PropertyImage(models.Model):
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name="images")

@@ -17,19 +17,7 @@ def _positive_int(value, default):
     return number if number > 0 else default
 
 
-def _display_url(image_obj):
-    try:
-        return image_obj.display_url
-    except Exception:
-        return image_obj.image_url or None
-
-
 def _serialize_property(prop):
-    cover = None
-    cover_obj = prop.images.filter(is_cover=True).first() or prop.images.first()
-    if cover_obj:
-        cover = _display_url(cover_obj)
-
     return {
         "id": prop.id,
         "title": prop.title,
@@ -38,7 +26,7 @@ def _serialize_property(prop):
         "operation": prop.operation,
         "city": prop.location.city if prop.location else None,
         "neighborhood": prop.location.neighborhood if prop.location else None,
-        "cover_url": cover,
+        "cover_url": prop.cover_display_url,
     }
 
 
