@@ -410,16 +410,7 @@ def property_edit(request, pk: int):
             if delete_ids:
                 PropertyImage.objects.filter(property=prop, id__in=delete_ids).delete()
 
-            new_images = request.FILES.getlist("images")
-            created_images = []
-            for img in new_images:
-                created_images.append(
-                    PropertyImage.objects.create(
-                        property=prop,
-                        image=img,
-                        is_cover=False,
-                    )
-                )
+            PropertyService.add_property_images(prop, request.FILES.getlist("images"))
 
             selected_cover_id = request.POST.get("cover_image")
             if selected_cover_id:

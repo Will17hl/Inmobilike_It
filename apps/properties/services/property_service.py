@@ -1,5 +1,10 @@
+import logging
+
 from apps.properties.models import PropertyImage
 from apps.properties.repositories.property_repository import PropertyRepository
+
+
+logger = logging.getLogger(__name__)
 
 
 class PropertyService:
@@ -32,12 +37,27 @@ class PropertyService:
         prop.agent = agent
         prop.save()
 
-        if files:
-            for i, f in enumerate(files):
-                PropertyImage.objects.create(
-                    property=prop,
-                    image=f,
-                    is_cover=(i == 0),
-                )
+        PropertyService.add_property_images(prop, files)
 
         return prop
+
+    @staticmethod
+    def add_property_images(property_obj, files=None):
+        saved_images = []
+        if not files:
+            return saved_images
+
+        has_cover = property_obj.images.filter(is_cover=True).exists()
+        for image_file in files:
+            try:
+                saved_images.append(
+                    PropertyImage.objects.create(
+                        property=property_obj,
+                        image=image_file,
+                        is_cover=(not has_cover and not saved_images),
+                    )
+                )
+            except Exception:
+                logger.exception("Could not save uploaded image for property %s", property_obj.pk)
+
+        return saved_images
