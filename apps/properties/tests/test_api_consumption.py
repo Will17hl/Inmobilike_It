@@ -1,10 +1,11 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from unittest.mock import patch, Mock
 
 from apps.properties.models import Location, Property, PropertyImage
 
 
+@override_settings(SECURE_SSL_REDIRECT=False)
 class ProductosAliadosViewTest(TestCase):
     def test_productos_aliados_renders_results_from_api(self):
         api_url = reverse('properties:api_properties_list')
@@ -54,3 +55,14 @@ class ProductosAliadosViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         payload = resp.json()
         self.assertEqual(payload["results"][0]["cover_url"], property_obj.images.first().display_url)
+
+    def test_properties_api_normalizes_invalid_pagination(self):
+        resp = self.client.get(
+            reverse("properties:api_properties_list"),
+            {"page": "bad", "page_size": "0"},
+        )
+
+        self.assertEqual(resp.status_code, 200)
+        payload = resp.json()
+        self.assertEqual(payload["page"], 1)
+        self.assertEqual(payload["page_size"], 10)

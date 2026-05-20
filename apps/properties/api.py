@@ -1,15 +1,34 @@
 from django.core.paginator import Paginator, EmptyPage
+from django.db import DatabaseError
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
 from .repositories.property_repository import PropertyRepository
 
 
+MAX_PAGE_SIZE = 50
+
+
+def _positive_int(value, default):
+    try:
+        number = int(value or default)
+    except (TypeError, ValueError):
+        return default
+    return number if number > 0 else default
+
+
+def _display_url(image_obj):
+    try:
+        return image_obj.display_url
+    except Exception:
+        return image_obj.image_url or None
+
+
 def _serialize_property(prop):
     cover = None
     cover_obj = prop.images.filter(is_cover=True).first() or prop.images.first()
     if cover_obj:
-        cover = cover_obj.display_url
+        cover = _display_url(cover_obj)
 
     return {
         "id": prop.id,
@@ -26,8 +45,8 @@ def _serialize_property(prop):
 @require_GET
 def properties_list_api(request):
     # Parámetros de paginación
-    page = int(request.GET.get("page", "1") or 1)
-    page_size = int(request.GET.get("page_size", "10") or 10)
+    page = _positive_int(request.GET.get("page"), 1)
+    page_size = min(_positive_int(request.GET.get("page_size"), 10), MAX_PAGE_SIZE)
 
     filters = {
         "city": request.GET.get("city"),
@@ -37,16 +56,19 @@ def properties_list_api(request):
         "max_price": request.GET.get("max_price"),
     }
 
-    qs = PropertyRepository.get_active_properties(filters=filters)
-
-    paginator = Paginator(qs, page_size)
-
     try:
-        page_obj = paginator.page(page)
-    except EmptyPage:
-        return JsonResponse({"results": [], "page": page, "page_size": page_size, "total_pages": paginator.num_pages, "total": paginator.count})
+        qs = PropertyRepository.get_active_properties(filters=filters)
 
-    results = [_serialize_property(p) for p in page_obj.object_list]
+        paginator = Paginator(qs, page_size)
+
+        try:
+            page_obj = paginator.page(page)
+        except EmptyPage:
+            return JsonResponse({"results": [], "page": page, "page_size": page_size, "total_pages": paginator.num_pages, "total": paginator.count})
+
+        results = [_serialize_property(p) for p in page_obj.object_list]
+    except DatabaseError:
+        return JsonResponse({"error": "Database unavailable"}, status=503)
 
     return JsonResponse({
         "results": results,
