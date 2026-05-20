@@ -10,6 +10,9 @@
     <p class="mt-4 text-base leading-8" style="color: var(--theme-muted);">
       {% if payment %}
         {% trans "Recibimos el pago de" %} <strong>{{ payment.amount|currency_es }}</strong> {% trans "para" %} <strong>{{ prop.title }}</strong>.
+        {% if payment.invoice_number %}
+          <br>{% trans "Factura" %}: <strong>{{ payment.invoice_number }}</strong>
+        {% endif %}
       {% else %}
         {% trans "Stripe devolvio la sesion, pero no encontramos el registro local asociado." %}
       {% endif %}
@@ -22,6 +25,13 @@
       <a href="{% url 'properties:catalog' %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
         {% trans "Ir al catalogo" %}
       </a>
+      {% if payment %}
+        {% if payment.status == "paid" %}
+          <a href="{% url 'properties:payment_invoice_pdf' payment.id %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
+            {% trans "Descargar factura PDF" %}
+          </a>
+        {% endif %}
+      {% endif %}
     </div>
   </div>
 </section>

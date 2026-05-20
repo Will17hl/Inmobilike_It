@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load property_format %}
+{% load i18n %}
 {% block title %}Mis ventas y arriendos{% endblock %}
 
 {% block content %}
@@ -55,7 +56,7 @@
                 </div>
               </div>
 
-              <div class="mt-6 grid gap-4 sm:grid-cols-4">
+              <div class="mt-6 grid gap-4 sm:grid-cols-5">
                 <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
                   <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Comprador</p>
                   <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.buyer.get_full_name|default:item.buyer.username }}</p>
@@ -69,6 +70,10 @@
                   <p class="mt-2 font-semibold" style="color: var(--theme-ink);">{{ item.payment.paid_at|date:"d/m/Y H:i" }}</p>
                 </div>
                 <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
+                  <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Factura</p>
+                  <p class="mt-2 font-semibold break-all" style="color: var(--theme-ink);">{{ item.payment.invoice_number }}</p>
+                </div>
+                <div class="rounded-[1.3rem] border p-4" style="border-color: var(--theme-border-soft);">
                   <p class="text-xs font-bold uppercase tracking-[0.2em]" style="color: var(--theme-muted);">Sesion Stripe</p>
                   <p class="mt-2 font-semibold break-all" style="color: var(--theme-ink);">{{ item.payment.stripe_session_id }}</p>
                 </div>
@@ -80,6 +85,9 @@
                 </a>
                 <a href="{% url 'interactions:chat_list' %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
                   Ver conversaciones
+                </a>
+                <a href="{% url 'properties:payment_invoice_pdf' item.payment.id %}" class="theme-button-soft rounded-2xl px-5 py-3 text-sm font-semibold">
+                  Descargar factura
                 </a>
               </div>
             </div>

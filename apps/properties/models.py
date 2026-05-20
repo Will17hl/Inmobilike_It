@@ -125,6 +125,8 @@ class PropertyPayment(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
     stripe_session_id = models.CharField(max_length=255, unique=True)
     stripe_payment_intent_id = models.CharField(max_length=255, blank=True)
+    invoice_number = models.CharField(max_length=32, unique=True, null=True, blank=True)
+    invoice_issued_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     paid_at = models.DateTimeField(null=True, blank=True)
 
@@ -133,3 +135,22 @@ class PropertyPayment(models.Model):
 
     def __str__(self):
         return f"Payment #{self.id} - property {self.property_id} - {self.status}"
+
+    def ensure_invoice(self, issued_at=None, save=True):
+        changed_fields = []
+        issued_at = issued_at or self.invoice_issued_at or self.paid_at or timezone.now()
+
+        if not self.invoice_number:
+            if not self.pk:
+                raise ValueError("Payment must be saved before generating an invoice.")
+            self.invoice_number = f"FAC-{issued_at:%Y%m%d}-{self.pk:06d}"
+            changed_fields.append("invoice_number")
+
+        if not self.invoice_issued_at:
+            self.invoice_issued_at = issued_at
+            changed_fields.append("invoice_issued_at")
+
+        if save and changed_fields:
+            self.save(update_fields=changed_fields)
+
+        return changed_fields

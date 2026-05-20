@@ -14,6 +14,7 @@ urlpatterns = [
     path("mine/", views.my_properties, name="mine"),
     path("reservations/", views.my_reservations, name="my_reservations"),
     path("transactions/", views.my_transactions, name="my_transactions"),
+    path("payments/<int:payment_id>/invoice.pdf", views.payment_invoice_pdf, name="payment_invoice_pdf"),
     path("create/", views.property_create, name="create"),
     path("stripe/webhook/", views.stripe_webhook, name="stripe_webhook"),
     path("<int:pk>/checkout/", views.create_checkout_session, name="checkout"),

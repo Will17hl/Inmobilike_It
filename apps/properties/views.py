@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,7 @@ from apps.interactions.models import Conversation, Message
 from apps.accounts.models import AgentProfile
 from apps.interactions.models import Favorite
 from .forms import PropertyForm, LocationForm
+from .invoices import PaymentInvoicePdf
 from .services.property_service import PropertyService
 from .models import Property, PropertyImage, PropertyPayment
 from decimal import Decimal
@@ -26,17 +28,19 @@ except ImportError:
 
 def sync_payment_from_checkout_session(payment, checkout_session):
     payment.stripe_payment_intent_id = checkout_session.payment_intent or ""
+    update_fields = ["stripe_payment_intent_id", "status", "paid_at"]
 
     if checkout_session.payment_status == "paid":
         payment.status = PropertyPayment.STATUS_PAID
         if payment.paid_at is None:
             payment.paid_at = timezone.now()
+        update_fields.extend(payment.ensure_invoice(issued_at=payment.paid_at, save=False))
     elif checkout_session.status == "expired":
         payment.status = PropertyPayment.STATUS_FAILED
     else:
         payment.status = PropertyPayment.STATUS_PENDING
 
-    payment.save(update_fields=["stripe_payment_intent_id", "status", "paid_at"])
+    payment.save(update_fields=update_fields)
 
 def require_host(request):
     return request.session.get("mode", "guest") == "host"
@@ -601,6 +605,34 @@ def payment_cancel(request, pk: int):
             "prop": property_obj,
         },
     )
+
+
+@login_required
+def payment_invoice_pdf(request, payment_id: int):
+    payment = get_object_or_404(
+        PropertyPayment.objects.select_related(
+            "property__location",
+            "property__agent__user",
+            "user",
+        ),
+        pk=payment_id,
+        status=PropertyPayment.STATUS_PAID,
+    )
+
+    is_buyer = payment.user_id == request.user.id
+    is_seller = (
+        payment.property.agent_id
+        and payment.property.agent
+        and payment.property.agent.user_id == request.user.id
+    )
+    if not (is_buyer or is_seller or request.user.is_staff):
+        raise PermissionDenied(_("No tienes permiso para descargar esta factura."))
+
+    buffer = PaymentInvoicePdf(payment).export()
+    filename = f"{payment.invoice_number or 'factura'}.pdf"
+    response = HttpResponse(buffer.getvalue(), content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
 
 
 @csrf_exempt

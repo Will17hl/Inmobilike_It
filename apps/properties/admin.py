@@ -25,6 +25,22 @@ class PropertyImageAdmin(admin.ModelAdmin):
 
 @admin.register(PropertyPayment)
 class PropertyPaymentAdmin(admin.ModelAdmin):
-    list_display = ("id", "property", "user", "amount", "currency", "status", "created_at", "paid_at")
-    list_filter = ("status", "currency", "created_at")
-    search_fields = ("property__title", "user__username", "stripe_session_id", "stripe_payment_intent_id")
+    list_display = (
+        "id",
+        "property",
+        "user",
+        "amount",
+        "currency",
+        "status",
+        "invoice_number",
+        "created_at",
+        "paid_at",
+    )
+    list_filter = ("status", "currency", "created_at", "invoice_issued_at")
+    search_fields = (
+        "property__title",
+        "user__username",
+        "stripe_session_id",
+        "stripe_payment_intent_id",
+        "invoice_number",
+    )

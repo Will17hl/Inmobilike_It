@@ -135,19 +135,6 @@
           </button>
         {% endif %}
 
-        {% if user.is_authenticated %}
-          <form method="post" action="{% url 'interactions:toggle_favorite' prop.id %}">
-            {% csrf_token %}
-            <button type="submit" class="theme-button-soft w-full rounded-2xl px-5 py-3 text-sm font-semibold">
-              {% if is_fav %}{% trans "Quitar favorito" %}{% else %}{% trans "Agregar a favoritos" %}{% endif %}
-            </button>
-          </form>
-        {% else %}
-          <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
-            {% trans "Inicia sesion para guardar esta propiedad" %}
-          </a>
-        {% endif %}
-
         <a href="{% url 'properties:catalog' %}" class="block text-sm font-semibold" style="color: var(--theme-muted);">
           {% trans "Volver al catalogo" %}
         </a>
