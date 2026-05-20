@@ -18,4 +18,4 @@ RUN python manage.py collectstatic --noinput
 
 EXPOSE 8000
 
-CMD ["sh", "-c", "python manage.py migrate && daphne -b 0.0.0.0 -p ${PORT:-8000} config.asgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && if [ \"${AUTO_SEED_SAMPLE_DATA:-1}\" = \"1\" ]; then python manage.py seed --locations ${SEED_LOCATIONS:-5} --properties ${SEED_PROPERTIES:-20} --images ${SEED_IMAGES:-3} --seed ${SEED_RANDOM:-7} --idempotent; fi && daphne -b 0.0.0.0 -p ${PORT:-8000} config.asgi:application"]

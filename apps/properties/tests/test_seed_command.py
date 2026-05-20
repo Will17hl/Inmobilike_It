@@ -26,3 +26,14 @@ class SeedCommandTest(TestCase):
             self.assertEqual(property_obj.images.count(), 2)
             cover = property_obj.images.get(is_cover=True)
             self.assertTrue(cover.display_url.startswith("https://images.unsplash.com/"))
+
+    def test_idempotent_seed_does_not_duplicate_sample_data(self):
+        call_command("seed", locations=2, properties=3, images=2, seed=7, idempotent=True, stdout=StringIO())
+        call_command("seed", locations=2, properties=3, images=2, seed=7, idempotent=True, stdout=StringIO())
+
+        properties = Property.objects.prefetch_related("images")
+
+        self.assertEqual(properties.count(), 3)
+        for property_obj in properties:
+            self.assertEqual(property_obj.images.count(), 2)
+            self.assertEqual(property_obj.images.filter(is_cover=True).count(), 1)

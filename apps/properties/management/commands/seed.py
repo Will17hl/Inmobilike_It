@@ -109,12 +109,59 @@ def build_property_payload(location, rng):
     }
 
 
-def create_property_images(property_obj, rng, image_count):
+def get_or_create_location(city, neighborhood, address, idempotent):
+    if not idempotent:
+        return Location.objects.create(
+            city=city,
+            neighborhood=neighborhood,
+            address=address,
+        )
+
+    location, _ = Location.objects.get_or_create(
+        city=city,
+        neighborhood=neighborhood,
+        address=address,
+    )
+    return location
+
+
+def get_or_create_property(location, payload, idempotent):
+    if not idempotent:
+        return Property.objects.create(
+            **payload,
+            is_active=True,
+            location=location,
+        ), True
+
+    lookup = {
+        **payload,
+        "location": location,
+    }
+    prop = Property.objects.filter(**lookup).first()
+    if prop:
+        return prop, False
+
+    return Property.objects.create(
+        **payload,
+        is_active=True,
+        location=location,
+    ), True
+
+
+def create_property_images(property_obj, rng, image_count, idempotent=False):
     selected_urls = rng.sample(IMAGE_URLS, k=min(image_count, len(IMAGE_URLS)))
     while len(selected_urls) < image_count:
         selected_urls.append(rng.choice(IMAGE_URLS))
 
     for index, image_url in enumerate(selected_urls):
+        if idempotent:
+            existing_image = property_obj.images.filter(image_url=image_url).first()
+            if existing_image:
+                if index == 0 and not property_obj.images.filter(is_cover=True).exists():
+                    existing_image.is_cover = True
+                    existing_image.save(update_fields=["is_cover"])
+                continue
+
         PropertyImage.objects.create(
             property=property_obj,
             image_url=image_url,
@@ -130,11 +177,13 @@ class Command(BaseCommand):
         parser.add_argument('--properties', type=int, default=20)
         parser.add_argument('--images', type=int, default=3, help='Image URLs to create per seeded property')
         parser.add_argument('--seed', type=int, default=None, help='Optional random seed for reproducible sample data')
+        parser.add_argument('--idempotent', action='store_true', help='Reuse existing generated sample records instead of duplicating them')
 
     def handle(self, *args, **options):
         loc_count = options.get('locations', 5)
         prop_count = options.get('properties', 20)
         image_count = options.get('images', 3)
+        idempotent = options.get('idempotent', False)
         rng = random.Random(options.get('seed'))
 
         if loc_count < 1:
@@ -144,27 +193,28 @@ class Command(BaseCommand):
         if image_count < 0:
             raise CommandError('--images cannot be negative')
 
-        self.stdout.write(self.style.NOTICE(f'Creating {loc_count} locations'))
+        verb = "Ensuring" if idempotent else "Creating"
+        self.stdout.write(self.style.NOTICE(f'{verb} {loc_count} locations'))
         locations = []
         for _ in range(loc_count):
             city, neighborhoods = rng.choice(CITY_NEIGHBORHOODS)
-            loc = Location.objects.create(
+            loc = get_or_create_location(
                 city=city,
                 neighborhood=rng.choice(neighborhoods),
                 address=build_address(rng),
+                idempotent=idempotent,
             )
             locations.append(loc)
 
-        self.stdout.write(self.style.NOTICE(f'Creating {prop_count} properties'))
+        self.stdout.write(self.style.NOTICE(f'{verb} {prop_count} properties'))
+        created_properties = 0
         for _ in range(prop_count):
             loc = rng.choice(locations)
             payload = build_property_payload(loc, rng)
 
-            prop = Property.objects.create(
-                **payload,
-                is_active=True,
-                location=loc,
-            )
-            create_property_images(prop, rng, image_count)
+            prop, created = get_or_create_property(loc, payload, idempotent)
+            if created:
+                created_properties += 1
+            create_property_images(prop, rng, image_count, idempotent=idempotent)
 
-        self.stdout.write(self.style.SUCCESS('Seeding completed.'))
+        self.stdout.write(self.style.SUCCESS(f'Seeding completed. Created {created_properties} new properties.'))
