@@ -145,7 +145,7 @@ def chat_dashboard(request, conversation_id=None):
         cover = property_obj.images.filter(is_cover=True).first() or property_obj.images.first()
         cover_url = None
         if cover:
-            cover_url = cover.image.url if cover.image else cover.image_url
+            cover_url = cover.display_url
 
         last_message = conversation.messages.all().last()
         unread_count = (
@@ -179,9 +179,7 @@ def chat_dashboard(request, conversation_id=None):
         )
         active_cover_url = None
         if active_cover:
-            active_cover_url = (
-                active_cover.image.url if active_cover.image else active_cover.image_url
-            )
+            active_cover_url = active_cover.display_url
 
         active_chat_meta = {
             "property_location": str(active_property.location),

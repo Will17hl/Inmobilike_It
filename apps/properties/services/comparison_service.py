@@ -10,7 +10,7 @@ class ComparisonService:
         comparison_data = []
         for prop in properties:
             cover = prop.images.filter(is_cover=True).first() or prop.images.first()
-            cover_url = cover.image.url if cover and cover.image else (cover.image_url if cover else None)
+            cover_url = cover.display_url if cover else None
             
             comparison_data.append({
                 "id": prop.id,

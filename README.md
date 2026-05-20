@@ -162,22 +162,24 @@ El proyecto ya incluye un archivo `render.yaml` que define el servicio web Docke
 - Cuenta en Render
 - Acceso al repositorio GitHub o importe del repositorio en Render
 
-### Pasos rápidos
-1. En Render, crea un nuevo servicio usando el repositorio de este proyecto.
-2. Selecciona `Docker` como entorno de ejecución.
-3. En `Render.yaml` deja la configuración predeterminada: el contenedor usará el `Dockerfile` del proyecto.
-4. Verifica que las variables de entorno en Render incluyen:
+### Pasos rapidos
+1. En Render, crea una nueva instancia desde **Blueprints** usando el `render.yaml` del repositorio.
+2. Render creara el servicio Docker y la base de datos PostgreSQL administrada.
+3. Verifica que las variables de entorno en Render incluyen:
    - `DEBUG=0`
-   - `ALLOWED_HOSTS=*`
-   - `CSRF_TRUSTED_ORIGINS=https://<tu-servicio>.onrender.com`
-   - `SECRET_KEY` (o usa el generador de secrets de Render)
+   - `ALLOWED_HOSTS=.onrender.com` (agrega tu dominio propio si lo usas)
+   - `CSRF_TRUSTED_ORIGINS=https://*.onrender.com` (agrega tu dominio propio si lo usas)
+   - `SECRET_KEY` generado por Render
+   - `DATABASE_URL` conectado desde `inmobilike-it-db`
 
 ### Base de datos
-Render creará un servicio PostgreSQL que expone `DATABASE_URL`. El proyecto ya está configurado para leer `DATABASE_URL` y usarlo en producción.
+Render creara un servicio PostgreSQL que expone `DATABASE_URL`. El proyecto ya esta configurado para leer `DATABASE_URL` y usarlo en produccion.
 
 ### Consideraciones
 - El servicio usa `daphne` para Django Channels y WebSockets.
 - WhiteNoise sirve archivos estáticos desde `STATIC_ROOT`.
+- El `Dockerfile` ejecuta migraciones antes de iniciar el servidor.
+- Para fotos subidas por usuarios en produccion, configura Cloudinary (`CLOUDINARY_URL`) o un almacenamiento persistente. Las imagenes semilla usan URLs externas y no dependen del filesystem local.
 - Si necesitas soporte de Redis para canales con múltiples instancias, tendrás que añadir una capa de `CHANNEL_LAYERS` en `config/settings.py`.
 
 ---

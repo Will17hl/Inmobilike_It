@@ -81,9 +81,9 @@
       <div class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
         {% for img in images %}
           <div class="overflow-hidden rounded-[1.4rem] border shadow-sm" style="border-color: var(--theme-border-soft); background: rgba(255,253,249,0.96);">
-            {% if img.image %}
+            {% if img.display_url %}
               <div class="relative">
-                <img src="{{ img.image.url }}" alt="Foto propiedad" class="h-40 w-full object-cover">
+                <img src="{{ img.display_url }}" alt="Foto propiedad" class="h-40 w-full object-cover">
                 {% if img.is_cover %}
                   <div class="absolute left-2 top-2 rounded-lg px-2 py-1 text-[11px] font-semibold text-white" style="background: var(--theme-dark);">Portada actual</div>
                 {% endif %}

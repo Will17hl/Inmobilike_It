@@ -36,8 +36,8 @@
         <article class="overflow-hidden rounded-[2rem] border" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: var(--theme-shadow);">
           <div class="grid gap-0 md:grid-cols-[250px_1fr]">
             <div class="min-h-[220px]" style="background: linear-gradient(135deg, #fff0e2 0%, #eadfd3 100%);">
-              {% if item.cover and item.cover.image %}
-                <img src="{{ item.cover.image.url }}" alt="{{ item.property.title }}" class="h-full w-full object-cover">
+              {% if item.cover and item.cover.display_url %}
+                <img src="{{ item.cover.display_url }}" alt="{{ item.property.title }}" class="h-full w-full object-cover">
               {% endif %}
             </div>
             <div class="p-6 md:p-8">

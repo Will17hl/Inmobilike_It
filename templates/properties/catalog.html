@@ -101,11 +101,13 @@
   <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
     {% for p in properties %}
       <a href="{% url 'properties:detail' p.id %}" class="group overflow-hidden rounded-[1.9rem] border transition duration-200 hover:-translate-y-1" style="background: rgba(255,253,249,0.95); border-color: var(--theme-border-soft); box-shadow: 0 12px 32px rgba(67,43,25,0.07);">
-        {% if p.images.first and p.images.first.image %}
-          <img src="{{ p.images.first.image.url }}" alt="{{ p.title }}" class="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]">
-        {% else %}
-          <div class="h-56 w-full" style="background: linear-gradient(135deg, #fff0e2 0%, #e8ddd1 100%);"></div>
-        {% endif %}
+        {% with cover=p.images.first %}
+          {% if cover and cover.display_url %}
+            <img src="{{ cover.display_url }}" alt="{{ p.title }}" class="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]">
+          {% else %}
+            <div class="h-56 w-full" style="background: linear-gradient(135deg, #fff0e2 0%, #e8ddd1 100%);"></div>
+          {% endif %}
+        {% endwith %}
 
         <div class="space-y-4 p-5">
           <div class="flex items-start justify-between gap-3">

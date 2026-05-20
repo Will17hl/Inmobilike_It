@@ -1,3 +1,5 @@
+import builtins
+
 from django.db import models
 from django.utils import timezone
 from apps.accounts.models import AgentProfile
@@ -55,6 +57,12 @@ class PropertyImage(models.Model):
     image = models.ImageField(upload_to="properties/", null=True, blank=True)
     image_url = models.URLField(blank=True)
     is_cover = models.BooleanField(default=False)
+
+    @builtins.property
+    def display_url(self):
+        if self.image:
+            return self.image.url
+        return self.image_url
 
     def __str__(self):
         return f"Img #{self.id} of {self.property_id}"

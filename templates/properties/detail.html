@@ -31,17 +31,17 @@
     </div>
 
     <div class="p-4 md:p-6">
-      {% if images and cover and cover.image %}
+      {% if images and cover and cover.display_url %}
         <div class="grid gap-3 md:grid-cols-4 md:grid-rows-2">
           {% for img in images|slice:":5" %}
-            {% if img.image %}
+            {% if img.display_url %}
               {% if forloop.first %}
                 <button type="button" onclick="openGallery({{ forloop.counter0 }})" class="overflow-hidden rounded-[1.75rem] md:col-span-2 md:row-span-2">
-                  <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-[260px] w-full object-cover md:h-[540px]">
+                  <img src="{{ img.display_url }}" alt="{{ prop.title }}" class="h-[260px] w-full object-cover md:h-[540px]">
                 </button>
               {% else %}
                 <button type="button" onclick="openGallery({{ forloop.counter0 }})" class="relative overflow-hidden rounded-[1.75rem]">
-                  <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-[180px] w-full object-cover md:h-[263px]">
+                  <img src="{{ img.display_url }}" alt="{{ prop.title }}" class="h-[180px] w-full object-cover md:h-[263px]">
                   {% if forloop.last and images|length > 5 %}
                     <div class="absolute inset-0 flex items-end justify-end bg-black/25 p-3">
                       <span class="rounded-xl px-4 py-2 text-sm font-semibold" style="background: rgba(255,253,249,0.92); color: var(--theme-ink);">
@@ -189,9 +189,9 @@
       <div class="mt-4 text-sm font-medium text-white"><span id="galleryCounter"></span></div>
       <div class="mt-6 flex max-w-full gap-3 overflow-x-auto pb-2">
         {% for img in images %}
-          {% if img.image %}
+          {% if img.display_url %}
             <button type="button" onclick="setImage({{ forloop.counter0 }})" class="shrink-0 overflow-hidden rounded-xl border-2 border-transparent" id="thumb-{{ forloop.counter0 }}">
-              <img src="{{ img.image.url }}" alt="{{ prop.title }}" class="h-20 w-24 object-cover md:h-24 md:w-28">
+              <img src="{{ img.display_url }}" alt="{{ prop.title }}" class="h-20 w-24 object-cover md:h-24 md:w-28">
             </button>
           {% endif %}
         {% endfor %}
@@ -204,8 +204,8 @@
 <script>
   const galleryImages = [
     {% for img in images %}
-      {% if img.image %}
-        "{{ img.image.url }}"{% if not forloop.last %},{% endif %}
+      {% if img.display_url %}
+        "{{ img.display_url|escapejs }}"{% if not forloop.last %},{% endif %}
       {% endif %}
     {% endfor %}
   ];

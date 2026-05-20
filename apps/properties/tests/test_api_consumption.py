@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.urls import reverse
 from unittest.mock import patch, Mock
 
+from apps.properties.models import Location, Property, PropertyImage
+
 
 class ProductosAliadosViewTest(TestCase):
     def test_productos_aliados_renders_results_from_api(self):
@@ -26,3 +28,29 @@ class ProductosAliadosViewTest(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertContains(resp, 'Productos aliados')
             self.assertContains(resp, 'P1')
+
+    def test_properties_api_returns_cover_from_image_url(self):
+        location = Location.objects.create(
+            city="Medellin",
+            neighborhood="Laureles",
+            address="Calle 10 # 20-30",
+        )
+        property_obj = Property.objects.create(
+            title="Apartamento con foto",
+            description="Descripcion de prueba",
+            price=2500000,
+            operation=Property.OP_RENT,
+            is_active=True,
+            location=location,
+        )
+        PropertyImage.objects.create(
+            property=property_obj,
+            image_url="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1200&q=80",
+            is_cover=True,
+        )
+
+        resp = self.client.get(reverse("properties:api_properties_list"), HTTP_HOST="localhost")
+
+        self.assertEqual(resp.status_code, 200)
+        payload = resp.json()
+        self.assertEqual(payload["results"][0]["cover_url"], property_obj.images.first().display_url)

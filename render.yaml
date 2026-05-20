@@ -1,19 +1,26 @@
 services:
   - type: web
     name: inmobilike-it-web
-    env: docker
-    dockerfilePath: Dockerfile
+    runtime: docker
+    dockerfilePath: ./Dockerfile
     plan: starter
+    healthCheckPath: /healthz/
     envVars:
       - key: DEBUG
         value: "0"
       - key: ALLOWED_HOSTS
-        value: "*"
+        value: ".onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://inmobilike-it.onrender.com"
+        value: "https://*.onrender.com"
       - key: SECRET_KEY
-        generator: secret
-  - type: postgres
-    name: inmobilike-it-db
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: inmobilike-it-db
+          property: connectionString
+
+databases:
+  - name: inmobilike-it-db
     plan: starter
     databaseName: inmobilike_it
+    postgresMajorVersion: "16"

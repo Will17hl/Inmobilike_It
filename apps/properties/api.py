@@ -9,7 +9,7 @@ def _serialize_property(prop):
     cover = None
     cover_obj = prop.images.filter(is_cover=True).first() or prop.images.first()
     if cover_obj:
-        cover = cover_obj.image_url or (getattr(cover_obj.image, 'url', None) if hasattr(cover_obj, 'image') else None)
+        cover = cover_obj.display_url
 
     return {
         "id": prop.id,

@@ -1,11 +1,18 @@
 # Seed (datos de ejemplo)
 
-Este proyecto incluye un comando para sembrar datos de ejemplo usando Faker.
+Este proyecto incluye un comando para sembrar datos inmobiliarios de ejemplo.
 
 Uso:
 
 ```bash
-python manage.py seed --locations 5 --properties 20
+python manage.py seed --locations 5 --properties 20 --images 3
 ```
 
-Esto creará ubicaciones y propiedades de ejemplo útiles para desarrollo y pruebas locales.
+Esto creara ubicaciones y propiedades coherentes con el dominio: ciudades,
+barrios, titulos, descripciones, precios, habitaciones, banos, area e imagenes.
+
+Para generar siempre el mismo set durante pruebas o demos:
+
+```bash
+python manage.py seed --locations 5 --properties 20 --images 3 --seed 7
+```

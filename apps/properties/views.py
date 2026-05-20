@@ -250,7 +250,7 @@ def ai_property_recommendation(request):
         )
 
     cover = PropertyService.get_cover_image(property_obj)
-    cover_url = cover.image.url if cover and cover.image else ""
+    cover_url = cover.display_url if cover else ""
 
     return JsonResponse(
         {
